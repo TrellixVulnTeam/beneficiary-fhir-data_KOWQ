@@ -252,7 +252,7 @@ public class SchemaMigrationIT {
       final String mbi = format("%05d", mbiNumber);
       mbis.add(mbi);
       entityManager.getTransaction().begin();
-      Mbi mbiRecord = entityManager.merge(new Mbi(mbi, mbi + hashSuffix));
+      Mbi mbiRecord = entityManager.merge(MbiUtil.newMbi(mbi, mbi + hashSuffix));
       for (int claimNumber = 1; claimNumber <= 3; ++claimNumber) {
         final PreAdjFissClaim claim =
             PreAdjFissClaim.builder()
@@ -312,7 +312,7 @@ public class SchemaMigrationIT {
       final String mbi = format("%05d", mbiNumber);
       mbis.add(mbi);
       entityManager.getTransaction().begin();
-      Mbi mbiRecord = entityManager.merge(new Mbi(mbi, mbi + hashSuffix));
+      Mbi mbiRecord = entityManager.merge(MbiUtil.newMbi(mbi, mbi + hashSuffix));
       for (int claimNumber = 1; claimNumber <= 3; ++claimNumber) {
         final PreAdjMcsClaim claim =
             PreAdjMcsClaim.builder()
