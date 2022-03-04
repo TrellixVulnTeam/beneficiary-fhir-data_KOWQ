@@ -122,6 +122,8 @@ public class ColumnBean {
     switch (javaType) {
       case "char":
         return TypeName.CHAR;
+      case "Character":
+        return ClassName.get(Character.class);
       case "int":
         return TypeName.INT;
       case "short":

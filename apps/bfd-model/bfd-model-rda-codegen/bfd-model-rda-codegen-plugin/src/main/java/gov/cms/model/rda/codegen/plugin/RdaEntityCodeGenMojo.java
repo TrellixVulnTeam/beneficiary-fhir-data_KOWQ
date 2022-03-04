@@ -1,7 +1,5 @@
 package gov.cms.model.rda.codegen.plugin;
 
-import static javax.persistence.FetchType.*;
-
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -23,7 +21,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -39,8 +36,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -64,11 +61,7 @@ import org.hibernate.annotations.BatchSize;
 public class RdaEntityCodeGenMojo extends AbstractMojo {
   // region Fields
   private static final String PRIMARY_KEY_CLASS_NAME = "PK";
-  private static final Map<String, Class<?>> VALID_JOIN_TYPES =
-      Map.of("ManyToOne", ManyToOne.class, "OneToMany", OneToMany.class);
-  private static final Map<String, FetchType> VALID_FETCH_TYPES =
-      Map.of("LAZY", LAZY, "EAGER", EAGER);
-  public static final int BATCH_SIZE_FOR_ARRAY_FIELDS = 100;
+  private static final int BATCH_SIZE_FOR_ARRAY_FIELDS = 100;
 
   @Parameter(property = "mappingFile")
   private String mappingFile;
@@ -196,21 +189,27 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
 
   private void addJoinFields(MappingBean mapping, TypeSpec.Builder classBuilder)
       throws MojoExecutionException {
-    TypeName fieldType;
     for (JoinBean join : mapping.getTable().getJoins()) {
       if (!join.isValidEntityClass()) {
         throw failure(
             "entityClass for join must include package: mapping=%s join=%s entityClass=%s",
-            mapping.getId(), join.getName(), join.getEntityClass());
+            mapping.getId(), join.getFieldName(), join.getEntityClass());
       }
-      fieldType = ClassName.get(join.getEntityPackage(), join.getEntityClass());
+      TypeName fieldType = join.getEntityClassType();
+      if (join.getJoinType().isMultiValue()) {
+        fieldType = ParameterizedTypeName.get(join.getCollectionType().getClassName(), fieldType);
+      }
       FieldSpec.Builder builder =
-          FieldSpec.builder(fieldType, join.getName()).addModifiers(Modifier.PRIVATE);
+          FieldSpec.builder(fieldType, join.getFieldName()).addModifiers(Modifier.PRIVATE);
       if (join.hasComment()) {
         builder.addJavadoc(join.getComment());
       }
       builder.addAnnotation(createJoinTypeAnnotation(mapping, join));
       builder.addAnnotation(createJoinColumnAnnotation(mapping, join));
+      if (join.hasOrderBy()) {
+        builder.addAnnotation(
+            AnnotationSpec.builder(OrderBy.class).addMember("value", join.getOrderBy()).build());
+      }
       FieldSpec fieldSpec = builder.build();
       classBuilder.addField(fieldSpec);
     }
@@ -267,27 +266,36 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
 
   private AnnotationSpec createJoinTypeAnnotation(MappingBean mapping, JoinBean join)
       throws MojoExecutionException {
-    final var annotationClass = VALID_JOIN_TYPES.get(join.getJoinType());
-    if (annotationClass == null) {
+    if (join.getJoinType() == null) {
       throw failure(
-          "unrecognized joinType: mapping=%s join=%s joinType=%s",
-          mapping.getId(), join.getName(), join.getJoinType());
+          "missing joinType: mapping=%s join=%s joinType=%s",
+          mapping.getId(), join.getFieldName(), join.getJoinType());
     }
-    final var fetchType = VALID_FETCH_TYPES.get(join.getFetchType().toUpperCase());
-    if (fetchType == null) {
+    if (join.getFetchType() == null) {
       throw failure(
-          "unrecognized fetchType: mapping=%s join=%s fetchType=%s",
-          mapping.getId(), join.getName(), join.getJoinType());
+          "missing fetchType: mapping=%s join=%s fetchType=%s",
+          mapping.getId(), join.getFieldName(), join.getJoinType());
     }
-    return AnnotationSpec.builder(annotationClass)
-        .addMember("fetch", "$T.$L", FetchType.class, fetchType)
-        .build();
+    final var annotationClass = join.getJoinType().getAnnotationClass();
+    final var builder = AnnotationSpec.builder(annotationClass);
+    if (join.hasMappedBy()) {
+      builder.addMember("mappedBy", join.getMappedBy());
+    }
+    if (join.hasOrphanRemoval()) {
+      builder.addMember("orphanRemoval", "$L", join.getOrphanRemoval());
+    }
+    builder.addMember("fetch", "$T.$L", FetchType.class, join.getFetchType());
+    for (CascadeType cascadeType : join.getCascadeTypes()) {
+      builder.addMember("cascade", "$T.$L", CascadeType.class, cascadeType);
+    }
+    return builder.build();
   }
 
   private AnnotationSpec createJoinColumnAnnotation(MappingBean mapping, JoinBean join)
       throws MojoExecutionException {
     if (!join.hasColumnName()) {
-      throw failure("missing joinColumnName: mapping=%s join=%s", mapping.getId(), join.getName());
+      throw failure(
+          "missing joinColumnName: mapping=%s join=%s", mapping.getId(), join.getFieldName());
     }
     return AnnotationSpec.builder(JoinColumn.class)
         .addMember("name", "$S", quoteName(join.getJoinColumnName()))

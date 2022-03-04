@@ -217,7 +217,7 @@ mappings:
           sqlType: varchar(17)
           comment: "Medical Record Number"
       joins:
-        - name: mbiRecord
+        - fieldName: mbiRecord
           entityClass: gov.cms.bfd.model.rda.Mbi
           joinColumnName: mbiId
           joinType: ManyToOne
@@ -864,7 +864,7 @@ mappings:
         - name: idrAmbDropoffZipcode
           sqlType: varchar(9)
       joins:
-        - name: mbiRecord
+        - fieldName: mbiRecord
           entityClass: gov.cms.bfd.model.rda.Mbi
           joinColumnName: mbiId
           joinType: ManyToOne
