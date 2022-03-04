@@ -1,0 +1,126 @@
+mappings:
+  - id: Beneficiary
+    sourceType: RifCsv
+    entityClassName: gov.cms.bfd.model.rif.Beneficiary
+    transformerClassName: gov.cms.bfd.model.rif.BeneficiaryTransformer
+    table:
+      name: Beneficiaries
+      schema: public
+      primaryKeyColumns:
+        - beneficiaryId
+      columns:
+        - name: beneficiaryId
+          sqlType: bigint
+          nullable: false
+        - name: stateCode
+          sqlType: varchar(2)
+          nullable: false
+        - name: countryCode
+          sqlType: varchar(10)
+          nullable: false
+        - name: postalCode
+          sqlType: varchar(9)
+          nullable: false
+        - name: birthDate
+          sqlType: date
+          nullable: false
+        - name: sex
+          sqlType: varchar(1)
+          nullable: false
+        - name: hcn
+          sqlType: varchar(64)
+          nullable: false
+        - name: nameSurname
+          sqlType: varchar(24)
+          nullable: false
+        - name: nameGiven
+          sqlType: varchar(15)
+          nullable: false
+        - name: nameMiddleInitial
+          sqlType: varchar(1)
+        - name: ageOfBeneficiary
+          sqlType: int
+      joins:
+        - table: BeneficiaryHistory
+          field: beneficiaryHistories
+          key: beneficiaryId
+        - table: MedicareBeneficiaryIdHistory
+          field: medicareBeneficiaryIdHistories
+          key: beneficiaryId
+    transformations:
+      - from: BENE_ID
+        to: beneficiaryId
+        optional: false
+      - from: STATE_CD
+        to: stateCode
+        optional: false
+      - from: CNTY_CD
+        to: countryCode
+        optional: false
+      - from: BENE_ZIP
+        to: postalCode
+        optional: false
+      - from: BENE_DOB
+        to: birthDate
+        optional: false
+      - from: SEX
+        to: sex
+        optional: false
+      - from: BENE_CRNT_HIC_NUM
+        to: hcn
+        optional: false
+      - from: BENE_SRNM_NAME
+        to: nameSurname
+        optional: false
+      - from: BENE_GVN_NAME
+        to: nameGivenName
+        optional: false
+      - from: BENE_MDL_NAME
+        to: nameMiddleInitial
+      - from: AGE
+        to: ageOfBeneficiary
+      - name: lastUpdated
+        sqlType: timestamp with time zone
+    arrays:
+      - to: beneficiaryMonthlys
+        mapping: BeneficiaryMonthly
+        namePrefix: "beneficiaryMonthlys"
+        orderBy: "yearMonth ASC"
+
+  - id: BeneficiaryMonthly
+    messageClassName: gov.cms.mpsm.rda.v1.fiss.FissProcedureCode
+    entityClassName: gov.cms.bfd.model.rda.PreAdjFissProcCode
+    table:
+      name: BeneficiaryMonthly
+      schema: public
+      primaryKeyColumns:
+        - parentBeneficiary
+        - yearMonth
+      columns:
+        - name: parentBeneficiary
+          sqlType: bigint
+          nullable: false
+        - name: yearMonth
+          sqlType: date
+          nullable: false
+        - name: fipsStateCntyCode
+          sqlType: varchar(5)
+        - name: medicareStatusCode
+          sqlType: varchar(2)
+        - name: entitlementBuyInInd
+          sqlType: varchar(1)
+        - name: lastUpdated
+          sqlType: timestamp with time zone
+    transformations:
+      - from: PARENT
+        to: parentBeneficiary
+      - from: INDEX
+        to: yearMonth
+      - from: procCd
+        to: procCode
+        optional: false
+      - from: procFlag
+      - from: procDt
+        to: procDate
+      - from: NOW
+        to: lastUpdated
