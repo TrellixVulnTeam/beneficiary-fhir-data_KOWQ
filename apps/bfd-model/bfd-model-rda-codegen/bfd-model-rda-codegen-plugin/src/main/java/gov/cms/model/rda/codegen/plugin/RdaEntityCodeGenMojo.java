@@ -19,10 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import javax.lang.model.element.Modifier;
 import javax.persistence.CascadeType;
@@ -36,7 +34,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -123,10 +120,8 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
           .addAnnotation(createIdClassAnnotation(mapping))
           .addType(createPrimaryKeyClass(mapping, primaryKeySpecs));
     }
+    addArrayFields(mapping, mappingFinder, classBuilder, primaryKeySpecs);
     addJoinFields(mapping, classBuilder);
-    if (mapping.getArrays().size() > 0) {
-      addArrayFields(mapping, mappingFinder, classBuilder, primaryKeySpecs);
-    }
     return classBuilder.build();
   }
 
@@ -195,24 +190,45 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
             "entityClass for join must include package: mapping=%s join=%s entityClass=%s",
             mapping.getId(), join.getFieldName(), join.getEntityClass());
       }
-      TypeName fieldType = join.getEntityClassType();
-      if (join.getJoinType().isMultiValue()) {
-        fieldType = ParameterizedTypeName.get(join.getCollectionType().getClassName(), fieldType);
+      if (isJoinForArray(mapping, join)) {
+        continue;
       }
-      FieldSpec.Builder builder =
-          FieldSpec.builder(fieldType, join.getFieldName()).addModifiers(Modifier.PRIVATE);
-      if (join.hasComment()) {
-        builder.addJavadoc(join.getComment());
-      }
-      builder.addAnnotation(createJoinTypeAnnotation(mapping, join));
-      builder.addAnnotation(createJoinColumnAnnotation(mapping, join));
-      if (join.hasOrderBy()) {
-        builder.addAnnotation(
-            AnnotationSpec.builder(OrderBy.class).addMember("value", join.getOrderBy()).build());
-      }
-      FieldSpec fieldSpec = builder.build();
-      classBuilder.addField(fieldSpec);
+      final var fieldBuilder = createFieldSpecBuilderForJoin(mapping, join);
+      classBuilder.addField(fieldBuilder.build());
     }
+  }
+
+  private FieldSpec.Builder createFieldSpecBuilderForJoin(MappingBean mapping, JoinBean join)
+      throws MojoExecutionException {
+    TypeName fieldType = join.getEntityClassType();
+    if (join.getJoinType().isMultiValue()) {
+      fieldType = ParameterizedTypeName.get(join.getCollectionType().getInterfaceName(), fieldType);
+    }
+    FieldSpec.Builder builder =
+        FieldSpec.builder(fieldType, join.getFieldName()).addModifiers(Modifier.PRIVATE);
+    if (join.hasComment()) {
+      builder.addJavadoc(join.getComment());
+    }
+    builder.addAnnotation(createJoinTypeAnnotation(mapping, join));
+    if (join.hasColumnName()) {
+      builder.addAnnotation(createJoinColumnAnnotation(mapping, join));
+    }
+    if (join.hasOrderBy()) {
+      builder.addAnnotation(
+          AnnotationSpec.builder(OrderBy.class)
+              .addMember("value", "$S", join.getOrderBy())
+              .build());
+    }
+    if (join.getJoinType().isMultiValue()) {
+      builder
+          .initializer("new $T<>()", join.getCollectionType().getClassName())
+          .addAnnotation(
+              AnnotationSpec.builder(BatchSize.class)
+                  .addMember("size", "$L", BATCH_SIZE_FOR_ARRAY_FIELDS)
+                  .build())
+          .addAnnotation(Builder.Default.class);
+    }
+    return builder;
   }
 
   private AnnotationSpec createEnumeratedAnnotation(MappingBean mapping, ColumnBean column)
@@ -233,7 +249,7 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
       TypeSpec.Builder classBuilder,
       List<FieldSpec> primaryKeySpecs)
       throws MojoExecutionException {
-    if (primaryKeySpecs.size() != 1) {
+    if (mapping.getArrays().size() > 0 && primaryKeySpecs.size() != 1) {
       throw failure(
           "classes with arrays must have a single primary key column but this one has %d: mapping=%s",
           primaryKeySpecs.size(), mapping.getId());
@@ -246,6 +262,7 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
             mapping.getId(), arrayElement.getTo(), arrayElement.getMapping());
       }
       addArrayField(
+          mapping,
           classBuilder,
           mapping.getTable().getPrimaryKeyColumns().get(0),
           arrayElement,
@@ -279,7 +296,7 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
     final var annotationClass = join.getJoinType().getAnnotationClass();
     final var builder = AnnotationSpec.builder(annotationClass);
     if (join.hasMappedBy()) {
-      builder.addMember("mappedBy", join.getMappedBy());
+      builder.addMember("mappedBy", "$S", join.getMappedBy());
     }
     if (join.hasOrphanRemoval()) {
       builder.addMember("orphanRemoval", "$L", join.getOrphanRemoval());
@@ -302,6 +319,37 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
         .build();
   }
 
+  private boolean isJoinForArray(MappingBean mapping, JoinBean join) {
+    for (ArrayElement arrayElement : mapping.getArrays()) {
+      if (arrayElement.getTo().equals(join.getFieldName())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private JoinBean getJoinForArray(
+      MappingBean mapping,
+      String primaryKeyFieldName,
+      ArrayElement arrayElement,
+      MappingBean elementMapping) {
+    for (JoinBean join : mapping.getTable().getJoins()) {
+      if (join.getFieldName().equals(arrayElement.getTo())) {
+        return join;
+      }
+    }
+    return JoinBean.builder()
+        .joinType(JoinBean.JoinType.OneToMany)
+        .collectionType(JoinBean.CollectionType.Set)
+        .fieldName(arrayElement.getTo())
+        .entityClass(elementMapping.getEntityClassName())
+        .fetchType(FetchType.EAGER)
+        .orphanRemoval(true)
+        .cascadeTypes(List.of(CascadeType.ALL))
+        .mappedBy(primaryKeyFieldName)
+        .build();
+  }
+
   private TypeSpec createPrimaryKeyClass(MappingBean mapping, List<FieldSpec> parentKeySpecs) {
     TypeSpec.Builder pkClassBuilder =
         TypeSpec.classBuilder(PRIMARY_KEY_CLASS_NAME)
@@ -321,35 +369,20 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
   }
 
   private void addArrayField(
+      MappingBean mapping,
       TypeSpec.Builder classBuilder,
       String primaryKeyFieldName,
       ArrayElement arrayElement,
-      MappingBean elementMapping) {
-    ClassName entityClass =
-        ClassName.get(elementMapping.entityPackageName(), elementMapping.entityClassName());
-    ParameterizedTypeName setType =
-        ParameterizedTypeName.get(ClassName.get(Set.class), entityClass);
-    FieldSpec.Builder fieldBuilder =
-        FieldSpec.builder(setType, arrayElement.getTo())
-            .addModifiers(Modifier.PRIVATE)
-            .initializer("new $T<>()", HashSet.class)
-            .addAnnotation(createOneToManyAnnotation(primaryKeyFieldName))
-            .addAnnotation(
-                AnnotationSpec.builder(BatchSize.class)
-                    .addMember("size", "$L", BATCH_SIZE_FOR_ARRAY_FIELDS)
-                    .build())
-            .addAnnotation(Builder.Default.class);
-    FieldSpec fieldSpec = fieldBuilder.build();
-    classBuilder.addField(fieldSpec);
-  }
-
-  private AnnotationSpec createOneToManyAnnotation(String mappedBy) {
-    return AnnotationSpec.builder(OneToMany.class)
-        .addMember("mappedBy", "$S", mappedBy)
-        .addMember("fetch", "$T.$L", FetchType.class, FetchType.EAGER)
-        .addMember("orphanRemoval", "$L", true)
-        .addMember("cascade", "$T.$L", CascadeType.class, CascadeType.ALL)
-        .build();
+      MappingBean elementMapping)
+      throws MojoExecutionException {
+    final var join = getJoinForArray(mapping, primaryKeyFieldName, arrayElement, elementMapping);
+    if (!join.getJoinType().isMultiValue()) {
+      throw failure(
+          "array mappings must have multi-value joins: array=%s joinType=%s",
+          arrayElement.getTo(), join.getJoinType());
+    }
+    final var fieldBuilder = createFieldSpecBuilderForJoin(mapping, join);
+    classBuilder.addField(fieldBuilder.build());
   }
 
   private AnnotationSpec createEqualsAndHashCodeAnnotation() {
@@ -374,7 +407,7 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
   private AnnotationSpec createColumnAnnotation(ColumnBean column) {
     AnnotationSpec.Builder builder =
         AnnotationSpec.builder(Column.class)
-            .addMember("name", "$S", quoteName(column.getColumnName(column.getName())));
+            .addMember("name", "$S", quoteName(column.getColumnName()));
     if (!column.isNullable()) {
       builder.addMember("nullable", "$L", false);
     }

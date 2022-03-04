@@ -19,6 +19,7 @@ public class MappingBean {
   private String messageClassName;
   private String entityClassName;
   private String transformerClassName;
+  private SourceType sourceType = SourceType.Grpc;
   private TableBean table;
   @Singular private List<EnumTypeBean> enumTypes = new ArrayList<>();
   @Singular private List<TransformationBean> transformations = new ArrayList<>();
@@ -66,5 +67,10 @@ public class MappingBean {
 
   public Optional<TransformationBean> firstPrimaryKeyField() {
     return transformations.stream().findFirst();
+  }
+
+  public static enum SourceType {
+    Grpc,
+    RifCsv
   }
 }

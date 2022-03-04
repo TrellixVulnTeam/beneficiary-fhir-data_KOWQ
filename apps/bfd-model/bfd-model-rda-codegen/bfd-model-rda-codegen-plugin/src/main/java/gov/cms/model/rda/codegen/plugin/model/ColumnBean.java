@@ -20,6 +20,7 @@ import lombok.SneakyThrows;
 @Builder
 public class ColumnBean {
   private String name;
+  private String dbName;
   private String sqlType;
   private String javaType;
   private String enumType;
@@ -27,8 +28,8 @@ public class ColumnBean {
   private boolean nullable = true;
   private boolean identity = false;
 
-  public String getColumnName(String fieldName) {
-    return Strings.isNullOrEmpty(name) ? fieldName : name;
+  public String getColumnName() {
+    return Strings.isNullOrEmpty(dbName) ? name : dbName;
   }
 
   public int computeLength() {
@@ -57,7 +58,7 @@ public class ColumnBean {
   }
 
   public boolean isColumnDefRequired() {
-    return sqlType.contains("decimal");
+    return sqlType.contains("decimal") || sqlType.contains("numeric");
   }
 
   public boolean isEnum() {
@@ -105,7 +106,7 @@ public class ColumnBean {
     if (sqlType.equals("int")) {
       return ClassName.get(Integer.class);
     }
-    if (sqlType.contains("decimal")) {
+    if (sqlType.contains("decimal") || sqlType.contains("numeric")) {
       return ClassName.get(BigDecimal.class);
     }
     if (sqlType.contains("date")) {

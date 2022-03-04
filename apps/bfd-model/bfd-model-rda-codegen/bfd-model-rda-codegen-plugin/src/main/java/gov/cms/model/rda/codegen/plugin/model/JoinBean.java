@@ -5,6 +5,8 @@ import static javax.persistence.FetchType.LAZY;
 import com.google.common.base.Strings;
 import com.squareup.javapoet.ClassName;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -88,8 +90,9 @@ public class JoinBean {
 
   @AllArgsConstructor
   public enum CollectionType {
-    List(ClassName.get(List.class)),
-    Set(ClassName.get(Set.class));
+    List(ClassName.get(List.class), ClassName.get(LinkedList.class)),
+    Set(ClassName.get(Set.class), ClassName.get(HashSet.class));
+    @Getter private final ClassName interfaceName;
     @Getter private final ClassName className;
   }
 }
