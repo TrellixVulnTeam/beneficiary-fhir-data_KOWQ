@@ -109,13 +109,13 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
                 EnumStringExtractor.Factory.class, AbstractFieldTransformer.ENUM_FACTORY_VAR);
     constructor.addStatement(
         "this.$L = $L", AbstractFieldTransformer.HASHER_VAR, AbstractFieldTransformer.HASHER_VAR);
-    if (mapping.hasExternalTransformations()) {
-      addExternalTransformationFieldsForMapping(mapping, classBuilder);
-      addExternalTransformationConstructorParametersForMapping(mapping, constructor);
-    }
     for (MappingBean aMapping : allMappings) {
       for (CodeBlock initializer : createFieldInitializersForMapping(aMapping)) {
         constructor.addCode(initializer);
+      }
+      if (aMapping.hasExternalTransformations()) {
+        addExternalTransformationFieldsForMapping(aMapping, classBuilder);
+        addExternalTransformationConstructorParametersForMapping(aMapping, constructor);
       }
     }
     classBuilder.addMethod(constructor.build());
@@ -277,9 +277,10 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
       for (ExternalTransformationBean externalTransformation :
           mapping.getExternalTransformations()) {
         builder.addStatement(
-            "$L.transformField($L, $L, $L)",
+            "$L.transformField($L, $L, $L, $L)",
             externalTransformation.getName(),
             AbstractFieldTransformer.TRANSFORMER_VAR,
+            AbstractFieldTransformer.NAME_PREFIX_VAR,
             AbstractFieldTransformer.SOURCE_VAR,
             AbstractFieldTransformer.DEST_VAR);
       }
