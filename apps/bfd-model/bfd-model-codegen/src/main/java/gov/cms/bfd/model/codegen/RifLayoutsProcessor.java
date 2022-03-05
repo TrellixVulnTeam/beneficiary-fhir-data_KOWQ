@@ -15,6 +15,7 @@ import com.squareup.javapoet.TypeSpec;
 import gov.cms.bfd.model.codegen.RifLayout.RifColumnType;
 import gov.cms.bfd.model.codegen.RifLayout.RifField;
 import gov.cms.bfd.model.codegen.annotations.RifLayoutsGenerator;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -80,7 +81,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
    * Both Maven and Eclipse hide compiler messages, so setting this constant to <code>true</code>
    * will also log messages out to a new source file.
    */
-  private static final boolean DEBUG = false;
+  private static final boolean DEBUG = true;
 
   private static final String DATA_DICTIONARY_LINK =
       "https://bluebutton.cms.gov/resources/variables/";
@@ -89,6 +90,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
   private static final String PARENT_BENEFICIARY = "parentBeneficiary";
 
   private final List<String> logMessages = new LinkedList<>();
+  private final MappingSummarizer mappingSummarizer = new MappingSummarizer();
 
   /** @see javax.annotation.processing.AbstractProcessor#getSupportedAnnotationTypes() */
   @Override
@@ -123,6 +125,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
               RifLayoutsGenerator.class.getName());
         process((PackageElement) annotatedElement);
       }
+      mappingSummarizer.writeToFile(new File("target/rif-mapping-summary.yaml"));
     } catch (RifLayoutProcessingException e) {
       log(Diagnostic.Kind.ERROR, e.getMessage(), e.getElement());
     } catch (Exception e) {
@@ -132,7 +135,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
        */
       StringWriter writer = new StringWriter();
       e.printStackTrace(new PrintWriter(writer));
-      log(Diagnostic.Kind.ERROR, "FATAL ERROR: " + writer.toString());
+      log(Diagnostic.Kind.ERROR, "BTB FATAL ERROR: " + writer.toString().replaceAll("\n", "|"));
     }
 
     if (roundEnv.processingOver()) writeDebugLogMessages();
@@ -353,6 +356,8 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
    *     generate source files.
    */
   private void generateCode(MappingSpec mappingSpec) throws IOException {
+    mappingSummarizer.addObject(mappingSpec.createMetaData(mappingSummarizer));
+
     /*
      * First, create the Java enum for the RIF columns.
      */
