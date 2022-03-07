@@ -625,6 +625,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
   }
 
   private TypeSpec generateBeneficiaryMonthlyEntity(MappingSpec mappingSpec) throws IOException {
+    var monthlyRifFields = new ArrayList<RifField>();
 
     // Create the Entity class.
     AnnotationSpec entityAnnotation = AnnotationSpec.builder(Entity.class).build();
@@ -744,6 +745,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
             null,
             null,
             "yearMonth");
+    monthlyRifFields.add(rifField);
     createBeneficiaryMonthlyFields(beneficiaryMonthlyEntity, true, rifField);
 
     rifField =
@@ -756,6 +758,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
             null,
             null,
             "fipsStateCntyCode");
+    monthlyRifFields.add(rifField);
     createBeneficiaryMonthlyFields(beneficiaryMonthlyEntity, false, rifField);
 
     rifField =
@@ -768,6 +771,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
             null,
             null,
             "medicareStatusCode");
+    monthlyRifFields.add(rifField);
     createBeneficiaryMonthlyFields(beneficiaryMonthlyEntity, false, rifField);
 
     rifField =
@@ -780,6 +784,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
             null,
             null,
             "entitlementBuyInInd");
+    monthlyRifFields.add(rifField);
     createBeneficiaryMonthlyFields(beneficiaryMonthlyEntity, false, rifField);
 
     rifField =
@@ -792,6 +797,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
             null,
             null,
             "hmoIndicatorInd");
+    monthlyRifFields.add(rifField);
     createBeneficiaryMonthlyFields(beneficiaryMonthlyEntity, false, rifField);
 
     rifField =
@@ -804,6 +810,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
             null,
             null,
             "partCContractNumberId");
+    monthlyRifFields.add(rifField);
     createBeneficiaryMonthlyFields(beneficiaryMonthlyEntity, false, rifField);
 
     rifField =
@@ -816,6 +823,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
             null,
             null,
             "partCPbpNumberId");
+    monthlyRifFields.add(rifField);
     createBeneficiaryMonthlyFields(beneficiaryMonthlyEntity, false, rifField);
 
     rifField =
@@ -828,6 +836,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
             null,
             null,
             "partCPlanTypeCode");
+    monthlyRifFields.add(rifField);
     createBeneficiaryMonthlyFields(beneficiaryMonthlyEntity, false, rifField);
 
     rifField =
@@ -840,6 +849,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
             null,
             null,
             "partDContractNumberId");
+    monthlyRifFields.add(rifField);
     createBeneficiaryMonthlyFields(beneficiaryMonthlyEntity, false, rifField);
 
     rifField =
@@ -852,6 +862,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
             null,
             null,
             "partDPbpNumberId");
+    monthlyRifFields.add(rifField);
     createBeneficiaryMonthlyFields(beneficiaryMonthlyEntity, false, rifField);
 
     rifField =
@@ -864,6 +875,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
             null,
             null,
             "partDSegmentNumberId");
+    monthlyRifFields.add(rifField);
     createBeneficiaryMonthlyFields(beneficiaryMonthlyEntity, false, rifField);
 
     rifField =
@@ -876,6 +888,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
             null,
             null,
             "partDRetireeDrugSubsidyInd");
+    monthlyRifFields.add(rifField);
     createBeneficiaryMonthlyFields(beneficiaryMonthlyEntity, false, rifField);
 
     rifField =
@@ -888,6 +901,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
             null,
             null,
             "medicaidDualEligibilityCode");
+    monthlyRifFields.add(rifField);
     createBeneficiaryMonthlyFields(beneficiaryMonthlyEntity, false, rifField);
 
     rifField =
@@ -900,7 +914,18 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
             null,
             null,
             "partDLowIncomeCostShareGroupCode");
+    monthlyRifFields.add(rifField);
     createBeneficiaryMonthlyFields(beneficiaryMonthlyEntity, false, rifField);
+
+    var monthlyMappingSpec =
+        new MappingSpec(mappingSpec.getPackageName())
+            .setRifLayout(new RifLayout("BeneficiaryMonthly", monthlyRifFields))
+            .setHeaderEntity("BeneficiaryMonthly")
+            .setHeaderTable("beneficiary_monthly")
+            .setHeaderEntityIdField("YEAR_MONTH")
+            .setHasLines(false)
+            .setHeaderEntityAdditionalDatabaseFields(List.of());
+    mappingSummarizer.addObject(monthlyMappingSpec.createMetaData(mappingSummarizer));
 
     TypeSpec beneficiaryMonthlyEntityFinal = beneficiaryMonthlyEntity.build();
     JavaFile beneficiaryMonthlyClassFile =
