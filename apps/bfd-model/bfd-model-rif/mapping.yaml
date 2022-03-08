@@ -56,6 +56,9 @@ mappings:
         - name: lastUpdated
           dbName: last_updated
           sqlType: timestamp with time zone
+        - name: notInTheDb
+          fieldType: Transient
+          sqlType: varchar(32)
       joins:
         - fieldName: beneficiaryMonthlys
           entityClass: gov.cms.bfd.model.rif.BeneficiaryMonthly

@@ -1,5 +1,6 @@
 package gov.cms.model.rda.codegen.plugin;
 
+import com.google.common.base.Strings;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -36,6 +37,7 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -161,16 +163,11 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
       if (column.isEnum()) {
         builder.addAnnotation(createEnumeratedAnnotation(mapping, column));
       }
-      if (mapping.getTable().isPrimaryKey(column.getName())) {
-        builder.addAnnotation(Id.class);
-        if (column.isIdentity()) {
-          builder.addAnnotation(
-              AnnotationSpec.builder(GeneratedValue.class)
-                  .addMember("strategy", "$T.$L", GenerationType.class, GenerationType.IDENTITY)
-                  .build());
-        }
+      if (column.getFieldType() == ColumnBean.FieldType.Transient) {
+        addTransientAnnotations(mapping, builder, column);
+      } else {
+        addColumnAnnotations(mapping, builder, column);
       }
-      builder.addAnnotation(createColumnAnnotation(column));
       if (equalsFields.contains(column.getName())) {
         builder.addAnnotation(EqualsAndHashCode.Include.class);
       }
@@ -179,6 +176,36 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
       if (mapping.getTable().isPrimaryKey(column.getName())) {
         primaryKeySpecs.add(fieldSpec);
       }
+    }
+  }
+
+  private void addColumnAnnotations(
+      MappingBean mapping, FieldSpec.Builder builder, ColumnBean column) {
+    if (mapping.getTable().isPrimaryKey(column.getName())) {
+      builder.addAnnotation(Id.class);
+      if (column.isIdentity()) {
+        builder.addAnnotation(
+            AnnotationSpec.builder(GeneratedValue.class)
+                .addMember("strategy", "$T.$L", GenerationType.class, GenerationType.IDENTITY)
+                .build());
+      }
+    }
+    builder.addAnnotation(createColumnAnnotation(column));
+  }
+
+  private void addTransientAnnotations(
+      MappingBean mapping, FieldSpec.Builder builder, ColumnBean column)
+      throws MojoExecutionException {
+    builder.addAnnotation(Transient.class);
+    if (!Strings.isNullOrEmpty(column.getDbName())) {
+      throw failure(
+          "transient fields cannot have a column name: mapping=%s field=%s",
+          mapping.getId(), column.getName());
+    }
+    if (mapping.getTable().isPrimaryKey(column.getName())) {
+      throw failure(
+          "transient fields cannot be primary keys: mapping=%s field=%s",
+          mapping.getId(), column.getName());
     }
   }
 

@@ -27,6 +27,12 @@ public class ColumnBean {
   private String comment;
   private boolean nullable = true;
   private boolean identity = false;
+  private FieldType fieldType = FieldType.Column;
+
+  public enum FieldType {
+    Column,
+    Transient
+  }
 
   public String getColumnName() {
     return Strings.isNullOrEmpty(dbName) ? name : dbName;
@@ -94,6 +100,9 @@ public class ColumnBean {
   }
 
   private TypeName mapSqlTypeToTypeName() {
+    if (Strings.isNullOrEmpty(sqlType)) {
+      throw new RuntimeException("no sqlType for column " + name);
+    }
     if (sqlType.contains("char")) {
       return ClassName.get(String.class);
     }
