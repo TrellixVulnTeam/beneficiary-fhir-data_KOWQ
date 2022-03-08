@@ -440,9 +440,17 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
     }
     if (column.isColumnDefRequired()) {
       builder.addMember("columnDefinition", "$S", column.getSqlType());
+      var value = column.getPrecision();
+      if (value > 0) {
+        builder.addMember("precision", "$L", value);
+      }
+      value = column.getScale();
+      if (value > 0) {
+        builder.addMember("scale", "$L", value);
+      }
     }
     int length = column.computeLength();
-    if (length > 0 && length < Integer.MAX_VALUE && !column.isChar()) {
+    if (length > 0 && length < Integer.MAX_VALUE) {
       builder.addMember("length", "$L", length);
     }
     return builder.build();

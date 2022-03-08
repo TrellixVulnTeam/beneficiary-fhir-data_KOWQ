@@ -19,6 +19,11 @@ import lombok.SneakyThrows;
 @AllArgsConstructor
 @Builder
 public class ColumnBean {
+  private static final Pattern NumericTypeRegex =
+      Pattern.compile("(numeric|decimal)\\((\\d+)(,(\\d+))?\\)");
+  private static final int NumericPrecisionGroup = 2;
+  private static final int NumericScaleGroup = 4;
+
   private String name;
   private String dbName;
   private String sqlType;
@@ -65,6 +70,25 @@ public class ColumnBean {
 
   public boolean isColumnDefRequired() {
     return sqlType.contains("decimal") || sqlType.contains("numeric");
+  }
+
+  public int getPrecision() {
+    var matcher = NumericTypeRegex.matcher(sqlType);
+    if (matcher.find()) {
+      return Integer.parseInt(matcher.group(NumericPrecisionGroup));
+    }
+    return 0;
+  }
+
+  public int getScale() {
+    var matcher = NumericTypeRegex.matcher(sqlType);
+    if (matcher.find()) {
+      var value = matcher.group(NumericScaleGroup);
+      if (!Strings.isNullOrEmpty(value)) {
+        return Integer.parseInt(value);
+      }
+    }
+    return 0;
   }
 
   public boolean isEnum() {
