@@ -1597,6 +1597,13 @@ mappings:
       dbName: carr_clm_cntl_num
       name: claimCarrierControlNumber
       sqlType: varchar(23)
+    name: carrier_claims
+    primaryKeyColumns:
+    - CLM_ID
+- entityClassName: gov.cms.bfd.model.rif.CarrierClaimLineZ
+  id: CarrierClaimLine
+  table:
+    columns:
     - comment: Claim Line Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/line_num.txt)
       dbName: line_num
       name: lineNumber
@@ -1698,14 +1705,49 @@ mappings:
       dbName: betos_cd
       name: betosCode
       sqlType: varchar(3)
+    - comment: Line NCH Payment Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/linepmt.txt)
+      dbName: line_nch_pmt_amt
+      name: paymentAmount
+      nullable: false
+      sqlType: decimal(12,2)
+    - comment: Line Beneficiary Payment Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/lbenpmt.txt)
+      dbName: line_bene_pmt_amt
+      name: beneficiaryPaymentAmount
+      nullable: false
+      sqlType: decimal(12,2)
+    - comment: Line Provider Payment Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/lprvpmt.txt)
+      dbName: line_prvdr_pmt_amt
+      name: providerPaymentAmount
+      nullable: false
+      sqlType: decimal(12,2)
+    - comment: Line Beneficiary Part B Deductible Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/ldedamt.txt)
+      dbName: line_bene_ptb_ddctbl_amt
+      name: beneficiaryPartBDeductAmount
+      nullable: false
+      sqlType: decimal(12,2)
     - comment: Line Beneficiary Primary Payer Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/lprpaycd.txt)
       dbName: line_bene_prmry_pyr_cd
       javaType: Character
       name: primaryPayerCode
       sqlType: varchar(1)
+    - comment: Line Beneficiary Primary Payer Paid Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/lprpdamt.txt)
+      dbName: line_bene_prmry_pyr_pd_amt
+      name: primaryPayerPaidAmount
+      nullable: false
+      sqlType: decimal(12,2)
     - comment: Line Coinsurance Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/coinamt.txt)
       dbName: line_coinsrnc_amt
       name: coinsuranceAmount
+      nullable: false
+      sqlType: decimal(12,2)
+    - comment: Line Submitted Charge Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/lsbmtchg.txt)
+      dbName: line_sbmtd_chrg_amt
+      name: submittedChargeAmount
+      nullable: false
+      sqlType: decimal(12,2)
+    - comment: Line Allowed Charge Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/lalowchg.txt)
+      dbName: line_alowd_chrg_amt
+      name: allowedChargeAmount
       nullable: false
       sqlType: decimal(12,2)
     - comment: Line Processing Indicator Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/prcngind.txt)
@@ -1773,9 +1815,10 @@ mappings:
       name: anesthesiaUnitCount
       nullable: false
       sqlType: numeric(None)
-    name: carrier_claims
+    name: CarrierClaimLine
     primaryKeyColumns:
     - CLM_ID
+    - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.InpatientClaimZ
   id: InpatientClaim
   table:
@@ -3057,6 +3100,13 @@ mappings:
       dbName: fi_orig_clm_cntl_num
       name: fiOriginalClaimControlNumber
       sqlType: varchar(23)
+    name: inpatient_claims
+    primaryKeyColumns:
+    - CLM_ID
+- entityClassName: gov.cms.bfd.model.rif.InpatientClaimLineZ
+  id: InpatientClaimLine
+  table:
+    columns:
     - comment: Claim Line Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/clm_ln.txt)
       dbName: clm_line_num
       name: lineNumber
@@ -3079,6 +3129,11 @@ mappings:
     - comment: Revenue Center Rate Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_rate.txt)
       dbName: rev_cntr_rate_amt
       name: rateAmount
+      nullable: false
+      sqlType: decimal(12,2)
+    - comment: Revenue Center Total Charge Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_chrg.txt)
+      dbName: rev_cntr_tot_chrg_amt
+      name: totalChargeAmount
       nullable: false
       sqlType: decimal(12,2)
     - comment: Revenue Center Non-Covered Charge Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_ncvr.txt)
@@ -3107,9 +3162,10 @@ mappings:
       dbName: rndrng_physn_npi
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
-    name: inpatient_claims
+    name: InpatientClaimLine
     primaryKeyColumns:
     - CLM_ID
+    - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.OutpatientClaimZ
   id: OutpatientClaim
   table:
@@ -4051,6 +4107,13 @@ mappings:
       dbName: fi_orig_clm_cntl_num
       name: fiOriginalClaimControlNumber
       sqlType: varchar(23)
+    name: outpatient_claims
+    primaryKeyColumns:
+    - CLM_ID
+- entityClassName: gov.cms.bfd.model.rif.OutpatientClaimLineZ
+  id: OutpatientClaimLine
+  table:
+    columns:
     - comment: Claim Line Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/clm_ln.txt)
       dbName: clm_line_num
       name: lineNumber
@@ -4160,6 +4223,11 @@ mappings:
       name: secondMspPaidAmount
       nullable: false
       sqlType: decimal(12,2)
+    - comment: Revenue Center Provider Payment Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rprvdpmt.txt)
+      dbName: rev_cntr_prvdr_pmt_amt
+      name: providerPaymentAmount
+      nullable: false
+      sqlType: decimal(12,2)
     - comment: Revenue Center Beneficiary Payment Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rbenepmt.txt)
       dbName: rev_cntr_bene_pmt_amt
       name: benficiaryPaymentAmount
@@ -4168,6 +4236,16 @@ mappings:
     - comment: Revenue Center Patient Responsibility Payment (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/ptntresp.txt)
       dbName: rev_cntr_ptnt_rspnsblty_pmt
       name: patientResponsibilityAmount
+      nullable: false
+      sqlType: decimal(12,2)
+    - comment: Revenue Center Payment Amount Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/revpmt.txt)
+      dbName: rev_cntr_pmt_amt_amt
+      name: paymentAmount
+      nullable: false
+      sqlType: decimal(12,2)
+    - comment: Revenue Center Total Charge Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_chrg.txt)
+      dbName: rev_cntr_tot_chrg_amt
+      name: totalChargeAmount
       nullable: false
       sqlType: decimal(12,2)
     - comment: Revenue Center Non-Covered Charge Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_ncvr.txt)
@@ -4195,9 +4273,10 @@ mappings:
       dbName: rndrng_physn_npi
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
-    name: outpatient_claims
+    name: OutpatientClaimLine
     primaryKeyColumns:
     - CLM_ID
+    - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.HHAClaimZ
   id: HHAClaim
   table:
@@ -4729,6 +4808,13 @@ mappings:
       dbName: fi_orig_clm_cntl_num
       name: fiOriginalClaimControlNumber
       sqlType: varchar(23)
+    name: hha_claims
+    primaryKeyColumns:
+    - CLM_ID
+- entityClassName: gov.cms.bfd.model.rif.HHAClaimLineZ
+  id: HHAClaimLine
+  table:
+    columns:
     - comment: Claim Line Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/clm_ln.txt)
       dbName: clm_line_num
       name: lineNumber
@@ -4777,6 +4863,16 @@ mappings:
       name: rateAmount
       nullable: false
       sqlType: decimal(12,2)
+    - comment: Revenue Center Payment Amount Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/revpmt.txt)
+      dbName: rev_cntr_pmt_amt_amt
+      name: paymentAmount
+      nullable: false
+      sqlType: decimal(12,2)
+    - comment: Revenue Center Total Charge Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_chrg.txt)
+      dbName: rev_cntr_tot_chrg_amt
+      name: totalChargeAmount
+      nullable: false
+      sqlType: decimal(12,2)
     - comment: Revenue Center Non-Covered Charge Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_ncvr.txt)
       dbName: rev_cntr_ncvrd_chrg_amt
       name: nonCoveredChargeAmount
@@ -4807,9 +4903,10 @@ mappings:
       dbName: rndrng_physn_npi
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
-    name: hha_claims
+    name: HHAClaimLine
     primaryKeyColumns:
     - CLM_ID
+    - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.DMEClaimZ
   id: DMEClaim
   table:
@@ -5064,6 +5161,13 @@ mappings:
       dbName: carr_clm_cntl_num
       name: claimCarrierControlNumber
       sqlType: varchar(23)
+    name: dme_claims
+    primaryKeyColumns:
+    - CLM_ID
+- entityClassName: gov.cms.bfd.model.rif.DMEClaimLineZ
+  id: DMEClaimLine
+  table:
+    columns:
     - comment: Claim Line Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/line_num.txt)
       dbName: line_num
       name: lineNumber
@@ -5123,11 +5227,36 @@ mappings:
       dbName: betos_cd
       name: betosCode
       sqlType: varchar(3)
+    - comment: Line NCH Payment Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/linepmt.txt)
+      dbName: line_nch_pmt_amt
+      name: paymentAmount
+      nullable: false
+      sqlType: decimal(12,2)
+    - comment: Line Beneficiary Payment Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/lbenpmt.txt)
+      dbName: line_bene_pmt_amt
+      name: beneficiaryPaymentAmount
+      nullable: false
+      sqlType: decimal(12,2)
+    - comment: Line Provider Payment Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/lprvpmt.txt)
+      dbName: line_prvdr_pmt_amt
+      name: providerPaymentAmount
+      nullable: false
+      sqlType: decimal(12,2)
+    - comment: Line Beneficiary Part B Deductible Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/ldedamt.txt)
+      dbName: line_bene_ptb_ddctbl_amt
+      name: beneficiaryPartBDeductAmount
+      nullable: false
+      sqlType: decimal(12,2)
     - comment: Line Beneficiary Primary Payer Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/lprpaycd.txt)
       dbName: line_bene_prmry_pyr_cd
       javaType: Character
       name: primaryPayerCode
       sqlType: varchar(1)
+    - comment: Line Beneficiary Primary Payer Paid Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/lprpdamt.txt)
+      dbName: line_bene_prmry_pyr_pd_amt
+      name: primaryPayerPaidAmount
+      nullable: false
+      sqlType: decimal(12,2)
     - comment: Line Coinsurance Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/coinamt.txt)
       dbName: line_coinsrnc_amt
       name: coinsuranceAmount
@@ -5136,6 +5265,16 @@ mappings:
     - comment: Line Primary Payer Allowed Charge Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/prpyalow.txt)
       dbName: line_prmry_alowd_chrg_amt
       name: primaryPayerAllowedChargeAmount
+      nullable: false
+      sqlType: decimal(12,2)
+    - comment: Line Submitted Charge Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/lsbmtchg.txt)
+      dbName: line_sbmtd_chrg_amt
+      name: submittedChargeAmount
+      nullable: false
+      sqlType: decimal(12,2)
+    - comment: Line Allowed Charge Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/lalowchg.txt)
+      dbName: line_alowd_chrg_amt
+      name: allowedChargeAmount
       nullable: false
       sqlType: decimal(12,2)
     - comment: Line Processing Indicator Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/prcngind.txt)
@@ -5223,9 +5362,10 @@ mappings:
       dbName: line_ndc_cd
       name: nationalDrugCode
       sqlType: varchar(11)
-    name: dme_claims
+    name: DMEClaimLine
     primaryKeyColumns:
     - CLM_ID
+    - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.HospiceClaimZ
   id: HospiceClaim
   table:
@@ -5753,6 +5893,13 @@ mappings:
       dbName: fi_orig_clm_cntl_num
       name: fiOriginalClaimControlNumber
       sqlType: varchar(23)
+    name: hospice_claims
+    primaryKeyColumns:
+    - CLM_ID
+- entityClassName: gov.cms.bfd.model.rif.HospiceClaimLineZ
+  id: HospiceClaimLine
+  table:
+    columns:
     - comment: Claim Line Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/clm_ln.txt)
       dbName: clm_line_num
       name: lineNumber
@@ -5799,6 +5946,16 @@ mappings:
       name: benficiaryPaymentAmount
       nullable: false
       sqlType: decimal(12,2)
+    - comment: Revenue Center Payment Amount Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/revpmt.txt)
+      dbName: rev_cntr_pmt_amt_amt
+      name: paymentAmount
+      nullable: false
+      sqlType: decimal(12,2)
+    - comment: Revenue Center Total Charge Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_chrg.txt)
+      dbName: rev_cntr_tot_chrg_amt
+      name: totalChargeAmount
+      nullable: false
+      sqlType: decimal(12,2)
     - comment: Revenue Center Non-Covered Charge Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_ncvr.txt)
       dbName: rev_cntr_ncvrd_chrg_amt
       name: nonCoveredChargeAmount
@@ -5824,9 +5981,10 @@ mappings:
       dbName: rndrng_physn_npi
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
-    name: hospice_claims
+    name: HospiceClaimLine
     primaryKeyColumns:
     - CLM_ID
+    - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.SNFClaimZ
   id: SNFClaim
   table:
@@ -6850,6 +7008,13 @@ mappings:
       dbName: fi_orig_clm_cntl_num
       name: fiOriginalClaimControlNumber
       sqlType: varchar(23)
+    name: snf_claims
+    primaryKeyColumns:
+    - CLM_ID
+- entityClassName: gov.cms.bfd.model.rif.SNFClaimLineZ
+  id: SNFClaimLine
+  table:
+    columns:
     - comment: Claim Line Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/clm_ln.txt)
       dbName: clm_line_num
       name: lineNumber
@@ -6872,6 +7037,11 @@ mappings:
     - comment: Revenue Center Rate Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_rate.txt)
       dbName: rev_cntr_rate_amt
       name: rateAmount
+      nullable: false
+      sqlType: decimal(12,2)
+    - comment: Revenue Center Total Charge Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_chrg.txt)
+      dbName: rev_cntr_tot_chrg_amt
+      name: totalChargeAmount
       nullable: false
       sqlType: decimal(12,2)
     - comment: Revenue Center Non-Covered Charge Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_ncvr.txt)
@@ -6900,7 +7070,8 @@ mappings:
       dbName: rndrng_physn_npi
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
-    name: snf_claims
+    name: SNFClaimLine
     primaryKeyColumns:
     - CLM_ID
+    - lineNumber
 
