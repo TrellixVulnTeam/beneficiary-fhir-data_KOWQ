@@ -35,6 +35,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.OrderBy;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
@@ -163,7 +164,12 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
         builder.addAnnotation(createEnumeratedAnnotation(mapping, column));
       }
       if (column.getFieldType() == ColumnBean.FieldType.Transient) {
-        addTransientAnnotations(mapping, builder, column);
+        builder.addAnnotation(Transient.class);
+        if (mapping.getTable().isPrimaryKey(column.getName())) {
+          throw failure(
+              "transient fields cannot be primary keys: mapping=%s field=%s",
+              mapping.getId(), column.getName());
+        }
       } else {
         addColumnAnnotations(mapping, builder, column);
       }
@@ -179,27 +185,45 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
   }
 
   private void addColumnAnnotations(
-      MappingBean mapping, FieldSpec.Builder builder, ColumnBean column) {
-    if (mapping.getTable().isPrimaryKey(column.getName())) {
-      builder.addAnnotation(Id.class);
+      MappingBean mapping, FieldSpec.Builder builder, ColumnBean column)
+      throws MojoExecutionException {
+    if (column.isIdentity() && column.hasSequence()) {
+      throw failure(
+          "identity fields cannot have sequences: mapping=%s field=%s",
+          mapping.getId(), column.getName());
+    }
+    if (column.getFieldType() == ColumnBean.FieldType.Transient
+        && mapping.getTable().isPrimaryKey(column.getName())) {
+      throw failure(
+          "transient fields cannot be primary keys: mapping=%s field=%s",
+          mapping.getId(), column.getName());
+    }
+    if (column.getFieldType() == ColumnBean.FieldType.Transient) {
+      builder.addAnnotation(Transient.class);
+    } else {
+      if (mapping.getTable().isPrimaryKey(column.getName())) {
+        builder.addAnnotation(Id.class);
+      }
+      builder.addAnnotation(createColumnAnnotation(column));
       if (column.isIdentity()) {
         builder.addAnnotation(
             AnnotationSpec.builder(GeneratedValue.class)
                 .addMember("strategy", "$T.$L", GenerationType.class, GenerationType.IDENTITY)
                 .build());
+      } else if (column.hasSequence()) {
+        builder
+            .addAnnotation(
+                AnnotationSpec.builder(GeneratedValue.class)
+                    .addMember("strategy", "$T.$L", GenerationType.class, GenerationType.SEQUENCE)
+                    .addMember("generator", "$S", column.getSequence().getName())
+                    .build())
+            .addAnnotation(
+                AnnotationSpec.builder(SequenceGenerator.class)
+                    .addMember("name", "$S", column.getSequence().getName())
+                    .addMember("sequenceName", "$S", column.getSequence().getName())
+                    .addMember("allocationSize", "$L", column.getSequence().getAllocationSize())
+                    .build());
       }
-    }
-    builder.addAnnotation(createColumnAnnotation(column));
-  }
-
-  private void addTransientAnnotations(
-      MappingBean mapping, FieldSpec.Builder builder, ColumnBean column)
-      throws MojoExecutionException {
-    builder.addAnnotation(Transient.class);
-    if (mapping.getTable().isPrimaryKey(column.getName())) {
-      throw failure(
-          "transient fields cannot be primary keys: mapping=%s field=%s",
-          mapping.getId(), column.getName());
     }
   }
 
@@ -431,6 +455,9 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
             .addMember("name", "$S", quoteName(column.getColumnName()));
     if (!column.isNullable()) {
       builder.addMember("nullable", "$L", false);
+    }
+    if (!column.isUpdatable()) {
+      builder.addMember("updatable", "$L", false);
     }
     if (column.isColumnDefRequired()) {
       builder.addMember("columnDefinition", "$S", column.getSqlType());

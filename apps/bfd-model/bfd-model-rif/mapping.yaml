@@ -957,6 +957,14 @@ mappings:
   id: BeneficiaryHistory
   table:
     columns:
+    - javaType: long
+      name: bene_history_id
+      nullable: false
+      sequence:
+        allocationSize: 50
+        name: beneficiaryhistory_beneficiaryhistoryid_seq
+      sqlType: bigint
+      updatable: false
     - comment: 723 Beneficiary ID (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/bene_id.txt)
       dbName: bene_id
       name: beneficiaryId
@@ -1074,11 +1082,6 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
-    - identity: true
-      javaType: long
-      name: bene_history_id
-      nullable: false
-      sqlType: bigint
     name: beneficiaries_history
     primaryKeyColumns:
     - bene_history_id

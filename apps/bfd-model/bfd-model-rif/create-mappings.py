@@ -18,26 +18,28 @@ def create_mapping(summary):
     mapping["table"] = table
 
     columns = list()
-    transient_column_names = set(summary["headerEntityTransientFields"])
+    if summary["headerEntityGeneratedIdField"] is not None:
+        field_name = summary["headerEntityGeneratedIdField"]
+        primary_key_columns.append(field_name)
+        columns.append(create_generated_id_column(summary, field_name))
+
     line_number_column_name = summary["lineEntityLineNumberField"]
     for rif_field in summary["rifLayout"]["fields"]:
         column_name = rif_field["rifColumnName"]
         if line_number_column_name == column_name:
             break
 
-        is_transient_field = column_name in transient_column_names
-        columns.append(create_column(rif_field, is_transient_field))
+        column = create_column(rif_field)
+        add_transient_to_column(summary, column)
+        columns.append(column)
 
     for rif_field in summary["headerEntityAdditionalDatabaseFields"]:
-        column_name = rif_field["rifColumnName"]
-        is_transient_field = column_name in transient_column_names
-        columns.append(create_column(rif_field, is_transient_field))
+        column = create_column(rif_field)
+        add_transient_to_column(summary, column)
+        columns.append(column)
 
     table["columns"] = columns
 
-    if summary["headerEntityGeneratedIdField"] is not None:
-        primary_key_columns.append(summary["headerEntityGeneratedIdField"])
-        columns.append(create_generated_id_column(summary["headerEntityGeneratedIdField"]))
     if summary["headerEntityIdField"] is not None:
         primary_key_columns.append(summary["headerEntityIdField"])
 
@@ -72,7 +74,7 @@ def create_line_mapping(summary):
         if not line_fields_started:
             continue
 
-        columns.append(create_column(rif_field, False))
+        columns.append(create_column(rif_field))
 
     table["columns"] = columns
 
@@ -85,12 +87,19 @@ def create_line_mapping(summary):
     return mapping
 
 
-def create_generated_id_column(column_name):
-    column = {"name": column_name.lower(), "sqlType": "bigint", "javaType": "long", "nullable": False, "identity": True}
+def create_generated_id_column(summary, column_name):
+    sequence = {"name": summary["sequenceNumberGeneratorName"], "allocationSize": 50}
+    column = dict()
+    column["name"] = column_name.lower()
+    column["sqlType"] = "bigint"
+    column["javaType"] = "long"
+    column["nullable"] = False
+    column["updatable"] = False
+    column["sequence"] = sequence
     return column
 
 
-def create_column(rif_field, is_transient_field):
+def create_column(rif_field):
     column = {"name": rif_field["javaFieldName"], "dbName": rif_field["rifColumnName"].lower()}
     required = not rif_field["rifColumnOptional"]
     if required:
@@ -121,9 +130,12 @@ def create_column(rif_field, is_transient_field):
             column["sqlType"] = f'numeric({length})'
         else:
             column["sqlType"] = f'decimal({length},{scale})'
-    if is_transient_field:
-        column["fieldType"] = "Transient"
     return column
+
+
+def add_transient_to_column(summary, column):
+    if column["dbName"].upper() in summary["headerEntityTransientFields"]:
+        column["fieldType"] = "Transient"
 
 
 def find_field_name(summary, column_name):

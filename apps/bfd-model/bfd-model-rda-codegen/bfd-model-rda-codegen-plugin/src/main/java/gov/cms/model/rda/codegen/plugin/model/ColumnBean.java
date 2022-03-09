@@ -32,7 +32,9 @@ public class ColumnBean {
   private String comment;
   private boolean nullable = true;
   private boolean identity = false;
+  private boolean updatable = true;
   private FieldType fieldType = FieldType.Column;
+  private SequenceBean sequence;
 
   public enum FieldType {
     Column,
@@ -113,6 +115,10 @@ public class ColumnBean {
 
   public boolean isDate() {
     return sqlType.contains("date");
+  }
+
+  public boolean hasSequence() {
+    return sequence != null;
   }
 
   private boolean isStringType(TypeName type) {
