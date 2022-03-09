@@ -18,12 +18,20 @@ def create_mapping(summary):
     mapping["table"] = table
 
     columns = list()
+    transient_column_names = set(summary["headerEntityTransientFields"])
     line_number_column_name = summary["lineEntityLineNumberField"]
     for rif_field in summary["rifLayout"]["fields"]:
-        if line_number_column_name == rif_field["rifColumnName"]:
+        column_name = rif_field["rifColumnName"]
+        if line_number_column_name == column_name:
             break
 
-        columns.append(create_column(rif_field))
+        is_transient_field = column_name in transient_column_names
+        columns.append(create_column(rif_field, is_transient_field))
+
+    for rif_field in summary["headerEntityAdditionalDatabaseFields"]:
+        column_name = rif_field["rifColumnName"]
+        is_transient_field = column_name in transient_column_names
+        columns.append(create_column(rif_field, is_transient_field))
 
     table["columns"] = columns
 
@@ -64,7 +72,7 @@ def create_line_mapping(summary):
         if not line_fields_started:
             continue
 
-        columns.append(create_column(rif_field))
+        columns.append(create_column(rif_field, False))
 
     table["columns"] = columns
 
@@ -78,11 +86,11 @@ def create_line_mapping(summary):
 
 
 def create_generated_id_column(column_name):
-    column = {"name": column_name, "sqlType": "bigint", "javaType": "long", "nullable": False, "identity": True}
+    column = {"name": column_name.lower(), "sqlType": "bigint", "javaType": "long", "nullable": False, "identity": True}
     return column
 
 
-def create_column(rif_field):
+def create_column(rif_field, is_transient_field):
     column = {"name": rif_field["javaFieldName"], "dbName": rif_field["rifColumnName"].lower()}
     required = not rif_field["rifColumnOptional"]
     if required:
@@ -113,6 +121,8 @@ def create_column(rif_field):
             column["sqlType"] = f'numeric({length})'
         else:
             column["sqlType"] = f'decimal({length},{scale})'
+    if is_transient_field:
+        column["fieldType"] = "Transient"
     return column
 
 
@@ -124,18 +134,22 @@ def find_field_name(summary, column_name):
     raise
 
 
+# def to_camel_case(name):
+#     first, *others = name.split('_')
+#     result = ''.join([first.lower(), *map(str.title, others)])
+#     return result
+#
+#
 summaryFilePath = Path("target/rif-mapping-summary.yaml")
 mappings = yaml.safe_load(summaryFilePath.read_text())
 
 output_mappings = []
 for mapping in mappings:
-    # print(f'{mapping["packageName"]}.{mapping["headerEntity"]}')
     dsl = create_mapping(mapping)
     output_mappings.append(dsl)
     dsl = create_line_mapping(mapping)
     if dsl is not None:
         output_mappings.append(dsl)
-    # print(yaml.dump(dsl))
 
 result = {"mappings": output_mappings}
 print(yaml.dump(result, default_flow_style=False))

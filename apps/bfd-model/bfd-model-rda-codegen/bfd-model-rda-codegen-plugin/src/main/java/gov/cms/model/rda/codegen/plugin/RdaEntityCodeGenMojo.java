@@ -1,6 +1,5 @@
 package gov.cms.model.rda.codegen.plugin;
 
-import com.google.common.base.Strings;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -197,11 +196,6 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
       MappingBean mapping, FieldSpec.Builder builder, ColumnBean column)
       throws MojoExecutionException {
     builder.addAnnotation(Transient.class);
-    if (!Strings.isNullOrEmpty(column.getDbName())) {
-      throw failure(
-          "transient fields cannot have a column name: mapping=%s field=%s",
-          mapping.getId(), column.getName());
-    }
     if (mapping.getTable().isPrimaryKey(column.getName())) {
       throw failure(
           "transient fields cannot be primary keys: mapping=%s field=%s",
