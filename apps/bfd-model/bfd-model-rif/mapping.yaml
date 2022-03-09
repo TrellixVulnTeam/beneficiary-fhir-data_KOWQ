@@ -904,7 +904,7 @@ mappings:
       orphanRemoval: false
     name: beneficiaries
     primaryKeyColumns:
-    - BENE_ID
+    - beneficiaryId
 - entityClassName: gov.cms.bfd.model.rif.BeneficiaryMonthlyZ
   id: BeneficiaryMonthly
   table:
@@ -969,9 +969,17 @@ mappings:
       dbName: partd_low_income_cost_share_group_code
       name: partDLowIncomeCostShareGroupCode
       sqlType: varchar(2)
+    joins:
+    - entityClass: gov.cms.bfd.model.rif.BeneficiaryZ
+      fetchType: EAGER
+      fieldName: parentBeneficiary
+      foreignKey: beneficiary_monthly_bene_id_to_beneficiary
+      joinColumnName: bene_id
+      joinType: ManyToOne
     name: beneficiary_monthly
     primaryKeyColumns:
-    - YEAR_MONTH
+    - parentBeneficiary
+    - yearMonth
 - entityClassName: gov.cms.bfd.model.rif.BeneficiaryHistoryZ
   id: BeneficiaryHistory
   table:
@@ -1193,7 +1201,7 @@ mappings:
       sqlType: timestamp with time zone
     name: medicare_beneficiaryid_history
     primaryKeyColumns:
-    - bene_mbi_id
+    - medicareBeneficiaryIdKey
 - entityClassName: gov.cms.bfd.model.rif.PartDEventZ
   id: PartDEvent
   table:
@@ -1405,7 +1413,7 @@ mappings:
       sqlType: timestamp with time zone
     name: partd_events
     primaryKeyColumns:
-    - PDE_ID
+    - eventId
 - entityClassName: gov.cms.bfd.model.rif.CarrierClaimZ
   id: CarrierClaim
   table:
@@ -1670,7 +1678,7 @@ mappings:
       sqlType: timestamp with time zone
     name: carrier_claims
     primaryKeyColumns:
-    - CLM_ID
+    - claimId
 - entityClassName: gov.cms.bfd.model.rif.CarrierClaimLineZ
   id: CarrierClaimLine
   table:
@@ -1895,7 +1903,8 @@ mappings:
       joinType: ManyToOne
     name: carrier_claims_lines
     primaryKeyColumns:
-    - clm_id
+    - parentClaim
+    - claimId
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.InpatientClaimZ
   id: InpatientClaim
@@ -3184,7 +3193,7 @@ mappings:
       sqlType: timestamp with time zone
     name: inpatient_claims
     primaryKeyColumns:
-    - CLM_ID
+    - claimId
 - entityClassName: gov.cms.bfd.model.rif.InpatientClaimLineZ
   id: InpatientClaimLine
   table:
@@ -3253,7 +3262,8 @@ mappings:
       joinType: ManyToOne
     name: inpatient_claims_lines
     primaryKeyColumns:
-    - clm_id
+    - parentClaim
+    - claimId
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.OutpatientClaimZ
   id: OutpatientClaim
@@ -4202,7 +4212,7 @@ mappings:
       sqlType: timestamp with time zone
     name: outpatient_claims
     primaryKeyColumns:
-    - CLM_ID
+    - claimId
 - entityClassName: gov.cms.bfd.model.rif.OutpatientClaimLineZ
   id: OutpatientClaimLine
   table:
@@ -4375,7 +4385,8 @@ mappings:
       joinType: ManyToOne
     name: outpatient_claims_lines
     primaryKeyColumns:
-    - clm_id
+    - parentClaim
+    - claimId
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.HHAClaimZ
   id: HHAClaim
@@ -4914,7 +4925,7 @@ mappings:
       sqlType: timestamp with time zone
     name: hha_claims
     primaryKeyColumns:
-    - CLM_ID
+    - claimId
 - entityClassName: gov.cms.bfd.model.rif.HHAClaimLineZ
   id: HHAClaimLine
   table:
@@ -5016,7 +5027,8 @@ mappings:
       joinType: ManyToOne
     name: hha_claims_lines
     primaryKeyColumns:
-    - clm_id
+    - parentClaim
+    - claimId
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.DMEClaimZ
   id: DMEClaim
@@ -5278,7 +5290,7 @@ mappings:
       sqlType: timestamp with time zone
     name: dme_claims
     primaryKeyColumns:
-    - CLM_ID
+    - claimId
 - entityClassName: gov.cms.bfd.model.rif.DMEClaimLineZ
   id: DMEClaimLine
   table:
@@ -5486,7 +5498,8 @@ mappings:
       joinType: ManyToOne
     name: dme_claims_lines
     primaryKeyColumns:
-    - clm_id
+    - parentClaim
+    - claimId
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.HospiceClaimZ
   id: HospiceClaim
@@ -6021,7 +6034,7 @@ mappings:
       sqlType: timestamp with time zone
     name: hospice_claims
     primaryKeyColumns:
-    - CLM_ID
+    - claimId
 - entityClassName: gov.cms.bfd.model.rif.HospiceClaimLineZ
   id: HospiceClaimLine
   table:
@@ -6116,7 +6129,8 @@ mappings:
       joinType: ManyToOne
     name: hospice_claims_lines
     primaryKeyColumns:
-    - clm_id
+    - parentClaim
+    - claimId
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.SNFClaimZ
   id: SNFClaim
@@ -7147,7 +7161,7 @@ mappings:
       sqlType: timestamp with time zone
     name: snf_claims
     primaryKeyColumns:
-    - CLM_ID
+    - claimId
 - entityClassName: gov.cms.bfd.model.rif.SNFClaimLineZ
   id: SNFClaimLine
   table:
@@ -7216,6 +7230,7 @@ mappings:
       joinType: ManyToOne
     name: snf_claims_lines
     primaryKeyColumns:
-    - clm_id
+    - parentClaim
+    - claimId
     - lineNumber
 

@@ -51,9 +51,7 @@ public class TableBean {
   }
 
   public boolean isPrimaryKey(JoinBean join) {
-    return join.getJoinType().isSingleValue()
-        && join.hasColumnName()
-        && isPrimaryKey(join.getJoinColumnName());
+    return join.getJoinType().isSingleValue() && isPrimaryKey(join.getFieldName());
   }
 
   public Set<String> getColumnsForEqualsMethod() {

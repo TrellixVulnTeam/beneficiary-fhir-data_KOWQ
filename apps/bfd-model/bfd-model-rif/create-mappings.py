@@ -41,7 +41,7 @@ def create_mapping(summary):
     table["columns"] = columns
 
     if summary["headerEntityIdField"] is not None:
-        primary_key_columns.append(summary["headerEntityIdField"])
+        add_primary_key(summary, primary_key_columns, summary["headerEntityIdField"])
 
     joins = []
     for join_relationship in summary["innerJoinRelationship"]:
@@ -89,24 +89,21 @@ def create_line_mapping(summary):
     table["columns"] = columns
 
     if summary["headerEntityGeneratedIdField"] is not None:
-        primary_key_columns.append(summary["headerEntityGeneratedIdField"].lower())
+        add_primary_key(summary, primary_key_columns, summary["headerEntityGeneratedIdField"])
     if summary["headerEntityIdField"] is not None:
-        primary_key_columns.append(summary["headerEntityIdField"].lower())
+        add_primary_key(summary, primary_key_columns, summary["headerEntityIdField"])
     add_primary_key(summary, primary_key_columns, line_number_column_name)
 
     parent_entity = f'{summary["packageName"]}.{parent_name}{classNameSuffix}'
-    join = {}
-    if "claim" in parent_name.lower():
-        join["fieldName"] = "parentClaim"
-    else:
-        join["fieldName"] = "parentBeneficiary"
-
+    join = dict()
+    join["fieldName"] = "parentClaim"
     join["entityClass"] = parent_entity
     join["joinColumnName"] = parent_key
     join["joinType"] = "ManyToOne"
     join["fetchType"] = "EAGER"
     join["foreignKey"] = f'{line_table}_{parent_key}_to_{parent_table}'
     table["joins"] = [join]
+    primary_key_columns.insert(0, "parentClaim")
 
     return mapping
 
@@ -166,7 +163,7 @@ def add_transient_to_column(summary, column):
 
 def find_field_name(summary, column_name):
     for rif_field in summary["rifLayout"]["fields"]:
-        if column_name == rif_field["rifColumnName"]:
+        if column_name.upper() == rif_field["rifColumnName"]:
             return rif_field["javaFieldName"]
     sys.stderr.write(f'error: {summary["headerEntity"]} has no {column_name} column\n')
     raise
@@ -187,16 +184,53 @@ def create_join(summary, join_relationship):
     return join
 
 
+def summary_with_name(all_summaries, name):
+    for summary in all_summaries:
+        if summary["rifLayout"]["name"] == name:
+            return summary
+    return None
+
+
+def mapping_with_id(all_mappings, id):
+    for mapping in all_mappings:
+        if mapping["id"] == id:
+            return mapping
+    return None
+
+
+# Unfortunately the BeneficiaryMonthly is a special case in the RifLayoutsProcessor and uses
+# hard coded values so we have to do the same here.  In particular the foreignKey does not
+# follow the normal pattern so there is nothing in the summary to handle it.
+def add_join_to_monthlies(all_mappings):
+    parent = mapping_with_id(all_mappings, "Beneficiary")
+    monthly = mapping_with_id(all_mappings, "BeneficiaryMonthly")
+    if (parent is not None) and (monthly is not None):
+        if "joins" in monthly["table"].keys():
+            joins = monthly["table"]["joins"]
+        else:
+            joins = []
+            monthly["table"]["joins"] = joins
+        join = dict()
+        join["fieldName"] = "parentBeneficiary"
+        join["entityClass"] = parent["entityClassName"]
+        join["joinColumnName"] = "bene_id"
+        join["joinType"] = "ManyToOne"
+        join["fetchType"] = "EAGER"
+        join["foreignKey"] = "beneficiary_monthly_bene_id_to_beneficiary"
+        joins.append(join)
+        monthly["table"]["primaryKeyColumns"].insert(0, "parentBeneficiary")
+
 summaryFilePath = Path("target/rif-mapping-summary.yaml")
-mappings = yaml.safe_load(summaryFilePath.read_text())
+summaries = yaml.safe_load(summaryFilePath.read_text())
 
 output_mappings = []
-for mapping in mappings:
-    dsl = create_mapping(mapping)
+for summary in summaries:
+    dsl = create_mapping(summary)
     output_mappings.append(dsl)
-    dsl = create_line_mapping(mapping)
+    dsl = create_line_mapping(summary)
     if dsl is not None:
         output_mappings.append(dsl)
+add_join_to_monthlies(output_mappings)
 
 result = {"mappings": output_mappings}
 print(yaml.dump(result, default_flow_style=False))
