@@ -1288,12 +1288,12 @@ mappings:
       dbName: days_suply_num
       name: daysSupply
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Fill Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/fill_num.txt)
       dbName: fill_num
       name: fillNumber
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Dispensing Status Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/dspnsng_stus_cd.txt)
       dbName: dspnsng_stus_cd
       javaType: Character
@@ -1679,7 +1679,7 @@ mappings:
       dbName: line_num
       name: lineNumber
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Carrier Line Claim Performing PIN Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/prf_prfl.txt)
       dbName: carr_prfrng_pin_num
       name: performingProviderIdNumber
@@ -1735,7 +1735,7 @@ mappings:
       dbName: line_srvc_cnt
       name: serviceCount
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Line HCFA Type Service Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/typsrvcb.txt)
       dbName: line_cms_type_srvc_cd
       javaType: char
@@ -1839,7 +1839,7 @@ mappings:
       dbName: carr_line_mtus_cnt
       name: mtusCount
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Carrier Line Miles/Time/Units/Services Indicator Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/mtus_ind.txt)
       dbName: carr_line_mtus_cd
       javaType: Character
@@ -1885,10 +1885,17 @@ mappings:
       dbName: carr_line_ansthsa_unit_cnt
       name: anesthesiaUnitCount
       nullable: false
-      sqlType: numeric(None)
-    name: CarrierClaimLine
+      sqlType: numeric
+    joins:
+    - entityClass: gov.cms.bfd.model.rif.CarrierClaimZ
+      fetchType: EAGER
+      fieldName: parentClaim
+      foreignKey: carrier_claims_lines_clm_id_to_carrier_claims
+      joinColumnName: clm_id
+      joinType: ManyToOne
+    name: carrier_claims_lines
     primaryKeyColumns:
-    - CLM_ID
+    - clm_id
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.InpatientClaimZ
   id: InpatientClaim
@@ -2146,26 +2153,26 @@ mappings:
       dbName: clm_utlztn_day_cnt
       name: utilizationDayCount
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Beneficiary Total Coinsurance Days Count (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/coin_day.txt)
       dbName: bene_tot_coinsrnc_days_cnt
       name: coinsuranceDayCount
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Beneficiary LRD Used Count (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/lrd_use.txt)
       dbName: bene_lrd_used_cnt
       name: lifetimeReservedDaysUsedCount
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Claim Non Utilization Days Count (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/nutilday.txt)
       dbName: clm_non_utlztn_days_cnt
       name: nonUtilizationDayCount
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: NCH Blood Pints Furnished Quantity (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/bldfrnsh.txt)
       dbName: nch_blood_pnts_frnshd_qty
       name: bloodPintsFurnishedQty
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: NCH Verified Noncovered Stay From Date (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/ncovfrom.txt)
       dbName: nch_vrfd_ncvrd_stay_from_dt
       name: noncoveredStayFromDate
@@ -3186,7 +3193,7 @@ mappings:
       dbName: clm_line_num
       name: lineNumber
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Revenue Center Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_cntr.txt)
       dbName: rev_cntr
       name: revenueCenter
@@ -3200,7 +3207,7 @@ mappings:
       dbName: rev_cntr_unit_cnt
       name: unitCount
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Revenue Center Rate Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_rate.txt)
       dbName: rev_cntr_rate_amt
       name: rateAmount
@@ -3224,7 +3231,7 @@ mappings:
     - comment: Revenue Center NDC Quantity (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_cntr_ndc_qty.txt)
       dbName: rev_cntr_ndc_qty
       name: nationalDrugCodeQuantity
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Revenue Center NDC Quantity Qualifier Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_cntr_ndc_qty_qlfr_cd.txt)
       dbName: rev_cntr_ndc_qty_qlfr_cd
       name: nationalDrugCodeQualifierCode
@@ -3237,9 +3244,16 @@ mappings:
       dbName: rndrng_physn_npi
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
-    name: InpatientClaimLine
+    joins:
+    - entityClass: gov.cms.bfd.model.rif.InpatientClaimZ
+      fetchType: EAGER
+      fieldName: parentClaim
+      foreignKey: inpatient_claims_lines_clm_id_to_inpatient_claims
+      joinColumnName: clm_id
+      joinType: ManyToOne
+    name: inpatient_claims_lines
     primaryKeyColumns:
-    - CLM_ID
+    - clm_id
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.OutpatientClaimZ
   id: OutpatientClaim
@@ -4197,7 +4211,7 @@ mappings:
       dbName: clm_line_num
       name: lineNumber
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Revenue Center Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_cntr.txt)
       dbName: rev_cntr
       name: revenueCenterCode
@@ -4266,7 +4280,7 @@ mappings:
       dbName: rev_cntr_unit_cnt
       name: unitCount
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Revenue Center Rate Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_rate.txt)
       dbName: rev_cntr_rate_amt
       name: rateAmount
@@ -4339,7 +4353,7 @@ mappings:
     - comment: Revenue Center NDC Quantity (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_cntr_ndc_qty.txt)
       dbName: rev_cntr_ndc_qty
       name: nationalDrugCodeQuantity
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Revenue Center NDC Quantity Qualifier Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_cntr_ndc_qty_qlfr_cd.txt)
       dbName: rev_cntr_ndc_qty_qlfr_cd
       name: nationalDrugCodeQualifierCode
@@ -4352,9 +4366,16 @@ mappings:
       dbName: rndrng_physn_npi
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
-    name: OutpatientClaimLine
+    joins:
+    - entityClass: gov.cms.bfd.model.rif.OutpatientClaimZ
+      fetchType: EAGER
+      fieldName: parentClaim
+      foreignKey: outpatient_claims_lines_clm_id_to_outpatient_claims
+      joinColumnName: clm_id
+      joinType: ManyToOne
+    name: outpatient_claims_lines
     primaryKeyColumns:
-    - CLM_ID
+    - clm_id
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.HHAClaimZ
   id: HHAClaim
@@ -4902,7 +4923,7 @@ mappings:
       dbName: clm_line_num
       name: lineNumber
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Revenue Center Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_cntr.txt)
       dbName: rev_cntr
       name: revenueCenterCode
@@ -4940,7 +4961,7 @@ mappings:
       dbName: rev_cntr_unit_cnt
       name: unitCount
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Revenue Center Rate Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_rate.txt)
       dbName: rev_cntr_rate_amt
       name: rateAmount
@@ -4973,7 +4994,7 @@ mappings:
     - comment: Revenue Center NDC Quantity (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_cntr_ndc_qty.txt)
       dbName: rev_cntr_ndc_qty
       name: nationalDrugCodeQuantity
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Revenue Center NDC Quantity Qualifier Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_cntr_ndc_qty_qlfr_cd.txt)
       dbName: rev_cntr_ndc_qty_qlfr_cd
       name: nationalDrugCodeQualifierCode
@@ -4986,9 +5007,16 @@ mappings:
       dbName: rndrng_physn_npi
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
-    name: HHAClaimLine
+    joins:
+    - entityClass: gov.cms.bfd.model.rif.HHAClaimZ
+      fetchType: EAGER
+      fieldName: parentClaim
+      foreignKey: hha_claims_lines_clm_id_to_hha_claims
+      joinColumnName: clm_id
+      joinType: ManyToOne
+    name: hha_claims_lines
     primaryKeyColumns:
-    - CLM_ID
+    - clm_id
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.DMEClaimZ
   id: DMEClaim
@@ -5259,7 +5287,7 @@ mappings:
       dbName: line_num
       name: lineNumber
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Line Provider Tax Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/tax_num.txt)
       dbName: tax_num
       name: providerTaxNumber
@@ -5278,7 +5306,7 @@ mappings:
       dbName: line_srvc_cnt
       name: serviceCount
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Line HCFA Type Service Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/typsrvcb.txt)
       dbName: line_cms_type_srvc_cd
       javaType: char
@@ -5430,7 +5458,7 @@ mappings:
       dbName: dmerc_line_mtus_cnt
       name: mtusCount
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: DMERC Line Miles/Time/ Units/Services Indicator Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/unit_ind.txt)
       dbName: dmerc_line_mtus_cd
       javaType: Character
@@ -5449,9 +5477,16 @@ mappings:
       dbName: line_ndc_cd
       name: nationalDrugCode
       sqlType: varchar(11)
-    name: DMEClaimLine
+    joins:
+    - entityClass: gov.cms.bfd.model.rif.DMEClaimZ
+      fetchType: EAGER
+      fieldName: parentClaim
+      foreignKey: dme_claims_lines_clm_id_to_dme_claims
+      joinColumnName: clm_id
+      joinType: ManyToOne
+    name: dme_claims_lines
     primaryKeyColumns:
-    - CLM_ID
+    - clm_id
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.HospiceClaimZ
   id: HospiceClaim
@@ -5590,7 +5625,7 @@ mappings:
       dbName: clm_utlztn_day_cnt
       name: utilizationDayCount
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: NCH Beneficiary Discharge Date (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/dschrgdt.txt)
       dbName: nch_bene_dschrg_dt
       name: beneficiaryDischargeDate
@@ -5995,7 +6030,7 @@ mappings:
       dbName: clm_line_num
       name: lineNumber
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Revenue Center Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_cntr.txt)
       dbName: rev_cntr
       name: revenueCenterCode
@@ -6021,7 +6056,7 @@ mappings:
       dbName: rev_cntr_unit_cnt
       name: unitCount
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Revenue Center Rate Amount (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_rate.txt)
       dbName: rev_cntr_rate_amt
       name: rateAmount
@@ -6059,7 +6094,7 @@ mappings:
     - comment: Revenue Center NDC Quantity (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_cntr_ndc_qty.txt)
       dbName: rev_cntr_ndc_qty
       name: nationalDrugCodeQuantity
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Revenue Center NDC Quantity Qualifier Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_cntr_ndc_qty_qlfr_cd.txt)
       dbName: rev_cntr_ndc_qty_qlfr_cd
       name: nationalDrugCodeQualifierCode
@@ -6072,9 +6107,16 @@ mappings:
       dbName: rndrng_physn_npi
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
-    name: HospiceClaimLine
+    joins:
+    - entityClass: gov.cms.bfd.model.rif.HospiceClaimZ
+      fetchType: EAGER
+      fieldName: parentClaim
+      foreignKey: hospice_claims_lines_clm_id_to_hospice_claims
+      joinColumnName: clm_id
+      joinType: ManyToOne
+    name: hospice_claims_lines
     primaryKeyColumns:
-    - CLM_ID
+    - clm_id
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.SNFClaimZ
   id: SNFClaim
@@ -6314,22 +6356,22 @@ mappings:
       dbName: clm_utlztn_day_cnt
       name: utilizationDayCount
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Beneficiary Total Coinsurance Days Count (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/coin_day.txt)
       dbName: bene_tot_coinsrnc_days_cnt
       name: coinsuranceDayCount
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Claim Non Utilization Days Count (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/nutilday.txt)
       dbName: clm_non_utlztn_days_cnt
       name: nonUtilizationDayCount
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: NCH Blood Pints Furnished Quantity (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/bldfrnsh.txt)
       dbName: nch_blood_pnts_frnshd_qty
       name: bloodPintsFurnishedQty
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: NCH Qualified Stay From Date (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/qlfyfrom.txt)
       dbName: nch_qlfyd_stay_from_dt
       name: qualifiedStayFromDate
@@ -7114,7 +7156,7 @@ mappings:
       dbName: clm_line_num
       name: lineNumber
       nullable: false
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Revenue Center Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_cntr.txt)
       dbName: rev_cntr
       name: revenueCenter
@@ -7152,7 +7194,7 @@ mappings:
     - comment: Revenue Center NDC Quantity (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_cntr_ndc_qty.txt)
       dbName: rev_cntr_ndc_qty
       name: nationalDrugCodeQuantity
-      sqlType: numeric(None)
+      sqlType: numeric
     - comment: Revenue Center NDC Quantity Qualifier Code (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/rev_cntr_ndc_qty_qlfr_cd.txt)
       dbName: rev_cntr_ndc_qty_qlfr_cd
       name: nationalDrugCodeQualifierCode
@@ -7165,8 +7207,15 @@ mappings:
       dbName: rndrng_physn_npi
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
-    name: SNFClaimLine
+    joins:
+    - entityClass: gov.cms.bfd.model.rif.SNFClaimZ
+      fetchType: EAGER
+      fieldName: parentClaim
+      foreignKey: snf_claims_lines_clm_id_to_snf_claims
+      joinColumnName: clm_id
+      joinType: ManyToOne
+    name: snf_claims_lines
     primaryKeyColumns:
-    - CLM_ID
+    - clm_id
     - lineNumber
 

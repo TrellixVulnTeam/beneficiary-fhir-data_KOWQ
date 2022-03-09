@@ -29,6 +29,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -251,6 +252,9 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
     }
     FieldSpec.Builder builder =
         FieldSpec.builder(fieldType, join.getFieldName()).addModifiers(Modifier.PRIVATE);
+    if (mapping.getTable().isPrimaryKey(join)) {
+      builder.addAnnotation(Id.class);
+    }
     if (join.hasComment()) {
       builder.addJavadoc(join.getComment());
     }
@@ -333,11 +337,6 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
           "missing joinType: mapping=%s join=%s joinType=%s",
           mapping.getId(), join.getFieldName(), join.getJoinType());
     }
-    if (join.getFetchType() == null) {
-      throw failure(
-          "missing fetchType: mapping=%s join=%s fetchType=%s",
-          mapping.getId(), join.getFieldName(), join.getJoinType());
-    }
     final var annotationClass = join.getJoinType().getAnnotationClass();
     final var builder = AnnotationSpec.builder(annotationClass);
     if (join.hasMappedBy()) {
@@ -346,7 +345,9 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
     if (join.hasOrphanRemoval()) {
       builder.addMember("orphanRemoval", "$L", join.getOrphanRemoval());
     }
-    builder.addMember("fetch", "$T.$L", FetchType.class, join.getFetchType());
+    if (join.isFetchTypeRequired()) {
+      builder.addMember("fetch", "$T.$L", FetchType.class, join.getFetchType());
+    }
     for (CascadeType cascadeType : join.getCascadeTypes()) {
       builder.addMember("cascade", "$T.$L", CascadeType.class, cascadeType);
     }
@@ -359,9 +360,18 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
       throw failure(
           "missing joinColumnName: mapping=%s join=%s", mapping.getId(), join.getFieldName());
     }
-    return AnnotationSpec.builder(JoinColumn.class)
-        .addMember("name", "$S", quoteName(join.getJoinColumnName()))
-        .build();
+    AnnotationSpec.Builder builder =
+        AnnotationSpec.builder(JoinColumn.class)
+            .addMember("name", "$S", quoteName(join.getJoinColumnName()));
+    if (join.hasForeignKey()) {
+      builder.addMember(
+          "foreignKey",
+          "$L",
+          AnnotationSpec.builder(ForeignKey.class)
+              .addMember("name", "$S", join.getForeignKey())
+              .build());
+    }
+    return builder.build();
   }
 
   private boolean isJoinForArray(MappingBean mapping, JoinBean join) {

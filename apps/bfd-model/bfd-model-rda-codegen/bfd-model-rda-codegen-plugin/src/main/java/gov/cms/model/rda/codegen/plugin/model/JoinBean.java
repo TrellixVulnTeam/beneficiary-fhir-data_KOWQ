@@ -1,6 +1,6 @@
 package gov.cms.model.rda.codegen.plugin.model;
 
-import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.FetchType.*;
 
 import com.google.common.base.Strings;
 import com.squareup.javapoet.ClassName;
@@ -48,7 +48,17 @@ public class JoinBean {
 
   private List<CascadeType> cascadeTypes = new ArrayList<>();
 
+  /**
+   * Optionally specifies an order by expression to add using an {@link javax.persistence.OrderBy}
+   * annotation.
+   */
   private String orderBy;
+
+  /**
+   * Optionally specifies a foreign key constraint to reference in the {@link
+   * javax.persistence.JoinColumn} annotation.
+   */
+  private String foreignKey;
 
   public boolean isValidEntityClass() {
     return entityClass.indexOf('.') > 0;
@@ -78,6 +88,14 @@ public class JoinBean {
     return !Strings.isNullOrEmpty(orderBy);
   }
 
+  public boolean hasForeignKey() {
+    return !Strings.isNullOrEmpty(foreignKey);
+  }
+
+  public boolean isFetchTypeRequired() {
+    return fetchType != null && fetchType != EAGER;
+  }
+
   @AllArgsConstructor
   public enum JoinType {
     OneToMany(javax.persistence.OneToMany.class, true),
@@ -86,6 +104,10 @@ public class JoinBean {
 
     @Getter private final Class<?> annotationClass;
     @Getter private final boolean multiValue;
+
+    public boolean isSingleValue() {
+      return !multiValue;
+    }
   }
 
   @AllArgsConstructor

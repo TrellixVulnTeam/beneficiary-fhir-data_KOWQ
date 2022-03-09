@@ -63,11 +63,15 @@ def create_line_mapping(summary):
 
     mapping = dict()
     parent_name = summary["headerEntity"]
-    mapping["id"] = f'{parent_name}Line'
-    mapping["entityClassName"] = f'{summary["packageName"]}.{mapping["id"]}{classNameSuffix}'
+    parent_table = summary["headerTable"]
+    parent_key = summary["headerEntityIdField"].lower()
+    line_name = f'{parent_name}Line'
+    line_table = f'{parent_table}_lines'
+    mapping["id"] = line_name
+    mapping["entityClassName"] = f'{summary["packageName"]}.{line_name}{classNameSuffix}'
 
     primary_key_columns = []
-    table = {"name": mapping["id"], "primaryKeyColumns": primary_key_columns}
+    table = {"name": line_table, "primaryKeyColumns": primary_key_columns}
     mapping["table"] = table
 
     columns = list()
@@ -85,10 +89,24 @@ def create_line_mapping(summary):
     table["columns"] = columns
 
     if summary["headerEntityGeneratedIdField"] is not None:
-        primary_key_columns.append(summary["headerEntityGeneratedIdField"])
+        primary_key_columns.append(summary["headerEntityGeneratedIdField"].lower())
     if summary["headerEntityIdField"] is not None:
-        primary_key_columns.append(summary["headerEntityIdField"])
+        primary_key_columns.append(summary["headerEntityIdField"].lower())
     add_primary_key(summary, primary_key_columns, line_number_column_name)
+
+    parent_entity = f'{summary["packageName"]}.{parent_name}{classNameSuffix}'
+    join = {}
+    if "claim" in parent_name.lower():
+        join["fieldName"] = "parentClaim"
+    else:
+        join["fieldName"] = "parentBeneficiary"
+
+    join["entityClass"] = parent_entity
+    join["joinColumnName"] = parent_key
+    join["joinType"] = "ManyToOne"
+    join["fetchType"] = "EAGER"
+    join["foreignKey"] = f'{line_table}_{parent_key}_to_{parent_table}'
+    table["joins"] = [join]
 
     return mapping
 
@@ -132,7 +150,9 @@ def create_column(rif_field):
     elif column_type == "NUM":
         length = rif_field["rifColumnLength"]
         scale = rif_field["rifColumnScale"]
-        if scale == 0 or scale is None:
+        if length == 0 or length is None:
+            column["sqlType"] = f'numeric'
+        elif scale == 0 or scale is None:
             column["sqlType"] = f'numeric({length})'
         else:
             column["sqlType"] = f'decimal({length},{scale})'

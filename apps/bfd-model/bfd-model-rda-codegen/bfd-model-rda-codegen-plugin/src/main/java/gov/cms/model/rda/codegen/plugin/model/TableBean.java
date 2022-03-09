@@ -50,6 +50,12 @@ public class TableBean {
     return primaryKeyColumns.stream().anyMatch(fieldName -> fieldName.equals(name));
   }
 
+  public boolean isPrimaryKey(JoinBean join) {
+    return join.getJoinType().isSingleValue()
+        && join.hasColumnName()
+        && isPrimaryKey(join.getJoinColumnName());
+  }
+
   public Set<String> getColumnsForEqualsMethod() {
     var columnList = equalsColumns.isEmpty() ? primaryKeyColumns : equalsColumns;
     return Set.copyOf(columnList);
