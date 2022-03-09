@@ -43,6 +43,12 @@ def create_mapping(summary):
     if summary["headerEntityIdField"] is not None:
         primary_key_columns.append(summary["headerEntityIdField"])
 
+    joins = []
+    for join_relationship in summary["innerJoinRelationship"]:
+        joins.append(create_join(summary, join_relationship))
+    if len(joins) > 0:
+        table["joins"] = joins
+
     return mapping
 
 
@@ -146,12 +152,21 @@ def find_field_name(summary, column_name):
     raise
 
 
-# def to_camel_case(name):
-#     first, *others = name.split('_')
-#     result = ''.join([first.lower(), *map(str.title, others)])
-#     return result
-#
-#
+def create_join(summary, join_relationship):
+    join = dict()
+    join["fieldName"] = join_relationship["childField"]
+    join["entityClass"] = f'{summary["packageName"]}.{join_relationship["childEntity"]}{classNameSuffix}'
+    join["mappedBy"] = join_relationship["mappedBy"]
+    join["joinType"] = "OneToMany"
+    join["collectionType"] = "Set"
+    join["cascadeTypes"] = ["ALL"]
+    join["fetchType"] = "LAZY"
+    join["orphanRemoval"] = False
+    if join_relationship["orderBy"] is not None:
+        join["orderBy"] = join_relationship["orderBy"]
+    return join
+
+
 summaryFilePath = Path("target/rif-mapping-summary.yaml")
 mappings = yaml.safe_load(summaryFilePath.read_text())
 

@@ -883,6 +883,25 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    joins:
+    - cascadeTypes:
+      - ALL
+      collectionType: Set
+      entityClass: gov.cms.bfd.model.rif.BeneficiaryHistoryZ
+      fetchType: LAZY
+      fieldName: beneficiaryHistories
+      joinType: OneToMany
+      mappedBy: beneficiaryId
+      orphanRemoval: false
+    - cascadeTypes:
+      - ALL
+      collectionType: Set
+      entityClass: gov.cms.bfd.model.rif.MedicareBeneficiaryIdHistoryZ
+      fetchType: LAZY
+      fieldName: medicareBeneficiaryIdHistories
+      joinType: OneToMany
+      mappedBy: beneficiaryId
+      orphanRemoval: false
     name: beneficiaries
     primaryKeyColumns:
     - BENE_ID
