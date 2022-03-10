@@ -43,11 +43,8 @@ def create_mapping(summary):
     if summary["headerEntityIdField"] is not None:
         add_primary_key(summary, primary_key_columns, summary["headerEntityIdField"])
 
-    joins = []
     for join_relationship in summary["innerJoinRelationship"]:
-        joins.append(create_join(summary, join_relationship))
-    if len(joins) > 0:
-        table["joins"] = joins
+        joins_for_mapping(mapping).append(create_join(summary, join_relationship))
 
     return mapping
 
@@ -194,6 +191,15 @@ def mapping_with_id(all_mappings, id):
     return None
 
 
+def joins_for_mapping(mapping):
+    if "joins" in mapping["table"].keys():
+        joins = mapping["table"]["joins"]
+    else:
+        joins = []
+        mapping["table"]["joins"] = joins
+    return joins
+
+
 # Unfortunately the BeneficiaryMonthly is a special case in the RifLayoutsProcessor and uses
 # hard coded values so we have to do the same here.  In particular the foreignKey does not
 # follow the normal pattern so there is nothing in the summary to handle it.
@@ -201,11 +207,7 @@ def add_join_to_monthlies(all_mappings):
     parent = mapping_with_id(all_mappings, "Beneficiary")
     monthly = mapping_with_id(all_mappings, "BeneficiaryMonthly")
     if (parent is not None) and (monthly is not None):
-        if "joins" in monthly["table"].keys():
-            joins = monthly["table"]["joins"]
-        else:
-            joins = []
-            monthly["table"]["joins"] = joins
+        joins = joins_for_mapping(monthly)
         join = dict()
         join["fieldName"] = "parentBeneficiary"
         join["entityClass"] = parent["entityClassName"]
@@ -214,6 +216,20 @@ def add_join_to_monthlies(all_mappings):
         join["fetchType"] = "EAGER"
         join["foreignKey"] = "beneficiary_monthly_bene_id_to_beneficiary"
         joins.append(join)
+
+        joins = joins_for_mapping(parent)
+        join = dict()
+        join["fieldName"] = "beneficiaryMonthlys"
+        join["entityClass"] = monthly["entityClassName"]
+        join["mappedBy"] = "parentBeneficiary"
+        join["orphanRemoval"] = "true"
+        join["joinType"] = "OneToMany"
+        join["fetchType"] = "LAZY"
+        join["collectionType"] = "List"
+        join["orderBy"] = "YEAR_MONTH ASC"
+        join["cascadeTypes"] = ["ALL"]
+        joins.insert(0, join)
+
         monthly["table"]["primaryKeyColumns"].insert(0, "parentBeneficiary")
 
 

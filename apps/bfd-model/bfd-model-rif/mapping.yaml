@@ -886,6 +886,16 @@ mappings:
     joins:
     - cascadeTypes:
       - ALL
+      collectionType: List
+      entityClass: gov.cms.bfd.model.rif.BeneficiaryMonthlyZ
+      fetchType: LAZY
+      fieldName: beneficiaryMonthlys
+      joinType: OneToMany
+      mappedBy: parentBeneficiary
+      orderBy: YEAR_MONTH ASC
+      orphanRemoval: 'true'
+    - cascadeTypes:
+      - ALL
       collectionType: Set
       entityClass: gov.cms.bfd.model.rif.BeneficiaryHistoryZ
       fetchType: LAZY
