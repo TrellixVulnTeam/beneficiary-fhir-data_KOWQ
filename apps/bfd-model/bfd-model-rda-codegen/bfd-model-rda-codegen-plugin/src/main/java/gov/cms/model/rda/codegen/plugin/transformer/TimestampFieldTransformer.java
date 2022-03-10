@@ -8,7 +8,10 @@ import gov.cms.model.rda.codegen.plugin.model.TransformationBean;
 public class TimestampFieldTransformer extends AbstractFieldTransformer {
   @Override
   public CodeBlock generateCodeBlock(
-      MappingBean mapping, ColumnBean column, TransformationBean transformation) {
+      MappingBean mapping,
+      ColumnBean column,
+      TransformationBean transformation,
+      MessageCodeGenerator messageCodeGenerator) {
     return destSetter(column, NOW_VALUE);
   }
 }

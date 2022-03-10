@@ -27,7 +27,10 @@ public class MessageEnumFieldTransformer extends AbstractFieldTransformer {
 
   @Override
   public CodeBlock generateCodeBlock(
-      MappingBean mapping, ColumnBean column, TransformationBean transformation) {
+      MappingBean mapping,
+      ColumnBean column,
+      TransformationBean transformation,
+      MessageCodeGenerator messageCodeGenerator) {
     final ClassName enumClass =
         PoetUtil.toClassName(transformation.transformerOption(ENUM_CLASS_OPT).get());
     CodeBlock.Builder builder = CodeBlock.builder();

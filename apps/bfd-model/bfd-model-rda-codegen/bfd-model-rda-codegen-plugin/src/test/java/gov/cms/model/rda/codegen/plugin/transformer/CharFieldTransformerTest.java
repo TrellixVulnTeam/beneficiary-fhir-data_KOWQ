@@ -24,7 +24,9 @@ public class CharFieldTransformerTest {
     RootBean model = RootBean.builder().mapping(mapping).build();
 
     CharFieldTransformer generator = new CharFieldTransformer();
-    CodeBlock block = generator.generateCodeBlock(mapping, column, transformation);
+    CodeBlock block =
+        generator.generateCodeBlock(
+            mapping, column, transformation, GrpcMessageCodeGenerator.Instance);
     assertEquals(
         "transformer.copyCharacter(namePrefix + gov.cms.bfd.model.rda.PreAdjFissClaim.Fields.curr1Status, from.getCurr1Status(), to::setCurr1Status);\n",
         block.toString());
@@ -43,6 +45,6 @@ public class CharFieldTransformerTest {
     RootBean model = RootBean.builder().mapping(mapping).build();
 
     CharFieldTransformer generator = new CharFieldTransformer();
-    generator.generateCodeBlock(mapping, column, transformation);
+    generator.generateCodeBlock(mapping, column, transformation, GrpcMessageCodeGenerator.Instance);
   }
 }

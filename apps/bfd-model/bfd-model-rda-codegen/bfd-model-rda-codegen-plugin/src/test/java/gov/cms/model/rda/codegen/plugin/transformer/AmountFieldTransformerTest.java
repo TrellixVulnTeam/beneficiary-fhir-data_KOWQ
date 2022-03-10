@@ -24,7 +24,9 @@ public class AmountFieldTransformerTest {
     RootBean model = RootBean.builder().mapping(mapping).build();
 
     AmountFieldTransformer generator = new AmountFieldTransformer();
-    CodeBlock block = generator.generateCodeBlock(mapping, column, transformation);
+    CodeBlock block =
+        generator.generateCodeBlock(
+            mapping, column, transformation, GrpcMessageCodeGenerator.Instance);
     assertEquals(
         "transformer.copyAmount(namePrefix + gov.cms.bfd.model.rda.PreAdjFissClaim.Fields.estAmtDue, true, from.getEstAmtDue(), to::setEstAmtDue);\n",
         block.toString());
@@ -43,7 +45,8 @@ public class AmountFieldTransformerTest {
     RootBean model = RootBean.builder().mapping(mapping).build();
 
     AmountFieldTransformer generator = new AmountFieldTransformer();
-    CodeBlock block = generator.generateCodeBlock(mapping, column, field);
+    CodeBlock block =
+        generator.generateCodeBlock(mapping, column, field, GrpcMessageCodeGenerator.Instance);
     assertEquals(
         "transformer.copyOptionalAmount(namePrefix + gov.cms.bfd.model.rda.PreAdjFissClaim.Fields.estAmtDue, from::hasEstAmtDue, from::getEstAmtDue, to::setEstAmtDue);\n",
         block.toString());

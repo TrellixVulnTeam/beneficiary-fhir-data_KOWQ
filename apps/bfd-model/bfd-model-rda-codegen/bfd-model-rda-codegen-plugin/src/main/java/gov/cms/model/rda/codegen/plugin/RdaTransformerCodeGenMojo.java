@@ -20,6 +20,7 @@ import gov.cms.model.rda.codegen.plugin.model.ModelUtil;
 import gov.cms.model.rda.codegen.plugin.model.RootBean;
 import gov.cms.model.rda.codegen.plugin.model.TransformationBean;
 import gov.cms.model.rda.codegen.plugin.transformer.AbstractFieldTransformer;
+import gov.cms.model.rda.codegen.plugin.transformer.GrpcMessageCodeGenerator;
 import gov.cms.model.rda.codegen.plugin.transformer.TransformerUtil;
 import java.io.File;
 import java.io.IOException;
@@ -270,7 +271,10 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
     for (TransformationBean transformation : mapping.getTransformations()) {
       final ColumnBean column = mapping.getTable().findColumnByName(transformation.getTo());
       TransformerUtil.selectTransformerForField(column, transformation)
-          .map(generator -> generator.generateCodeBlock(mapping, column, transformation))
+          .map(
+              generator ->
+                  generator.generateCodeBlock(
+                      mapping, column, transformation, GrpcMessageCodeGenerator.Instance))
           .ifPresent(builder::addCode);
     }
     if (mapping.hasExternalTransformations()) {

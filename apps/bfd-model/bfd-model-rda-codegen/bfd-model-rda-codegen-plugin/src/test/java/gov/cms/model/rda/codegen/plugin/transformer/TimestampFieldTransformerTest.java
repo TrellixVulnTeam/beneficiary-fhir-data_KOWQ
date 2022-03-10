@@ -23,7 +23,9 @@ public class TimestampFieldTransformerTest {
     RootBean model = RootBean.builder().mapping(mapping).build();
 
     TimestampFieldTransformer generator = new TimestampFieldTransformer();
-    CodeBlock block = generator.generateCodeBlock(mapping, column, transformation);
+    CodeBlock block =
+        generator.generateCodeBlock(
+            mapping, column, transformation, GrpcMessageCodeGenerator.Instance);
     assertEquals("to.setLastUpdated(now);\n", block.toString());
   }
 }
