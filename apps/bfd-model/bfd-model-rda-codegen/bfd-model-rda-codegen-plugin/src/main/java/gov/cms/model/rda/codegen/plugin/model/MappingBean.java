@@ -69,6 +69,14 @@ public class MappingBean {
     return transformations.stream().findFirst();
   }
 
+  public Optional<ColumnBean> findColumnByFieldName(String name) {
+    return table.getColumns().stream().filter(c -> name.equals(c.getName())).findAny();
+  }
+
+  public Optional<JoinBean> findJoinByFieldName(String name) {
+    return table.getJoins().stream().filter(c -> name.equals(c.getFieldName())).findAny();
+  }
+
   public static enum SourceType {
     Grpc,
     RifCsv

@@ -19,8 +19,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import javax.lang.model.element.Modifier;
 import javax.persistence.CascadeType;
@@ -120,10 +122,12 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
     }
     classBuilder.addAnnotation(createTableAnnotation(mapping.getTable()));
     addEnums(mapping.getEnumTypes(), classBuilder);
-    List<ColumnBean> primaryKeySpecs = new ArrayList<>();
-    addColumnFields(mapping, classBuilder, primaryKeySpecs);
-    addArrayFields(mapping, findMappingWithId, classBuilder, primaryKeySpecs.size());
-    addJoinFields(mapping, findMappingWithEntityClassName, classBuilder, primaryKeySpecs);
+    var primaryKeySpecs = new ArrayList<ColumnBean>();
+    var primaryKeyFieldNames = Set.copyOf(mapping.getTable().getPrimaryKeyColumns());
+    addPrimaryKeyFields(mapping, classBuilder, findMappingWithEntityClassName, primaryKeySpecs);
+    addColumnFields(mapping, classBuilder, primaryKeyFieldNames);
+    addArrayFields(mapping, findMappingWithId, classBuilder, primaryKeyFieldNames.size());
+    addJoinFields(mapping, findMappingWithEntityClassName, classBuilder, primaryKeyFieldNames);
     if (primaryKeySpecs.size() > 1) {
       classBuilder
           .addAnnotation(createIdClassAnnotation(mapping))
@@ -147,39 +151,117 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
     return builder.build();
   }
 
-  private void addColumnFields(
-      MappingBean mapping, TypeSpec.Builder classBuilder, List<ColumnBean> primaryKeySpecs)
+  private void addPrimaryKeyFields(
+      MappingBean mapping,
+      TypeSpec.Builder classBuilder,
+      Function<String, Optional<MappingBean>> findMappingWithEntityClassName,
+      List<ColumnBean> primaryKeySpecs)
       throws MojoExecutionException {
-    final var equalsFields = mapping.getTable().getColumnsForEqualsMethod();
+    for (String primaryKeyColumn : mapping.getTable().getPrimaryKeyColumns()) {
+      var join = mapping.findJoinByFieldName(primaryKeyColumn);
+      if (join.isPresent()) {
+        addJoinField(mapping, join.get(), classBuilder);
+        var keyColumn =
+            findPrimaryKeyColumnBeanForJoin(mapping, findMappingWithEntityClassName, join.get());
+        primaryKeySpecs.add(keyColumn);
+        continue;
+      }
+      var column = mapping.findColumnByFieldName(primaryKeyColumn);
+      if (column.isPresent()) {
+        addColumnField(mapping, column.get(), classBuilder);
+        primaryKeySpecs.add(column.get());
+        continue;
+      }
+      throw failure(
+          "no column or join matches primary key field name: mapping=%s field=%s",
+          mapping.getId(), primaryKeyColumn);
+    }
+  }
+
+  private void addJoinFields(
+      MappingBean mapping,
+      Function<String, Optional<MappingBean>> findMappingByEntityClass,
+      TypeSpec.Builder classBuilder,
+      Collection<String> namesToSkip)
+      throws MojoExecutionException {
+    for (JoinBean join : mapping.getTable().getJoins()) {
+      if (namesToSkip.contains(join.getFieldName())) {
+        continue;
+      }
+      if (isJoinForArray(mapping, join)) {
+        continue;
+      }
+      addJoinField(mapping, join, classBuilder);
+    }
+  }
+
+  private void addJoinField(MappingBean mapping, JoinBean join, TypeSpec.Builder classBuilder)
+      throws MojoExecutionException {
+    if (!join.isValidEntityClass()) {
+      throw failure(
+          "entityClass for join must include package: mapping=%s join=%s entityClass=%s",
+          mapping.getId(), join.getFieldName(), join.getEntityClass());
+    }
+    if (isJoinForArray(mapping, join)) {
+      throw failure(
+          "array join field added as ordinary join: mapping=%s join=%s entityClass=%s",
+          mapping.getId(), join.getFieldName(), join.getEntityClass());
+    }
+    final var fieldBuilder = createFieldSpecBuilderForJoin(mapping, join);
+    classBuilder.addField(fieldBuilder.build());
+  }
+
+  private ColumnBean findPrimaryKeyColumnBeanForJoin(
+      MappingBean mapping,
+      Function<String, Optional<MappingBean>> findMappingByEntityClass,
+      JoinBean join)
+      throws MojoExecutionException {
+    var parent = findMappingByEntityClass.apply(join.getEntityClass());
+    if (parent.isEmpty()) {
+      throw failure(
+          "no mapping found for primary key join class: mapping=%s join=%s entityClass=%s",
+          mapping.getId(), join.getFieldName(), join.getEntityClass());
+    }
+    return parent.get().getTable().findColumnByNameOrDbName(join.getJoinColumnName());
+  }
+
+  private void addColumnFields(
+      MappingBean mapping, TypeSpec.Builder classBuilder, Collection<String> namesToSkip)
+      throws MojoExecutionException {
     for (ColumnBean column : mapping.getTable().getColumns()) {
-      final TypeName fieldType = createFieldTypeForColumn(mapping, column);
-      FieldSpec.Builder builder =
-          FieldSpec.builder(fieldType, column.getName()).addModifiers(Modifier.PRIVATE);
-      if (column.hasComment()) {
-        builder.addJavadoc(column.getComment());
-      }
-      if (column.isEnum()) {
-        builder.addAnnotation(createEnumeratedAnnotation(mapping, column));
-      }
-      if (column.getFieldType() == ColumnBean.FieldType.Transient) {
-        builder.addAnnotation(Transient.class);
-        if (mapping.getTable().isPrimaryKey(column.getName())) {
-          throw failure(
-              "transient fields cannot be primary keys: mapping=%s field=%s",
-              mapping.getId(), column.getName());
-        }
-      } else {
-        addColumnAnnotations(mapping, builder, column);
-      }
-      if (equalsFields.contains(column.getName())) {
-        builder.addAnnotation(EqualsAndHashCode.Include.class);
-      }
-      FieldSpec fieldSpec = builder.build();
-      classBuilder.addField(fieldSpec);
-      if (mapping.getTable().isPrimaryKey(column.getName())) {
-        primaryKeySpecs.add(column);
+      if (!namesToSkip.contains(column.getName())) {
+        addColumnField(mapping, column, classBuilder);
       }
     }
+  }
+
+  private void addColumnField(MappingBean mapping, ColumnBean column, TypeSpec.Builder classBuilder)
+      throws MojoExecutionException {
+    final var equalsFields = mapping.getTable().getColumnsForEqualsMethod();
+    final TypeName fieldType = createFieldTypeForColumn(mapping, column);
+    FieldSpec.Builder builder =
+        FieldSpec.builder(fieldType, column.getName()).addModifiers(Modifier.PRIVATE);
+    if (column.hasComment()) {
+      builder.addJavadoc(column.getComment());
+    }
+    if (column.isEnum()) {
+      builder.addAnnotation(createEnumeratedAnnotation(mapping, column));
+    }
+    if (column.getFieldType() == ColumnBean.FieldType.Transient) {
+      builder.addAnnotation(Transient.class);
+      if (mapping.getTable().isPrimaryKey(column.getName())) {
+        throw failure(
+            "transient fields cannot be primary keys: mapping=%s field=%s",
+            mapping.getId(), column.getName());
+      }
+    } else {
+      addColumnAnnotations(mapping, builder, column);
+    }
+    if (equalsFields.contains(column.getName())) {
+      builder.addAnnotation(EqualsAndHashCode.Include.class);
+    }
+    FieldSpec fieldSpec = builder.build();
+    classBuilder.addField(fieldSpec);
   }
 
   private void addColumnAnnotations(
@@ -221,37 +303,6 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
                     .addMember("sequenceName", "$S", column.getSequence().getName())
                     .addMember("allocationSize", "$L", column.getSequence().getAllocationSize())
                     .build());
-      }
-    }
-  }
-
-  private void addJoinFields(
-      MappingBean mapping,
-      Function<String, Optional<MappingBean>> findMappingByEntityClass,
-      TypeSpec.Builder classBuilder,
-      List<ColumnBean> primaryKeySpecs)
-      throws MojoExecutionException {
-    for (JoinBean join : mapping.getTable().getJoins()) {
-      if (!join.isValidEntityClass()) {
-        throw failure(
-            "entityClass for join must include package: mapping=%s join=%s entityClass=%s",
-            mapping.getId(), join.getFieldName(), join.getEntityClass());
-      }
-      if (isJoinForArray(mapping, join)) {
-        continue;
-      }
-      final var fieldBuilder = createFieldSpecBuilderForJoin(mapping, join);
-      classBuilder.addField(fieldBuilder.build());
-
-      if (mapping.getTable().isPrimaryKey(join)) {
-        Optional<MappingBean> parent = findMappingByEntityClass.apply(join.getEntityClass());
-        if (parent.isEmpty()) {
-          throw failure(
-              "no mapping found for primary key join class: mapping=%s join=%s entityClass=%s",
-              mapping.getId(), join.getFieldName(), join.getEntityClass());
-        }
-        primaryKeySpecs.add(
-            parent.get().getTable().findColumnByNameOrDbName(join.getJoinColumnName()));
       }
     }
   }

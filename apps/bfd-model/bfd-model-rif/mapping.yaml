@@ -1904,7 +1904,6 @@ mappings:
     name: carrier_claims_lines
     primaryKeyColumns:
     - parentClaim
-    - claimId
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.InpatientClaimZ
   id: InpatientClaim
@@ -3263,7 +3262,6 @@ mappings:
     name: inpatient_claims_lines
     primaryKeyColumns:
     - parentClaim
-    - claimId
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.OutpatientClaimZ
   id: OutpatientClaim
@@ -4386,7 +4384,6 @@ mappings:
     name: outpatient_claims_lines
     primaryKeyColumns:
     - parentClaim
-    - claimId
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.HHAClaimZ
   id: HHAClaim
@@ -5028,7 +5025,6 @@ mappings:
     name: hha_claims_lines
     primaryKeyColumns:
     - parentClaim
-    - claimId
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.DMEClaimZ
   id: DMEClaim
@@ -5499,7 +5495,6 @@ mappings:
     name: dme_claims_lines
     primaryKeyColumns:
     - parentClaim
-    - claimId
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.HospiceClaimZ
   id: HospiceClaim
@@ -6130,7 +6125,6 @@ mappings:
     name: hospice_claims_lines
     primaryKeyColumns:
     - parentClaim
-    - claimId
     - lineNumber
 - entityClassName: gov.cms.bfd.model.rif.SNFClaimZ
   id: SNFClaim
@@ -7231,6 +7225,5 @@ mappings:
     name: snf_claims_lines
     primaryKeyColumns:
     - parentClaim
-    - claimId
     - lineNumber
 
