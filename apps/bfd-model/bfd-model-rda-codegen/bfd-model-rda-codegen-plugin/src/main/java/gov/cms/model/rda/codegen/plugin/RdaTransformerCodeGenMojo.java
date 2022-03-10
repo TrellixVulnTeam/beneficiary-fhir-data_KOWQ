@@ -21,6 +21,7 @@ import gov.cms.model.rda.codegen.plugin.model.RootBean;
 import gov.cms.model.rda.codegen.plugin.model.TransformationBean;
 import gov.cms.model.rda.codegen.plugin.transformer.AbstractFieldTransformer;
 import gov.cms.model.rda.codegen.plugin.transformer.GrpcMessageCodeGenerator;
+import gov.cms.model.rda.codegen.plugin.transformer.RifMessageCodeGenerator;
 import gov.cms.model.rda.codegen.plugin.transformer.TransformerUtil;
 import java.io.File;
 import java.io.IOException;
@@ -268,13 +269,17 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
                 entityClassType,
                 AbstractFieldTransformer.DEST_VAR,
                 entityClassType);
+    final var messageCodeGenerator =
+        mapping.getSourceType() == MappingBean.SourceType.RifCsv
+            ? RifMessageCodeGenerator.Instance
+            : GrpcMessageCodeGenerator.Instance;
     for (TransformationBean transformation : mapping.getTransformations()) {
       final ColumnBean column = mapping.getTable().findColumnByName(transformation.getTo());
       TransformerUtil.selectTransformerForField(column, transformation)
           .map(
               generator ->
                   generator.generateCodeBlock(
-                      mapping, column, transformation, GrpcMessageCodeGenerator.Instance))
+                      mapping, column, transformation, messageCodeGenerator))
           .ifPresent(builder::addCode);
     }
     if (mapping.hasExternalTransformations()) {

@@ -77,7 +77,7 @@ public class MappingBean {
     return table.getJoins().stream().filter(c -> name.equals(c.getFieldName())).findAny();
   }
 
-  public static enum SourceType {
+  public enum SourceType {
     Grpc,
     RifCsv
   }

@@ -16,8 +16,8 @@ public class RifLineWrapper {
    * @param e an enum
    * @return true if the value is non-null and non-empty
    */
-  public boolean hasValue(final Enum<?> e) {
-    return !Strings.isNullOrEmpty(line.get(e));
+  public boolean hasValue(final String label) {
+    return !Strings.isNullOrEmpty(line.get(label));
   }
 
   /**
@@ -26,7 +26,7 @@ public class RifLineWrapper {
    * @param e an enum
    * @return the String at the given enum String
    */
-  public String getValue(final Enum<?> e) {
-    return line.get(e);
+  public String getValue(final String label) {
+    return line.get(label);
   }
 }

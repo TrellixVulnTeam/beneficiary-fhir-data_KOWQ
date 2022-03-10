@@ -43,8 +43,8 @@ public class RifObjectWrapper {
    * @param e an enum
    * @return true if the value is non-null and non-empty
    */
-  public boolean hasValue(final Enum<?> e) {
-    return header.hasValue(e);
+  public boolean hasValue(final String label) {
+    return header.hasValue(label);
   }
 
   /**
@@ -53,7 +53,7 @@ public class RifObjectWrapper {
    * @param e an enum
    * @return the String at the given enum String
    */
-  public String getValue(final Enum<?> e) {
-    return header.getValue(e);
+  public String getValue(final String label) {
+    return header.getValue(label);
   }
 }
