@@ -164,7 +164,7 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
     return mapping.getTransformations().stream()
         .flatMap(
             transformation -> {
-              final ColumnBean column = mapping.getTable().findColumn(transformation.getTo());
+              final ColumnBean column = mapping.getTable().findColumnByName(transformation.getTo());
               return TransformerUtil.selectTransformerForField(column, transformation)
                   .map(
                       transformer ->
@@ -207,7 +207,7 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
     return mapping.getTransformations().stream()
         .flatMap(
             transformation -> {
-              final ColumnBean column = mapping.getTable().findColumn(transformation.getTo());
+              final ColumnBean column = mapping.getTable().findColumnByName(transformation.getTo());
               return TransformerUtil.selectTransformerForField(column, transformation)
                   .map(
                       transformer ->
@@ -268,7 +268,7 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
                 AbstractFieldTransformer.DEST_VAR,
                 entityClassType);
     for (TransformationBean transformation : mapping.getTransformations()) {
-      final ColumnBean column = mapping.getTable().findColumn(transformation.getTo());
+      final ColumnBean column = mapping.getTable().findColumnByName(transformation.getTo());
       TransformerUtil.selectTransformerForField(column, transformation)
           .map(generator -> generator.generateCodeBlock(mapping, column, transformation))
           .ifPresent(builder::addCode);

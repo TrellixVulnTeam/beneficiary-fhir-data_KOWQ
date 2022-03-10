@@ -86,7 +86,9 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
     RootBean root = ModelUtil.loadMappingsFromYamlFile(mappingFile);
     List<MappingBean> rootMappings = root.getMappings();
     for (MappingBean mapping : rootMappings) {
-      TypeSpec rootEntity = createEntityFromMapping(mapping, root::findMappingWithId);
+      TypeSpec rootEntity =
+          createEntityFromMapping(
+              mapping, root::findMappingWithId, root::findMappingWithEntityClassName);
       JavaFile javaFile = JavaFile.builder(mapping.entityPackageName(), rootEntity).build();
       javaFile.writeTo(outputDir);
     }
@@ -95,7 +97,9 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
 
   // region Implementation Details
   private TypeSpec createEntityFromMapping(
-      MappingBean mapping, Function<String, Optional<MappingBean>> mappingFinder)
+      MappingBean mapping,
+      Function<String, Optional<MappingBean>> findMappingWithId,
+      Function<String, Optional<MappingBean>> findMappingWithEntityClassName)
       throws MojoExecutionException {
     TypeSpec.Builder classBuilder =
         TypeSpec.classBuilder(mapping.entityClassName())
@@ -116,15 +120,15 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
     }
     classBuilder.addAnnotation(createTableAnnotation(mapping.getTable()));
     addEnums(mapping.getEnumTypes(), classBuilder);
-    List<FieldSpec> primaryKeySpecs = new ArrayList<>();
+    List<ColumnBean> primaryKeySpecs = new ArrayList<>();
     addColumnFields(mapping, classBuilder, primaryKeySpecs);
+    addArrayFields(mapping, findMappingWithId, classBuilder, primaryKeySpecs.size());
+    addJoinFields(mapping, findMappingWithEntityClassName, classBuilder, primaryKeySpecs);
     if (primaryKeySpecs.size() > 1) {
       classBuilder
           .addAnnotation(createIdClassAnnotation(mapping))
           .addType(createPrimaryKeyClass(mapping, primaryKeySpecs));
     }
-    addArrayFields(mapping, mappingFinder, classBuilder, primaryKeySpecs);
-    addJoinFields(mapping, classBuilder);
     return classBuilder.build();
   }
 
@@ -144,18 +148,11 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
   }
 
   private void addColumnFields(
-      MappingBean mapping, TypeSpec.Builder classBuilder, List<FieldSpec> primaryKeySpecs)
+      MappingBean mapping, TypeSpec.Builder classBuilder, List<ColumnBean> primaryKeySpecs)
       throws MojoExecutionException {
     final var equalsFields = mapping.getTable().getColumnsForEqualsMethod();
-    TypeName fieldType;
     for (ColumnBean column : mapping.getTable().getColumns()) {
-      if (column.isEnum()) {
-        fieldType =
-            ClassName.get(
-                mapping.entityPackageName(), mapping.entityClassName(), column.getEnumType());
-      } else {
-        fieldType = column.computeJavaType();
-      }
+      final TypeName fieldType = createFieldTypeForColumn(mapping, column);
       FieldSpec.Builder builder =
           FieldSpec.builder(fieldType, column.getName()).addModifiers(Modifier.PRIVATE);
       if (column.hasComment()) {
@@ -180,7 +177,7 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
       FieldSpec fieldSpec = builder.build();
       classBuilder.addField(fieldSpec);
       if (mapping.getTable().isPrimaryKey(column.getName())) {
-        primaryKeySpecs.add(fieldSpec);
+        primaryKeySpecs.add(column);
       }
     }
   }
@@ -228,7 +225,11 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
     }
   }
 
-  private void addJoinFields(MappingBean mapping, TypeSpec.Builder classBuilder)
+  private void addJoinFields(
+      MappingBean mapping,
+      Function<String, Optional<MappingBean>> findMappingByEntityClass,
+      TypeSpec.Builder classBuilder,
+      List<ColumnBean> primaryKeySpecs)
       throws MojoExecutionException {
     for (JoinBean join : mapping.getTable().getJoins()) {
       if (!join.isValidEntityClass()) {
@@ -241,6 +242,17 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
       }
       final var fieldBuilder = createFieldSpecBuilderForJoin(mapping, join);
       classBuilder.addField(fieldBuilder.build());
+
+      if (mapping.getTable().isPrimaryKey(join)) {
+        Optional<MappingBean> parent = findMappingByEntityClass.apply(join.getEntityClass());
+        if (parent.isEmpty()) {
+          throw failure(
+              "no mapping found for primary key join class: mapping=%s join=%s entityClass=%s",
+              mapping.getId(), join.getFieldName(), join.getEntityClass());
+        }
+        primaryKeySpecs.add(
+            parent.get().getTable().findColumnByNameOrDbName(join.getJoinColumnName()));
+      }
     }
   }
 
@@ -296,12 +308,12 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
       MappingBean mapping,
       Function<String, Optional<MappingBean>> mappingFinder,
       TypeSpec.Builder classBuilder,
-      List<FieldSpec> primaryKeySpecs)
+      int primaryKeyFieldCount)
       throws MojoExecutionException {
-    if (mapping.getArrays().size() > 0 && primaryKeySpecs.size() != 1) {
+    if (mapping.getArrays().size() > 0 && primaryKeyFieldCount != 1) {
       throw failure(
           "classes with arrays must have a single primary key column but this one has %d: mapping=%s",
-          primaryKeySpecs.size(), mapping.getId());
+          primaryKeyFieldCount, mapping.getId());
     }
     for (ArrayElement arrayElement : mapping.getArrays()) {
       Optional<MappingBean> arrayMapping = mappingFinder.apply(arrayElement.getMapping());
@@ -405,7 +417,7 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
         .build();
   }
 
-  private TypeSpec createPrimaryKeyClass(MappingBean mapping, List<FieldSpec> parentKeySpecs) {
+  private TypeSpec createPrimaryKeyClass(MappingBean mapping, List<ColumnBean> columns) {
     TypeSpec.Builder pkClassBuilder =
         TypeSpec.classBuilder(PRIMARY_KEY_CLASS_NAME)
             .addSuperinterface(Serializable.class)
@@ -414,9 +426,10 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
             .addAnnotation(NoArgsConstructor.class)
             .addAnnotation(AllArgsConstructor.class)
             .addJavadoc("PK class for the $L table", mapping.getTable().getName());
-    for (FieldSpec fieldSpec : parentKeySpecs) {
+    for (ColumnBean column : columns) {
+      final TypeName fieldType = createFieldTypeForColumn(mapping, column);
       FieldSpec.Builder keyFieldBuilder =
-          FieldSpec.builder(fieldSpec.type, fieldSpec.name).addModifiers(Modifier.PRIVATE);
+          FieldSpec.builder(fieldType, column.getName()).addModifiers(Modifier.PRIVATE);
       FieldSpec keyFieldSpec = keyFieldBuilder.build();
       pkClassBuilder.addField(keyFieldSpec);
     }
@@ -485,6 +498,18 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
       builder.addMember("length", "$L", length);
     }
     return builder.build();
+  }
+
+  private TypeName createFieldTypeForColumn(MappingBean mapping, ColumnBean column) {
+    TypeName fieldType;
+    if (column.isEnum()) {
+      fieldType =
+          ClassName.get(
+              mapping.entityPackageName(), mapping.entityClassName(), column.getEnumType());
+    } else {
+      fieldType = column.computeJavaType();
+    }
+    return fieldType;
   }
   // endregion
 

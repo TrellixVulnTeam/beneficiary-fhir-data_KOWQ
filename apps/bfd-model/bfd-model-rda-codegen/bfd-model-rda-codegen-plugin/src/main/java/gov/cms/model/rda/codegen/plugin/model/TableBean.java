@@ -23,9 +23,20 @@ public class TableBean {
   @Singular private List<ColumnBean> columns = new ArrayList<>();
   @Singular private List<JoinBean> joins = new ArrayList<>();
 
-  public ColumnBean findColumn(String columnName) {
+  public ColumnBean findColumnByName(String columnName) {
     return columns.stream()
         .filter(c -> columnName.equals(c.getName()))
+        .findAny()
+        .orElseThrow(
+            () ->
+                new IllegalArgumentException(
+                    String.format(
+                        "reference to non-existent column %s in table %s", columnName, name)));
+  }
+
+  public ColumnBean findColumnByNameOrDbName(String columnName) {
+    return columns.stream()
+        .filter(c -> columnName.equals(c.getName()) || columnName.equals(c.getDbName()))
         .findAny()
         .orElseThrow(
             () ->
