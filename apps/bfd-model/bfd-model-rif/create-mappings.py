@@ -88,12 +88,6 @@ def create_line_mapping(summary):
 
     table["columns"] = columns
 
-    if summary["headerEntityGeneratedIdField"] is not None:
-        add_primary_key(summary, primary_key_columns, summary["headerEntityGeneratedIdField"])
-    if summary["headerEntityIdField"] is not None:
-        add_primary_key(summary, primary_key_columns, summary["headerEntityIdField"])
-    add_primary_key(summary, primary_key_columns, line_number_column_name)
-
     parent_entity = f'{summary["packageName"]}.{parent_name}{classNameSuffix}'
     join = dict()
     join["fieldName"] = "parentClaim"
@@ -103,7 +97,9 @@ def create_line_mapping(summary):
     join["fetchType"] = "EAGER"
     join["foreignKey"] = f'{line_table}_{parent_key}_to_{parent_table}'
     table["joins"] = [join]
-    primary_key_columns.insert(0, "parentClaim")
+
+    primary_key_columns.append("parentClaim")
+    add_primary_key(summary, primary_key_columns, line_number_column_name)
 
     return mapping
 
@@ -219,6 +215,7 @@ def add_join_to_monthlies(all_mappings):
         join["foreignKey"] = "beneficiary_monthly_bene_id_to_beneficiary"
         joins.append(join)
         monthly["table"]["primaryKeyColumns"].insert(0, "parentBeneficiary")
+
 
 summaryFilePath = Path("target/rif-mapping-summary.yaml")
 summaries = yaml.safe_load(summaryFilePath.read_text())
