@@ -5,19 +5,30 @@ from pathlib import Path
 
 import yaml
 
-classNameSuffix = "Z"
+classNameSuffix = "Poc"
 
 
 def create_mapping(summary):
-    mapping = dict()
-    mapping["id"] = summary["headerEntity"]
-    mapping["entityClassName"] = f'{summary["packageName"]}.{mapping["id"]}{classNameSuffix}'
-
-    primary_key_columns = []
-    table = {"name": summary["headerTable"], "primaryKeyColumns": primary_key_columns}
-    mapping["table"] = table
-
     columns = list()
+    transformations = list()
+
+    primary_key_columns = list()
+    table = {
+        "name": summary["headerTable"],
+        "primaryKeyColumns": primary_key_columns,
+        "columns": columns,
+    }
+
+    mapping = {
+        "id": summary["headerEntity"],
+        "entityClassName": f'{summary["packageName"]}.{summary["headerEntity"]}{classNameSuffix}',
+        "messageClassName": "gov.cms.model.rda.codegen.library.RifObjectWrapper",
+        "transformerClassName": f'{summary["packageName"]}.{summary["headerEntity"]}Transformer{classNameSuffix}',
+        "sourceType": "RifCsv",
+        "table": table,
+        "transformations": transformations
+    }
+
     if summary["headerEntityGeneratedIdField"] is not None:
         field_name = summary["headerEntityGeneratedIdField"]
         primary_key_columns.append(field_name)
@@ -38,13 +49,18 @@ def create_mapping(summary):
         add_transient_to_column(summary, column)
         columns.append(column)
 
-    table["columns"] = columns
-
     if summary["headerEntityIdField"] is not None:
         add_primary_key(summary, primary_key_columns, summary["headerEntityIdField"])
 
     for join_relationship in summary["innerJoinRelationship"]:
         joins_for_mapping(mapping).append(create_join(summary, join_relationship))
+
+    for rif_field in summary["rifLayout"]["fields"]:
+        column_name = rif_field["rifColumnName"]
+        if line_number_column_name == column_name:
+            break
+
+        add_field_transform(rif_field, transformations)
 
     return mapping
 
@@ -58,20 +74,32 @@ def create_line_mapping(summary):
     if not summary["hasLines"]:
         return None
 
-    mapping = dict()
     parent_name = summary["headerEntity"]
     parent_table = summary["headerTable"]
     parent_key = summary["headerEntityIdField"].lower()
     line_name = f'{parent_name}Line'
     line_table = f'{parent_table}_lines'
-    mapping["id"] = line_name
-    mapping["entityClassName"] = f'{summary["packageName"]}.{line_name}{classNameSuffix}'
-
-    primary_key_columns = []
-    table = {"name": line_table, "primaryKeyColumns": primary_key_columns}
-    mapping["table"] = table
 
     columns = list()
+    transformations = list()
+
+    primary_key_columns = list()
+    table = {
+        "name": line_table,
+        "primaryKeyColumns": primary_key_columns,
+        "columns": columns,
+    }
+
+    mapping = {
+        "id": line_name,
+        "entityClassName": f'{summary["packageName"]}.{line_name}{classNameSuffix}',
+        "messageClassName": "gov.cms.model.rda.codegen.library.RifObjectWrapper",
+        "transformerClassName": f'{summary["packageName"]}.{line_name}Transformer{classNameSuffix}',
+        "sourceType": "RifCsv",
+        "table": table,
+        "transformations": transformations
+    }
+
     line_number_column_name = summary["lineEntityLineNumberField"]
     line_fields_started = False
     for rif_field in summary["rifLayout"]["fields"]:
@@ -83,16 +111,15 @@ def create_line_mapping(summary):
 
         columns.append(create_column(rif_field))
 
-    table["columns"] = columns
-
     parent_entity = f'{summary["packageName"]}.{parent_name}{classNameSuffix}'
-    join = dict()
-    join["fieldName"] = "parentClaim"
-    join["entityClass"] = parent_entity
-    join["joinColumnName"] = parent_key
-    join["joinType"] = "ManyToOne"
-    join["fetchType"] = "EAGER"
-    join["foreignKey"] = f'{line_table}_{parent_key}_to_{parent_table}'
+    join = {
+        "fieldName": "parentClaim",
+        "entityClass": parent_entity,
+        "joinColumnName": parent_key,
+        "joinType": "ManyToOne",
+        "fetchType": "EAGER",
+        "foreignKey": f'{line_table}_{parent_key}_to_{parent_table}'
+    }
     table["joins"] = [join]
 
     primary_key_columns.append("parentClaim")
@@ -147,6 +174,20 @@ def create_column(rif_field):
         else:
             column["sqlType"] = f'decimal({length},{scale})'
     return column
+
+
+def add_field_transform(rif_field, transforms):
+    if rif_field["javaFieldName"] == "lastUpdated":
+        transforms.append({
+            "from": "NOW",
+            "to": rif_field["javaFieldName"]
+        })
+    else:
+        transforms.append({
+            "from": rif_field["rifColumnName"],
+            "to": rif_field["javaFieldName"],
+            "optional": rif_field["rifColumnOptional"]
+        })
 
 
 def add_transient_to_column(summary, column):
@@ -246,4 +287,10 @@ for summary in summaries:
 add_join_to_monthlies(output_mappings)
 
 result = {"mappings": output_mappings}
-print(yaml.dump(result, default_flow_style=False))
+result_yaml = yaml.dump(result, default_flow_style=False)
+
+if len(sys.argv) > 1:
+    with open(sys.argv[1], "w") as text_file:
+        text_file.write(result_yaml)
+else:
+    print(result_yaml)

@@ -1,6 +1,8 @@
 mappings:
-- entityClassName: gov.cms.bfd.model.rif.BeneficiaryZ
+- entityClassName: gov.cms.bfd.model.rif.BeneficiaryPoc
   id: Beneficiary
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: 723 Beneficiary ID (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/bene_id.txt)
@@ -887,7 +889,7 @@ mappings:
     - cascadeTypes:
       - ALL
       collectionType: List
-      entityClass: gov.cms.bfd.model.rif.BeneficiaryMonthlyZ
+      entityClass: gov.cms.bfd.model.rif.BeneficiaryMonthlyPoc
       fetchType: LAZY
       fieldName: beneficiaryMonthlys
       joinType: OneToMany
@@ -897,7 +899,7 @@ mappings:
     - cascadeTypes:
       - ALL
       collectionType: Set
-      entityClass: gov.cms.bfd.model.rif.BeneficiaryHistoryZ
+      entityClass: gov.cms.bfd.model.rif.BeneficiaryHistoryPoc
       fetchType: LAZY
       fieldName: beneficiaryHistories
       joinType: OneToMany
@@ -906,7 +908,7 @@ mappings:
     - cascadeTypes:
       - ALL
       collectionType: Set
-      entityClass: gov.cms.bfd.model.rif.MedicareBeneficiaryIdHistoryZ
+      entityClass: gov.cms.bfd.model.rif.MedicareBeneficiaryIdHistoryPoc
       fetchType: LAZY
       fieldName: medicareBeneficiaryIdHistories
       joinType: OneToMany
@@ -915,8 +917,621 @@ mappings:
     name: beneficiaries
     primaryKeyColumns:
     - beneficiaryId
-- entityClassName: gov.cms.bfd.model.rif.BeneficiaryMonthlyZ
+  transformations:
+  - from: BENE_ID
+    optional: false
+    to: beneficiaryId
+  - from: STATE_CODE
+    optional: false
+    to: stateCode
+  - from: BENE_COUNTY_CD
+    optional: false
+    to: countyCode
+  - from: BENE_ZIP_CD
+    optional: false
+    to: postalCode
+  - from: BENE_BIRTH_DT
+    optional: false
+    to: birthDate
+  - from: BENE_SEX_IDENT_CD
+    optional: false
+    to: sex
+  - from: BENE_RACE_CD
+    optional: true
+    to: race
+  - from: BENE_ENTLMT_RSN_ORIG
+    optional: true
+    to: entitlementCodeOriginal
+  - from: BENE_ENTLMT_RSN_CURR
+    optional: true
+    to: entitlementCodeCurrent
+  - from: BENE_ESRD_IND
+    optional: true
+    to: endStageRenalDiseaseCode
+  - from: BENE_MDCR_STATUS_CD
+    optional: true
+    to: medicareEnrollmentStatusCode
+  - from: BENE_PTA_TRMNTN_CD
+    optional: true
+    to: partATerminationCode
+  - from: BENE_PTB_TRMNTN_CD
+    optional: true
+    to: partBTerminationCode
+  - from: BENE_CRNT_HIC_NUM
+    optional: false
+    to: hicn
+  - from: BENE_SRNM_NAME
+    optional: false
+    to: nameSurname
+  - from: BENE_GVN_NAME
+    optional: false
+    to: nameGiven
+  - from: BENE_MDL_NAME
+    optional: true
+    to: nameMiddleInitial
+  - from: MBI_NUM
+    optional: true
+    to: medicareBeneficiaryId
+  - from: DEATH_DT
+    optional: true
+    to: beneficiaryDateOfDeath
+  - from: RFRNC_YR
+    optional: true
+    to: beneEnrollmentReferenceYear
+  - from: A_MO_CNT
+    optional: true
+    to: partAMonthsCount
+  - from: B_MO_CNT
+    optional: true
+    to: partBMonthsCount
+  - from: BUYIN_MO_CNT
+    optional: true
+    to: stateBuyInCoverageCount
+  - from: HMO_MO_CNT
+    optional: true
+    to: hmoCoverageCount
+  - from: RDS_MO_CNT
+    optional: true
+    to: monthsRetireeDrugSubsidyCoverage
+  - from: ENRL_SRC
+    optional: true
+    to: sourceOfEnrollmentData
+  - from: SAMPLE_GROUP
+    optional: true
+    to: sampleMedicareGroupIndicator
+  - from: EFIVEPCT
+    optional: true
+    to: enhancedMedicareSampleIndicator
+  - from: CRNT_BIC
+    optional: true
+    to: currentBeneficiaryIdCode
+  - from: AGE
+    optional: true
+    to: ageOfBeneficiary
+  - from: COVSTART
+    optional: true
+    to: medicareCoverageStartDate
+  - from: DUAL_MO_CNT
+    optional: true
+    to: monthsOfDualEligibility
+  - from: FIPS_STATE_CNTY_JAN_CD
+    optional: true
+    to: fipsStateCntyJanCode
+  - from: FIPS_STATE_CNTY_FEB_CD
+    optional: true
+    to: fipsStateCntyFebCode
+  - from: FIPS_STATE_CNTY_MAR_CD
+    optional: true
+    to: fipsStateCntyMarCode
+  - from: FIPS_STATE_CNTY_APR_CD
+    optional: true
+    to: fipsStateCntyAprCode
+  - from: FIPS_STATE_CNTY_MAY_CD
+    optional: true
+    to: fipsStateCntyMayCode
+  - from: FIPS_STATE_CNTY_JUN_CD
+    optional: true
+    to: fipsStateCntyJunCode
+  - from: FIPS_STATE_CNTY_JUL_CD
+    optional: true
+    to: fipsStateCntyJulCode
+  - from: FIPS_STATE_CNTY_AUG_CD
+    optional: true
+    to: fipsStateCntyAugCode
+  - from: FIPS_STATE_CNTY_SEPT_CD
+    optional: true
+    to: fipsStateCntySeptCode
+  - from: FIPS_STATE_CNTY_OCT_CD
+    optional: true
+    to: fipsStateCntyOctCode
+  - from: FIPS_STATE_CNTY_NOV_CD
+    optional: true
+    to: fipsStateCntyNovCode
+  - from: FIPS_STATE_CNTY_DEC_CD
+    optional: true
+    to: fipsStateCntyDecCode
+  - from: V_DOD_SW
+    optional: true
+    to: validDateOfDeathSw
+  - from: RTI_RACE_CD
+    optional: true
+    to: rtiRaceCode
+  - from: MDCR_STUS_JAN_CD
+    optional: true
+    to: medicareStatusJanCode
+  - from: MDCR_STUS_FEB_CD
+    optional: true
+    to: medicareStatusFebCode
+  - from: MDCR_STUS_MAR_CD
+    optional: true
+    to: medicareStatusMarCode
+  - from: MDCR_STUS_APR_CD
+    optional: true
+    to: medicareStatusAprCode
+  - from: MDCR_STUS_MAY_CD
+    optional: true
+    to: medicareStatusMayCode
+  - from: MDCR_STUS_JUN_CD
+    optional: true
+    to: medicareStatusJunCode
+  - from: MDCR_STUS_JUL_CD
+    optional: true
+    to: medicareStatusJulCode
+  - from: MDCR_STUS_AUG_CD
+    optional: true
+    to: medicareStatusAugCode
+  - from: MDCR_STUS_SEPT_CD
+    optional: true
+    to: medicareStatusSeptCode
+  - from: MDCR_STUS_OCT_CD
+    optional: true
+    to: medicareStatusOctCode
+  - from: MDCR_STUS_NOV_CD
+    optional: true
+    to: medicareStatusNovCode
+  - from: MDCR_STUS_DEC_CD
+    optional: true
+    to: medicareStatusDecCode
+  - from: PLAN_CVRG_MO_CNT
+    optional: true
+    to: partDMonthsCount
+  - from: MDCR_ENTLMT_BUYIN_1_IND
+    optional: true
+    to: entitlementBuyInJanInd
+  - from: MDCR_ENTLMT_BUYIN_2_IND
+    optional: true
+    to: entitlementBuyInFebInd
+  - from: MDCR_ENTLMT_BUYIN_3_IND
+    optional: true
+    to: entitlementBuyInMarInd
+  - from: MDCR_ENTLMT_BUYIN_4_IND
+    optional: true
+    to: entitlementBuyInAprInd
+  - from: MDCR_ENTLMT_BUYIN_5_IND
+    optional: true
+    to: entitlementBuyInMayInd
+  - from: MDCR_ENTLMT_BUYIN_6_IND
+    optional: true
+    to: entitlementBuyInJunInd
+  - from: MDCR_ENTLMT_BUYIN_7_IND
+    optional: true
+    to: entitlementBuyInJulInd
+  - from: MDCR_ENTLMT_BUYIN_8_IND
+    optional: true
+    to: entitlementBuyInAugInd
+  - from: MDCR_ENTLMT_BUYIN_9_IND
+    optional: true
+    to: entitlementBuyInSeptInd
+  - from: MDCR_ENTLMT_BUYIN_10_IND
+    optional: true
+    to: entitlementBuyInOctInd
+  - from: MDCR_ENTLMT_BUYIN_11_IND
+    optional: true
+    to: entitlementBuyInNovInd
+  - from: MDCR_ENTLMT_BUYIN_12_IND
+    optional: true
+    to: entitlementBuyInDecInd
+  - from: HMO_1_IND
+    optional: true
+    to: hmoIndicatorJanInd
+  - from: HMO_2_IND
+    optional: true
+    to: hmoIndicatorFebInd
+  - from: HMO_3_IND
+    optional: true
+    to: hmoIndicatorMarInd
+  - from: HMO_4_IND
+    optional: true
+    to: hmoIndicatorAprInd
+  - from: HMO_5_IND
+    optional: true
+    to: hmoIndicatorMayInd
+  - from: HMO_6_IND
+    optional: true
+    to: hmoIndicatorJunInd
+  - from: HMO_7_IND
+    optional: true
+    to: hmoIndicatorJulInd
+  - from: HMO_8_IND
+    optional: true
+    to: hmoIndicatorAugInd
+  - from: HMO_9_IND
+    optional: true
+    to: hmoIndicatorSeptInd
+  - from: HMO_10_IND
+    optional: true
+    to: hmoIndicatorOctInd
+  - from: HMO_11_IND
+    optional: true
+    to: hmoIndicatorNovInd
+  - from: HMO_12_IND
+    optional: true
+    to: hmoIndicatorDecInd
+  - from: PTC_CNTRCT_JAN_ID
+    optional: true
+    to: partCContractNumberJanId
+  - from: PTC_CNTRCT_FEB_ID
+    optional: true
+    to: partCContractNumberFebId
+  - from: PTC_CNTRCT_MAR_ID
+    optional: true
+    to: partCContractNumberMarId
+  - from: PTC_CNTRCT_APR_ID
+    optional: true
+    to: partCContractNumberAprId
+  - from: PTC_CNTRCT_MAY_ID
+    optional: true
+    to: partCContractNumberMayId
+  - from: PTC_CNTRCT_JUN_ID
+    optional: true
+    to: partCContractNumberJunId
+  - from: PTC_CNTRCT_JUL_ID
+    optional: true
+    to: partCContractNumberJulId
+  - from: PTC_CNTRCT_AUG_ID
+    optional: true
+    to: partCContractNumberAugId
+  - from: PTC_CNTRCT_SEPT_ID
+    optional: true
+    to: partCContractNumberSeptId
+  - from: PTC_CNTRCT_OCT_ID
+    optional: true
+    to: partCContractNumberOctId
+  - from: PTC_CNTRCT_NOV_ID
+    optional: true
+    to: partCContractNumberNovId
+  - from: PTC_CNTRCT_DEC_ID
+    optional: true
+    to: partCContractNumberDecId
+  - from: PTC_PBP_JAN_ID
+    optional: true
+    to: partCPbpNumberJanId
+  - from: PTC_PBP_FEB_ID
+    optional: true
+    to: partCPbpNumberFebId
+  - from: PTC_PBP_MAR_ID
+    optional: true
+    to: partCPbpNumberMarId
+  - from: PTC_PBP_APR_ID
+    optional: true
+    to: partCPbpNumberAprId
+  - from: PTC_PBP_MAY_ID
+    optional: true
+    to: partCPbpNumberMayId
+  - from: PTC_PBP_JUN_ID
+    optional: true
+    to: partCPbpNumberJunId
+  - from: PTC_PBP_JUL_ID
+    optional: true
+    to: partCPbpNumberJulId
+  - from: PTC_PBP_AUG_ID
+    optional: true
+    to: partCPbpNumberAugId
+  - from: PTC_PBP_SEPT_ID
+    optional: true
+    to: partCPbpNumberSeptId
+  - from: PTC_PBP_OCT_ID
+    optional: true
+    to: partCPbpNumberOctId
+  - from: PTC_PBP_NOV_ID
+    optional: true
+    to: partCPbpNumberNovId
+  - from: PTC_PBP_DEC_ID
+    optional: true
+    to: partCPbpNumberDecId
+  - from: PTC_PLAN_TYPE_JAN_CD
+    optional: true
+    to: partCPlanTypeJanCode
+  - from: PTC_PLAN_TYPE_FEB_CD
+    optional: true
+    to: partCPlanTypeFebCode
+  - from: PTC_PLAN_TYPE_MAR_CD
+    optional: true
+    to: partCPlanTypeMarCode
+  - from: PTC_PLAN_TYPE_APR_CD
+    optional: true
+    to: partCPlanTypeAprCode
+  - from: PTC_PLAN_TYPE_MAY_CD
+    optional: true
+    to: partCPlanTypeMayCode
+  - from: PTC_PLAN_TYPE_JUN_CD
+    optional: true
+    to: partCPlanTypeJunCode
+  - from: PTC_PLAN_TYPE_JUL_CD
+    optional: true
+    to: partCPlanTypeJulCode
+  - from: PTC_PLAN_TYPE_AUG_CD
+    optional: true
+    to: partCPlanTypeAugCode
+  - from: PTC_PLAN_TYPE_SEPT_CD
+    optional: true
+    to: partCPlanTypeSeptCode
+  - from: PTC_PLAN_TYPE_OCT_CD
+    optional: true
+    to: partCPlanTypeOctCode
+  - from: PTC_PLAN_TYPE_NOV_CD
+    optional: true
+    to: partCPlanTypeNovCode
+  - from: PTC_PLAN_TYPE_DEC_CD
+    optional: true
+    to: partCPlanTypeDecCode
+  - from: PTD_CNTRCT_JAN_ID
+    optional: true
+    to: partDContractNumberJanId
+  - from: PTD_CNTRCT_FEB_ID
+    optional: true
+    to: partDContractNumberFebId
+  - from: PTD_CNTRCT_MAR_ID
+    optional: true
+    to: partDContractNumberMarId
+  - from: PTD_CNTRCT_APR_ID
+    optional: true
+    to: partDContractNumberAprId
+  - from: PTD_CNTRCT_MAY_ID
+    optional: true
+    to: partDContractNumberMayId
+  - from: PTD_CNTRCT_JUN_ID
+    optional: true
+    to: partDContractNumberJunId
+  - from: PTD_CNTRCT_JUL_ID
+    optional: true
+    to: partDContractNumberJulId
+  - from: PTD_CNTRCT_AUG_ID
+    optional: true
+    to: partDContractNumberAugId
+  - from: PTD_CNTRCT_SEPT_ID
+    optional: true
+    to: partDContractNumberSeptId
+  - from: PTD_CNTRCT_OCT_ID
+    optional: true
+    to: partDContractNumberOctId
+  - from: PTD_CNTRCT_NOV_ID
+    optional: true
+    to: partDContractNumberNovId
+  - from: PTD_CNTRCT_DEC_ID
+    optional: true
+    to: partDContractNumberDecId
+  - from: PTD_PBP_JAN_ID
+    optional: true
+    to: partDPbpNumberJanId
+  - from: PTD_PBP_FEB_ID
+    optional: true
+    to: partDPbpNumberFebId
+  - from: PTD_PBP_MAR_ID
+    optional: true
+    to: partDPbpNumberMarId
+  - from: PTD_PBP_APR_ID
+    optional: true
+    to: partDPbpNumberAprId
+  - from: PTD_PBP_MAY_ID
+    optional: true
+    to: partDPbpNumberMayId
+  - from: PTD_PBP_JUN_ID
+    optional: true
+    to: partDPbpNumberJunId
+  - from: PTD_PBP_JUL_ID
+    optional: true
+    to: partDPbpNumberJulId
+  - from: PTD_PBP_AUG_ID
+    optional: true
+    to: partDPbpNumberAugId
+  - from: PTD_PBP_SEPT_ID
+    optional: true
+    to: partDPbpNumberSeptId
+  - from: PTD_PBP_OCT_ID
+    optional: true
+    to: partDPbpNumberOctId
+  - from: PTD_PBP_NOV_ID
+    optional: true
+    to: partDPbpNumberNovId
+  - from: PTD_PBP_DEC_ID
+    optional: true
+    to: partDPbpNumberDecId
+  - from: PTD_SGMT_JAN_ID
+    optional: true
+    to: partDSegmentNumberJanId
+  - from: PTD_SGMT_FEB_ID
+    optional: true
+    to: partDSegmentNumberFebId
+  - from: PTD_SGMT_MAR_ID
+    optional: true
+    to: partDSegmentNumberMarId
+  - from: PTD_SGMT_APR_ID
+    optional: true
+    to: partDSegmentNumberAprId
+  - from: PTD_SGMT_MAY_ID
+    optional: true
+    to: partDSegmentNumberMayId
+  - from: PTD_SGMT_JUN_ID
+    optional: true
+    to: partDSegmentNumberJunId
+  - from: PTD_SGMT_JUL_ID
+    optional: true
+    to: partDSegmentNumberJulId
+  - from: PTD_SGMT_AUG_ID
+    optional: true
+    to: partDSegmentNumberAugId
+  - from: PTD_SGMT_SEPT_ID
+    optional: true
+    to: partDSegmentNumberSeptId
+  - from: PTD_SGMT_OCT_ID
+    optional: true
+    to: partDSegmentNumberOctId
+  - from: PTD_SGMT_NOV_ID
+    optional: true
+    to: partDSegmentNumberNovId
+  - from: PTD_SGMT_DEC_ID
+    optional: true
+    to: partDSegmentNumberDecId
+  - from: RDS_JAN_IND
+    optional: true
+    to: partDRetireeDrugSubsidyJanInd
+  - from: RDS_FEB_IND
+    optional: true
+    to: partDRetireeDrugSubsidyFebInd
+  - from: RDS_MAR_IND
+    optional: true
+    to: partDRetireeDrugSubsidyMarInd
+  - from: RDS_APR_IND
+    optional: true
+    to: partDRetireeDrugSubsidyAprInd
+  - from: RDS_MAY_IND
+    optional: true
+    to: partDRetireeDrugSubsidyMayInd
+  - from: RDS_JUN_IND
+    optional: true
+    to: partDRetireeDrugSubsidyJunInd
+  - from: RDS_JUL_IND
+    optional: true
+    to: partDRetireeDrugSubsidyJulInd
+  - from: RDS_AUG_IND
+    optional: true
+    to: partDRetireeDrugSubsidyAugInd
+  - from: RDS_SEPT_IND
+    optional: true
+    to: partDRetireeDrugSubsidySeptInd
+  - from: RDS_OCT_IND
+    optional: true
+    to: partDRetireeDrugSubsidyOctInd
+  - from: RDS_NOV_IND
+    optional: true
+    to: partDRetireeDrugSubsidyNovInd
+  - from: RDS_DEC_IND
+    optional: true
+    to: partDRetireeDrugSubsidyDecInd
+  - from: META_DUAL_ELGBL_STUS_JAN_CD
+    optional: true
+    to: medicaidDualEligibilityJanCode
+  - from: META_DUAL_ELGBL_STUS_FEB_CD
+    optional: true
+    to: medicaidDualEligibilityFebCode
+  - from: META_DUAL_ELGBL_STUS_MAR_CD
+    optional: true
+    to: medicaidDualEligibilityMarCode
+  - from: META_DUAL_ELGBL_STUS_APR_CD
+    optional: true
+    to: medicaidDualEligibilityAprCode
+  - from: META_DUAL_ELGBL_STUS_MAY_CD
+    optional: true
+    to: medicaidDualEligibilityMayCode
+  - from: META_DUAL_ELGBL_STUS_JUN_CD
+    optional: true
+    to: medicaidDualEligibilityJunCode
+  - from: META_DUAL_ELGBL_STUS_JUL_CD
+    optional: true
+    to: medicaidDualEligibilityJulCode
+  - from: META_DUAL_ELGBL_STUS_AUG_CD
+    optional: true
+    to: medicaidDualEligibilityAugCode
+  - from: META_DUAL_ELGBL_STUS_SEPT_CD
+    optional: true
+    to: medicaidDualEligibilitySeptCode
+  - from: META_DUAL_ELGBL_STUS_OCT_CD
+    optional: true
+    to: medicaidDualEligibilityOctCode
+  - from: META_DUAL_ELGBL_STUS_NOV_CD
+    optional: true
+    to: medicaidDualEligibilityNovCode
+  - from: META_DUAL_ELGBL_STUS_DEC_CD
+    optional: true
+    to: medicaidDualEligibilityDecCode
+  - from: CST_SHR_GRP_JAN_CD
+    optional: true
+    to: partDLowIncomeCostShareGroupJanCode
+  - from: CST_SHR_GRP_FEB_CD
+    optional: true
+    to: partDLowIncomeCostShareGroupFebCode
+  - from: CST_SHR_GRP_MAR_CD
+    optional: true
+    to: partDLowIncomeCostShareGroupMarCode
+  - from: CST_SHR_GRP_APR_CD
+    optional: true
+    to: partDLowIncomeCostShareGroupAprCode
+  - from: CST_SHR_GRP_MAY_CD
+    optional: true
+    to: partDLowIncomeCostShareGroupMayCode
+  - from: CST_SHR_GRP_JUN_CD
+    optional: true
+    to: partDLowIncomeCostShareGroupJunCode
+  - from: CST_SHR_GRP_JUL_CD
+    optional: true
+    to: partDLowIncomeCostShareGroupJulCode
+  - from: CST_SHR_GRP_AUG_CD
+    optional: true
+    to: partDLowIncomeCostShareGroupAugCode
+  - from: CST_SHR_GRP_SEPT_CD
+    optional: true
+    to: partDLowIncomeCostShareGroupSeptCode
+  - from: CST_SHR_GRP_OCT_CD
+    optional: true
+    to: partDLowIncomeCostShareGroupOctCode
+  - from: CST_SHR_GRP_NOV_CD
+    optional: true
+    to: partDLowIncomeCostShareGroupNovCode
+  - from: CST_SHR_GRP_DEC_CD
+    optional: true
+    to: partDLowIncomeCostShareGroupDecCode
+  - from: DRVD_LINE_1_ADR
+    optional: true
+    to: derivedMailingAddress1
+  - from: DRVD_LINE_2_ADR
+    optional: true
+    to: derivedMailingAddress2
+  - from: DRVD_LINE_3_ADR
+    optional: true
+    to: derivedMailingAddress3
+  - from: DRVD_LINE_4_ADR
+    optional: true
+    to: derivedMailingAddress4
+  - from: DRVD_LINE_5_ADR
+    optional: true
+    to: derivedMailingAddress5
+  - from: DRVD_LINE_6_ADR
+    optional: true
+    to: derivedMailingAddress6
+  - from: CITY_NAME
+    optional: true
+    to: derivedCityName
+  - from: STATE_CD
+    optional: true
+    to: derivedStateCode
+  - from: STATE_CNTY_ZIP_CD
+    optional: true
+    to: derivedZipCode
+  - from: EFCTV_BGN_DT
+    optional: true
+    to: mbiEffectiveDate
+  - from: EFCTV_END_DT
+    optional: true
+    to: mbiObsoleteDate
+  - from: BENE_LINK_KEY
+    optional: true
+    to: beneLinkKey
+  transformerClassName: gov.cms.bfd.model.rif.BeneficiaryTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.BeneficiaryMonthlyPoc
   id: BeneficiaryMonthly
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: null
@@ -980,7 +1595,7 @@ mappings:
       name: partDLowIncomeCostShareGroupCode
       sqlType: varchar(2)
     joins:
-    - entityClass: gov.cms.bfd.model.rif.BeneficiaryZ
+    - entityClass: gov.cms.bfd.model.rif.BeneficiaryPoc
       fetchType: EAGER
       fieldName: parentBeneficiary
       foreignKey: beneficiary_monthly_bene_id_to_beneficiary
@@ -990,8 +1605,54 @@ mappings:
     primaryKeyColumns:
     - parentBeneficiary
     - yearMonth
-- entityClassName: gov.cms.bfd.model.rif.BeneficiaryHistoryZ
+  transformations:
+  - from: YEAR_MONTH
+    optional: false
+    to: yearMonth
+  - from: FIPS_STATE_CNTY_CODE
+    optional: true
+    to: fipsStateCntyCode
+  - from: MEDICARE_STATUS_CODE
+    optional: true
+    to: medicareStatusCode
+  - from: ENTITLEMENT_BUY_IN_IND
+    optional: true
+    to: entitlementBuyInInd
+  - from: HMO_INDICATOR_IND
+    optional: true
+    to: hmoIndicatorInd
+  - from: PARTC_CONTRACT_NUMBER_ID
+    optional: true
+    to: partCContractNumberId
+  - from: PARTC_PBP_NUMBER_ID
+    optional: true
+    to: partCPbpNumberId
+  - from: PARTC_PLAN_TYPE_CODE
+    optional: true
+    to: partCPlanTypeCode
+  - from: PARTD_CONTRACT_NUMBER_ID
+    optional: true
+    to: partDContractNumberId
+  - from: PARTD_PBP_NUMBER_ID
+    optional: true
+    to: partDPbpNumberId
+  - from: PARTD_SEGMENT_NUMBER_ID
+    optional: true
+    to: partDSegmentNumberId
+  - from: PARTD_RETIREE_DRUG_SUBSIDY_IND
+    optional: true
+    to: partDRetireeDrugSubsidyInd
+  - from: MEDICAID_DUAL_ELIGIBILITY_CODE
+    optional: true
+    to: medicaidDualEligibilityCode
+  - from: PARTD_LOW_INCOME_COST_SHARE_GROUP_CODE
+    optional: true
+    to: partDLowIncomeCostShareGroupCode
+  transformerClassName: gov.cms.bfd.model.rif.BeneficiaryMonthlyTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.BeneficiaryHistoryPoc
   id: BeneficiaryHistory
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - javaType: long
@@ -1122,8 +1783,72 @@ mappings:
     name: beneficiaries_history
     primaryKeyColumns:
     - bene_history_id
-- entityClassName: gov.cms.bfd.model.rif.MedicareBeneficiaryIdHistoryZ
+  transformations:
+  - from: BENE_ID
+    optional: false
+    to: beneficiaryId
+  - from: STATE_CODE
+    optional: true
+    to: stateCode
+  - from: BENE_COUNTY_CD
+    optional: true
+    to: countyCode
+  - from: BENE_ZIP_CD
+    optional: true
+    to: postalCode
+  - from: BENE_BIRTH_DT
+    optional: false
+    to: birthDate
+  - from: BENE_SEX_IDENT_CD
+    optional: false
+    to: sex
+  - from: BENE_RACE_CD
+    optional: true
+    to: race
+  - from: BENE_ENTLMT_RSN_ORIG
+    optional: true
+    to: entitlementCodeOriginal
+  - from: BENE_ENTLMT_RSN_CURR
+    optional: true
+    to: entitlementCodeCurrent
+  - from: BENE_ESRD_IND
+    optional: true
+    to: endStageRenalDiseaseCode
+  - from: BENE_MDCR_STATUS_CD
+    optional: true
+    to: medicareEnrollmentStatusCode
+  - from: BENE_PTA_TRMNTN_CD
+    optional: true
+    to: partATerminationCode
+  - from: BENE_PTB_TRMNTN_CD
+    optional: true
+    to: partBTerminationCode
+  - from: BENE_CRNT_HIC_NUM
+    optional: false
+    to: hicn
+  - from: BENE_SRNM_NAME
+    optional: true
+    to: nameSurname
+  - from: BENE_GVN_NAME
+    optional: true
+    to: nameGiven
+  - from: BENE_MDL_NAME
+    optional: true
+    to: nameMiddleInitial
+  - from: MBI_NUM
+    optional: true
+    to: medicareBeneficiaryId
+  - from: EFCTV_BGN_DT
+    optional: true
+    to: mbiEffectiveDate
+  - from: EFCTV_END_DT
+    optional: true
+    to: mbiObsoleteDate
+  transformerClassName: gov.cms.bfd.model.rif.BeneficiaryHistoryTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.MedicareBeneficiaryIdHistoryPoc
   id: MedicareBeneficiaryIdHistory
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: System generated unique sequence number
@@ -1212,8 +1937,60 @@ mappings:
     name: medicare_beneficiaryid_history
     primaryKeyColumns:
     - medicareBeneficiaryIdKey
-- entityClassName: gov.cms.bfd.model.rif.PartDEventZ
+  transformations:
+  - from: BENE_MBI_ID
+    optional: false
+    to: medicareBeneficiaryIdKey
+  - from: BENE_ID
+    optional: true
+    to: beneficiaryId
+  - from: BENE_CLM_ACNT_NUM
+    optional: true
+    to: claimAccountNumber
+  - from: BENE_IDENT_CD
+    optional: true
+    to: beneficiaryIdCode
+  - from: MBI_SQNC_NUM
+    optional: true
+    to: mbiSequenceNumber
+  - from: MBI_NUM
+    optional: true
+    to: medicareBeneficiaryId
+  - from: MBI_EFCTV_BGN_DT
+    optional: true
+    to: mbiEffectiveDate
+  - from: MBI_EFCTV_END_DT
+    optional: true
+    to: mbiEndDate
+  - from: MBI_BGN_RSN_CD
+    optional: true
+    to: mbiEffectiveReasonCode
+  - from: MBI_END_RSN_CD
+    optional: true
+    to: mbiEndReasonCode
+  - from: MBI_CARD_RQST_DT
+    optional: true
+    to: mbiCardRequestDate
+  - from: CREAT_USER_ID
+    optional: true
+    to: mbiAddUser
+  - from: CREAT_TS
+    optional: true
+    to: mbiAddDate
+  - from: UPDT_USER_ID
+    optional: true
+    to: mbiUpdateUser
+  - from: UPDT_TS
+    optional: true
+    to: mbiUpdateDate
+  - from: BENE_CRNT_REC_IND_ID
+    optional: true
+    to: mbiCrntRecIndId
+  transformerClassName: gov.cms.bfd.model.rif.MedicareBeneficiaryIdHistoryTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.PartDEventPoc
   id: PartDEvent
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: 723 PDE ID (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/pde_id.txt)
@@ -1424,8 +2201,132 @@ mappings:
     name: partd_events
     primaryKeyColumns:
     - eventId
-- entityClassName: gov.cms.bfd.model.rif.CarrierClaimZ
+  transformations:
+  - from: PDE_ID
+    optional: false
+    to: eventId
+  - from: CLM_GRP_ID
+    optional: false
+    to: claimGroupId
+  - from: FINAL_ACTION
+    optional: false
+    to: finalAction
+  - from: BENE_ID
+    optional: false
+    to: beneficiaryId
+  - from: SRVC_DT
+    optional: false
+    to: prescriptionFillDate
+  - from: PD_DT
+    optional: true
+    to: paymentDate
+  - from: SRVC_PRVDR_ID_QLFYR_CD
+    optional: false
+    to: serviceProviderIdQualiferCode
+  - from: SRVC_PRVDR_ID
+    optional: false
+    to: serviceProviderId
+  - from: PRSCRBR_ID_QLFYR_CD
+    optional: false
+    to: prescriberIdQualifierCode
+  - from: PRSCRBR_ID
+    optional: false
+    to: prescriberId
+  - from: RX_SRVC_RFRNC_NUM
+    optional: false
+    to: prescriptionReferenceNumber
+  - from: PROD_SRVC_ID
+    optional: false
+    to: nationalDrugCode
+  - from: PLAN_CNTRCT_REC_ID
+    optional: false
+    to: planContractId
+  - from: PLAN_PBP_REC_NUM
+    optional: false
+    to: planBenefitPackageId
+  - from: CMPND_CD
+    optional: false
+    to: compoundCode
+  - from: DAW_PROD_SLCTN_CD
+    optional: false
+    to: dispenseAsWrittenProductSelectionCode
+  - from: QTY_DSPNSD_NUM
+    optional: false
+    to: quantityDispensed
+  - from: DAYS_SUPLY_NUM
+    optional: false
+    to: daysSupply
+  - from: FILL_NUM
+    optional: false
+    to: fillNumber
+  - from: DSPNSNG_STUS_CD
+    optional: true
+    to: dispensingStatusCode
+  - from: DRUG_CVRG_STUS_CD
+    optional: false
+    to: drugCoverageStatusCode
+  - from: ADJSTMT_DLTN_CD
+    optional: true
+    to: adjustmentDeletionCode
+  - from: NSTD_FRMT_CD
+    optional: true
+    to: nonstandardFormatCode
+  - from: PRCNG_EXCPTN_CD
+    optional: true
+    to: pricingExceptionCode
+  - from: CTSTRPHC_CVRG_CD
+    optional: true
+    to: catastrophicCoverageCode
+  - from: GDC_BLW_OOPT_AMT
+    optional: false
+    to: grossCostBelowOutOfPocketThreshold
+  - from: GDC_ABV_OOPT_AMT
+    optional: false
+    to: grossCostAboveOutOfPocketThreshold
+  - from: PTNT_PAY_AMT
+    optional: false
+    to: patientPaidAmount
+  - from: OTHR_TROOP_AMT
+    optional: false
+    to: otherTrueOutOfPocketPaidAmount
+  - from: LICS_AMT
+    optional: false
+    to: lowIncomeSubsidyPaidAmount
+  - from: PLRO_AMT
+    optional: false
+    to: patientLiabilityReductionOtherPaidAmount
+  - from: CVRD_D_PLAN_PD_AMT
+    optional: false
+    to: partDPlanCoveredPaidAmount
+  - from: NCVRD_PLAN_PD_AMT
+    optional: false
+    to: partDPlanNonCoveredPaidAmount
+  - from: TOT_RX_CST_AMT
+    optional: false
+    to: totalPrescriptionCost
+  - from: RX_ORGN_CD
+    optional: true
+    to: prescriptionOriginationCode
+  - from: RPTD_GAP_DSCNT_NUM
+    optional: false
+    to: gapDiscountAmount
+  - from: BRND_GNRC_CD
+    optional: true
+    to: brandGenericCode
+  - from: PHRMCY_SRVC_TYPE_CD
+    optional: false
+    to: pharmacyTypeCode
+  - from: PTNT_RSDNC_CD
+    optional: false
+    to: patientResidenceCode
+  - from: SUBMSN_CLR_CD
+    optional: true
+    to: submissionClarificationCode
+  transformerClassName: gov.cms.bfd.model.rif.PartDEventTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.CarrierClaimPoc
   id: CarrierClaim
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: 723 Beneficiary ID (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/bene_id.txt)
@@ -1689,8 +2590,171 @@ mappings:
     name: carrier_claims
     primaryKeyColumns:
     - claimId
-- entityClassName: gov.cms.bfd.model.rif.CarrierClaimLineZ
+  transformations:
+  - from: BENE_ID
+    optional: false
+    to: beneficiaryId
+  - from: CLM_ID
+    optional: false
+    to: claimId
+  - from: CLM_GRP_ID
+    optional: false
+    to: claimGroupId
+  - from: FINAL_ACTION
+    optional: false
+    to: finalAction
+  - from: NCH_NEAR_LINE_REC_IDENT_CD
+    optional: false
+    to: nearLineRecordIdCode
+  - from: NCH_CLM_TYPE_CD
+    optional: false
+    to: claimTypeCode
+  - from: CLM_FROM_DT
+    optional: false
+    to: dateFrom
+  - from: CLM_THRU_DT
+    optional: false
+    to: dateThrough
+  - from: NCH_WKLY_PROC_DT
+    optional: false
+    to: weeklyProcessDate
+  - from: CARR_CLM_ENTRY_CD
+    optional: false
+    to: claimEntryCode
+  - from: CLM_DISP_CD
+    optional: false
+    to: claimDispositionCode
+  - from: CARR_NUM
+    optional: false
+    to: carrierNumber
+  - from: CARR_CLM_PMT_DNL_CD
+    optional: false
+    to: paymentDenialCode
+  - from: CLM_PMT_AMT
+    optional: false
+    to: paymentAmount
+  - from: CARR_CLM_PRMRY_PYR_PD_AMT
+    optional: false
+    to: primaryPayerPaidAmount
+  - from: RFR_PHYSN_UPIN
+    optional: true
+    to: referringPhysicianUpin
+  - from: RFR_PHYSN_NPI
+    optional: true
+    to: referringPhysicianNpi
+  - from: CARR_CLM_PRVDR_ASGNMT_IND_SW
+    optional: true
+    to: providerAssignmentIndicator
+  - from: NCH_CLM_PRVDR_PMT_AMT
+    optional: false
+    to: providerPaymentAmount
+  - from: NCH_CLM_BENE_PMT_AMT
+    optional: false
+    to: beneficiaryPaymentAmount
+  - from: NCH_CARR_CLM_SBMTD_CHRG_AMT
+    optional: false
+    to: submittedChargeAmount
+  - from: NCH_CARR_CLM_ALOWD_AMT
+    optional: false
+    to: allowedChargeAmount
+  - from: CARR_CLM_CASH_DDCTBL_APLD_AMT
+    optional: false
+    to: beneficiaryPartBDeductAmount
+  - from: CARR_CLM_HCPCS_YR_CD
+    optional: true
+    to: hcpcsYearCode
+  - from: CARR_CLM_RFRNG_PIN_NUM
+    optional: false
+    to: referringProviderIdNumber
+  - from: PRNCPAL_DGNS_CD
+    optional: true
+    to: diagnosisPrincipalCode
+  - from: PRNCPAL_DGNS_VRSN_CD
+    optional: true
+    to: diagnosisPrincipalCodeVersion
+  - from: ICD_DGNS_CD1
+    optional: true
+    to: diagnosis1Code
+  - from: ICD_DGNS_VRSN_CD1
+    optional: true
+    to: diagnosis1CodeVersion
+  - from: ICD_DGNS_CD2
+    optional: true
+    to: diagnosis2Code
+  - from: ICD_DGNS_VRSN_CD2
+    optional: true
+    to: diagnosis2CodeVersion
+  - from: ICD_DGNS_CD3
+    optional: true
+    to: diagnosis3Code
+  - from: ICD_DGNS_VRSN_CD3
+    optional: true
+    to: diagnosis3CodeVersion
+  - from: ICD_DGNS_CD4
+    optional: true
+    to: diagnosis4Code
+  - from: ICD_DGNS_VRSN_CD4
+    optional: true
+    to: diagnosis4CodeVersion
+  - from: ICD_DGNS_CD5
+    optional: true
+    to: diagnosis5Code
+  - from: ICD_DGNS_VRSN_CD5
+    optional: true
+    to: diagnosis5CodeVersion
+  - from: ICD_DGNS_CD6
+    optional: true
+    to: diagnosis6Code
+  - from: ICD_DGNS_VRSN_CD6
+    optional: true
+    to: diagnosis6CodeVersion
+  - from: ICD_DGNS_CD7
+    optional: true
+    to: diagnosis7Code
+  - from: ICD_DGNS_VRSN_CD7
+    optional: true
+    to: diagnosis7CodeVersion
+  - from: ICD_DGNS_CD8
+    optional: true
+    to: diagnosis8Code
+  - from: ICD_DGNS_VRSN_CD8
+    optional: true
+    to: diagnosis8CodeVersion
+  - from: ICD_DGNS_CD9
+    optional: true
+    to: diagnosis9Code
+  - from: ICD_DGNS_VRSN_CD9
+    optional: true
+    to: diagnosis9CodeVersion
+  - from: ICD_DGNS_CD10
+    optional: true
+    to: diagnosis10Code
+  - from: ICD_DGNS_VRSN_CD10
+    optional: true
+    to: diagnosis10CodeVersion
+  - from: ICD_DGNS_CD11
+    optional: true
+    to: diagnosis11Code
+  - from: ICD_DGNS_VRSN_CD11
+    optional: true
+    to: diagnosis11CodeVersion
+  - from: ICD_DGNS_CD12
+    optional: true
+    to: diagnosis12Code
+  - from: ICD_DGNS_VRSN_CD12
+    optional: true
+    to: diagnosis12CodeVersion
+  - from: CLM_CLNCL_TRIL_NUM
+    optional: true
+    to: clinicalTrialNumber
+  - from: CARR_CLM_CNTL_NUM
+    optional: true
+    to: claimCarrierControlNumber
+  transformerClassName: gov.cms.bfd.model.rif.CarrierClaimTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.CarrierClaimLinePoc
   id: CarrierClaimLine
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: Claim Line Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/line_num.txt)
@@ -1905,7 +2969,7 @@ mappings:
       nullable: false
       sqlType: numeric
     joins:
-    - entityClass: gov.cms.bfd.model.rif.CarrierClaimZ
+    - entityClass: gov.cms.bfd.model.rif.CarrierClaimPoc
       fetchType: EAGER
       fieldName: parentClaim
       foreignKey: carrier_claims_lines_clm_id_to_carrier_claims
@@ -1915,8 +2979,12 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
-- entityClassName: gov.cms.bfd.model.rif.InpatientClaimZ
+  transformations: []
+  transformerClassName: gov.cms.bfd.model.rif.CarrierClaimLineTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.InpatientClaimPoc
   id: InpatientClaim
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: 723 Beneficiary ID (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/bene_id.txt)
@@ -3203,8 +4271,798 @@ mappings:
     name: inpatient_claims
     primaryKeyColumns:
     - claimId
-- entityClassName: gov.cms.bfd.model.rif.InpatientClaimLineZ
+  transformations:
+  - from: BENE_ID
+    optional: false
+    to: beneficiaryId
+  - from: CLM_ID
+    optional: false
+    to: claimId
+  - from: CLM_GRP_ID
+    optional: false
+    to: claimGroupId
+  - from: FINAL_ACTION
+    optional: false
+    to: finalAction
+  - from: NCH_NEAR_LINE_REC_IDENT_CD
+    optional: false
+    to: nearLineRecordIdCode
+  - from: NCH_CLM_TYPE_CD
+    optional: false
+    to: claimTypeCode
+  - from: CLM_FROM_DT
+    optional: false
+    to: dateFrom
+  - from: CLM_THRU_DT
+    optional: false
+    to: dateThrough
+  - from: NCH_WKLY_PROC_DT
+    optional: false
+    to: weeklyProcessDate
+  - from: FI_CLM_PROC_DT
+    optional: true
+    to: fiscalIntermediaryClaimProcessDate
+  - from: CLAIM_QUERY_CODE
+    optional: false
+    to: claimQueryCode
+  - from: PRVDR_NUM
+    optional: false
+    to: providerNumber
+  - from: CLM_FAC_TYPE_CD
+    optional: false
+    to: claimFacilityTypeCode
+  - from: CLM_SRVC_CLSFCTN_TYPE_CD
+    optional: false
+    to: claimServiceClassificationTypeCode
+  - from: CLM_FREQ_CD
+    optional: false
+    to: claimFrequencyCode
+  - from: FI_NUM
+    optional: true
+    to: fiscalIntermediaryNumber
+  - from: CLM_MDCR_NON_PMT_RSN_CD
+    optional: true
+    to: claimNonPaymentReasonCode
+  - from: CLM_PMT_AMT
+    optional: false
+    to: paymentAmount
+  - from: NCH_PRMRY_PYR_CLM_PD_AMT
+    optional: false
+    to: primaryPayerPaidAmount
+  - from: NCH_PRMRY_PYR_CD
+    optional: true
+    to: claimPrimaryPayerCode
+  - from: FI_CLM_ACTN_CD
+    optional: true
+    to: fiscalIntermediaryClaimActionCode
+  - from: PRVDR_STATE_CD
+    optional: false
+    to: providerStateCode
+  - from: ORG_NPI_NUM
+    optional: true
+    to: organizationNpi
+  - from: AT_PHYSN_UPIN
+    optional: true
+    to: attendingPhysicianUpin
+  - from: AT_PHYSN_NPI
+    optional: true
+    to: attendingPhysicianNpi
+  - from: OP_PHYSN_UPIN
+    optional: true
+    to: operatingPhysicianUpin
+  - from: OP_PHYSN_NPI
+    optional: true
+    to: operatingPhysicianNpi
+  - from: OT_PHYSN_UPIN
+    optional: true
+    to: otherPhysicianUpin
+  - from: OT_PHYSN_NPI
+    optional: true
+    to: otherPhysicianNpi
+  - from: CLM_MCO_PD_SW
+    optional: true
+    to: mcoPaidSw
+  - from: PTNT_DSCHRG_STUS_CD
+    optional: false
+    to: patientDischargeStatusCode
+  - from: CLM_PPS_IND_CD
+    optional: true
+    to: prospectivePaymentCode
+  - from: CLM_TOT_CHRG_AMT
+    optional: false
+    to: totalChargeAmount
+  - from: CLM_ADMSN_DT
+    optional: true
+    to: claimAdmissionDate
+  - from: CLM_IP_ADMSN_TYPE_CD
+    optional: false
+    to: admissionTypeCd
+  - from: CLM_SRC_IP_ADMSN_CD
+    optional: true
+    to: sourceAdmissionCd
+  - from: NCH_PTNT_STATUS_IND_CD
+    optional: true
+    to: patientStatusCd
+  - from: CLM_PASS_THRU_PER_DIEM_AMT
+    optional: false
+    to: passThruPerDiemAmount
+  - from: NCH_BENE_IP_DDCTBL_AMT
+    optional: false
+    to: deductibleAmount
+  - from: NCH_BENE_PTA_COINSRNC_LBLTY_AM
+    optional: false
+    to: partACoinsuranceLiabilityAmount
+  - from: NCH_BENE_BLOOD_DDCTBL_LBLTY_AM
+    optional: false
+    to: bloodDeductibleLiabilityAmount
+  - from: NCH_PROFNL_CMPNT_CHRG_AMT
+    optional: false
+    to: professionalComponentCharge
+  - from: NCH_IP_NCVRD_CHRG_AMT
+    optional: false
+    to: noncoveredCharge
+  - from: NCH_IP_TOT_DDCTN_AMT
+    optional: false
+    to: totalDeductionAmount
+  - from: CLM_TOT_PPS_CPTL_AMT
+    optional: true
+    to: claimTotalPPSCapitalAmount
+  - from: CLM_PPS_CPTL_FSP_AMT
+    optional: true
+    to: claimPPSCapitalFSPAmount
+  - from: CLM_PPS_CPTL_OUTLIER_AMT
+    optional: true
+    to: claimPPSCapitalOutlierAmount
+  - from: CLM_PPS_CPTL_DSPRPRTNT_SHR_AMT
+    optional: true
+    to: claimPPSCapitalDisproportionateShareAmt
+  - from: CLM_PPS_CPTL_IME_AMT
+    optional: true
+    to: claimPPSCapitalIMEAmount
+  - from: CLM_PPS_CPTL_EXCPTN_AMT
+    optional: true
+    to: claimPPSCapitalExceptionAmount
+  - from: CLM_PPS_OLD_CPTL_HLD_HRMLS_AMT
+    optional: true
+    to: claimPPSOldCapitalHoldHarmlessAmount
+  - from: CLM_PPS_CPTL_DRG_WT_NUM
+    optional: true
+    to: claimPPSCapitalDrgWeightNumber
+  - from: CLM_UTLZTN_DAY_CNT
+    optional: false
+    to: utilizationDayCount
+  - from: BENE_TOT_COINSRNC_DAYS_CNT
+    optional: false
+    to: coinsuranceDayCount
+  - from: BENE_LRD_USED_CNT
+    optional: true
+    to: lifetimeReservedDaysUsedCount
+  - from: CLM_NON_UTLZTN_DAYS_CNT
+    optional: false
+    to: nonUtilizationDayCount
+  - from: NCH_BLOOD_PNTS_FRNSHD_QTY
+    optional: false
+    to: bloodPintsFurnishedQty
+  - from: NCH_VRFD_NCVRD_STAY_FROM_DT
+    optional: true
+    to: noncoveredStayFromDate
+  - from: NCH_VRFD_NCVRD_STAY_THRU_DT
+    optional: true
+    to: noncoveredStayThroughDate
+  - from: NCH_ACTV_OR_CVRD_LVL_CARE_THRU
+    optional: true
+    to: coveredCareThoughDate
+  - from: NCH_BENE_MDCR_BNFTS_EXHTD_DT_I
+    optional: true
+    to: medicareBenefitsExhaustedDate
+  - from: NCH_BENE_DSCHRG_DT
+    optional: true
+    to: beneficiaryDischargeDate
+  - from: CLM_DRG_CD
+    optional: true
+    to: diagnosisRelatedGroupCd
+  - from: CLM_DRG_OUTLIER_STAY_CD
+    optional: false
+    to: diagnosisRelatedGroupOutlierStayCd
+  - from: NCH_DRG_OUTLIER_APRVD_PMT_AMT
+    optional: true
+    to: drgOutlierApprovedPaymentAmount
+  - from: ADMTG_DGNS_CD
+    optional: true
+    to: diagnosisAdmittingCode
+  - from: ADMTG_DGNS_VRSN_CD
+    optional: true
+    to: diagnosisAdmittingCodeVersion
+  - from: PRNCPAL_DGNS_CD
+    optional: true
+    to: diagnosisPrincipalCode
+  - from: PRNCPAL_DGNS_VRSN_CD
+    optional: true
+    to: diagnosisPrincipalCodeVersion
+  - from: ICD_DGNS_CD1
+    optional: true
+    to: diagnosis1Code
+  - from: ICD_DGNS_VRSN_CD1
+    optional: true
+    to: diagnosis1CodeVersion
+  - from: CLM_POA_IND_SW1
+    optional: true
+    to: diagnosis1PresentOnAdmissionCode
+  - from: ICD_DGNS_CD2
+    optional: true
+    to: diagnosis2Code
+  - from: ICD_DGNS_VRSN_CD2
+    optional: true
+    to: diagnosis2CodeVersion
+  - from: CLM_POA_IND_SW2
+    optional: true
+    to: diagnosis2PresentOnAdmissionCode
+  - from: ICD_DGNS_CD3
+    optional: true
+    to: diagnosis3Code
+  - from: ICD_DGNS_VRSN_CD3
+    optional: true
+    to: diagnosis3CodeVersion
+  - from: CLM_POA_IND_SW3
+    optional: true
+    to: diagnosis3PresentOnAdmissionCode
+  - from: ICD_DGNS_CD4
+    optional: true
+    to: diagnosis4Code
+  - from: ICD_DGNS_VRSN_CD4
+    optional: true
+    to: diagnosis4CodeVersion
+  - from: CLM_POA_IND_SW4
+    optional: true
+    to: diagnosis4PresentOnAdmissionCode
+  - from: ICD_DGNS_CD5
+    optional: true
+    to: diagnosis5Code
+  - from: ICD_DGNS_VRSN_CD5
+    optional: true
+    to: diagnosis5CodeVersion
+  - from: CLM_POA_IND_SW5
+    optional: true
+    to: diagnosis5PresentOnAdmissionCode
+  - from: ICD_DGNS_CD6
+    optional: true
+    to: diagnosis6Code
+  - from: ICD_DGNS_VRSN_CD6
+    optional: true
+    to: diagnosis6CodeVersion
+  - from: CLM_POA_IND_SW6
+    optional: true
+    to: diagnosis6PresentOnAdmissionCode
+  - from: ICD_DGNS_CD7
+    optional: true
+    to: diagnosis7Code
+  - from: ICD_DGNS_VRSN_CD7
+    optional: true
+    to: diagnosis7CodeVersion
+  - from: CLM_POA_IND_SW7
+    optional: true
+    to: diagnosis7PresentOnAdmissionCode
+  - from: ICD_DGNS_CD8
+    optional: true
+    to: diagnosis8Code
+  - from: ICD_DGNS_VRSN_CD8
+    optional: true
+    to: diagnosis8CodeVersion
+  - from: CLM_POA_IND_SW8
+    optional: true
+    to: diagnosis8PresentOnAdmissionCode
+  - from: ICD_DGNS_CD9
+    optional: true
+    to: diagnosis9Code
+  - from: ICD_DGNS_VRSN_CD9
+    optional: true
+    to: diagnosis9CodeVersion
+  - from: CLM_POA_IND_SW9
+    optional: true
+    to: diagnosis9PresentOnAdmissionCode
+  - from: ICD_DGNS_CD10
+    optional: true
+    to: diagnosis10Code
+  - from: ICD_DGNS_VRSN_CD10
+    optional: true
+    to: diagnosis10CodeVersion
+  - from: CLM_POA_IND_SW10
+    optional: true
+    to: diagnosis10PresentOnAdmissionCode
+  - from: ICD_DGNS_CD11
+    optional: true
+    to: diagnosis11Code
+  - from: ICD_DGNS_VRSN_CD11
+    optional: true
+    to: diagnosis11CodeVersion
+  - from: CLM_POA_IND_SW11
+    optional: true
+    to: diagnosis11PresentOnAdmissionCode
+  - from: ICD_DGNS_CD12
+    optional: true
+    to: diagnosis12Code
+  - from: ICD_DGNS_VRSN_CD12
+    optional: true
+    to: diagnosis12CodeVersion
+  - from: CLM_POA_IND_SW12
+    optional: true
+    to: diagnosis12PresentOnAdmissionCode
+  - from: ICD_DGNS_CD13
+    optional: true
+    to: diagnosis13Code
+  - from: ICD_DGNS_VRSN_CD13
+    optional: true
+    to: diagnosis13CodeVersion
+  - from: CLM_POA_IND_SW13
+    optional: true
+    to: diagnosis13PresentOnAdmissionCode
+  - from: ICD_DGNS_CD14
+    optional: true
+    to: diagnosis14Code
+  - from: ICD_DGNS_VRSN_CD14
+    optional: true
+    to: diagnosis14CodeVersion
+  - from: CLM_POA_IND_SW14
+    optional: true
+    to: diagnosis14PresentOnAdmissionCode
+  - from: ICD_DGNS_CD15
+    optional: true
+    to: diagnosis15Code
+  - from: ICD_DGNS_VRSN_CD15
+    optional: true
+    to: diagnosis15CodeVersion
+  - from: CLM_POA_IND_SW15
+    optional: true
+    to: diagnosis15PresentOnAdmissionCode
+  - from: ICD_DGNS_CD16
+    optional: true
+    to: diagnosis16Code
+  - from: ICD_DGNS_VRSN_CD16
+    optional: true
+    to: diagnosis16CodeVersion
+  - from: CLM_POA_IND_SW16
+    optional: true
+    to: diagnosis16PresentOnAdmissionCode
+  - from: ICD_DGNS_CD17
+    optional: true
+    to: diagnosis17Code
+  - from: ICD_DGNS_VRSN_CD17
+    optional: true
+    to: diagnosis17CodeVersion
+  - from: CLM_POA_IND_SW17
+    optional: true
+    to: diagnosis17PresentOnAdmissionCode
+  - from: ICD_DGNS_CD18
+    optional: true
+    to: diagnosis18Code
+  - from: ICD_DGNS_VRSN_CD18
+    optional: true
+    to: diagnosis18CodeVersion
+  - from: CLM_POA_IND_SW18
+    optional: true
+    to: diagnosis18PresentOnAdmissionCode
+  - from: ICD_DGNS_CD19
+    optional: true
+    to: diagnosis19Code
+  - from: ICD_DGNS_VRSN_CD19
+    optional: true
+    to: diagnosis19CodeVersion
+  - from: CLM_POA_IND_SW19
+    optional: true
+    to: diagnosis19PresentOnAdmissionCode
+  - from: ICD_DGNS_CD20
+    optional: true
+    to: diagnosis20Code
+  - from: ICD_DGNS_VRSN_CD20
+    optional: true
+    to: diagnosis20CodeVersion
+  - from: CLM_POA_IND_SW20
+    optional: true
+    to: diagnosis20PresentOnAdmissionCode
+  - from: ICD_DGNS_CD21
+    optional: true
+    to: diagnosis21Code
+  - from: ICD_DGNS_VRSN_CD21
+    optional: true
+    to: diagnosis21CodeVersion
+  - from: CLM_POA_IND_SW21
+    optional: true
+    to: diagnosis21PresentOnAdmissionCode
+  - from: ICD_DGNS_CD22
+    optional: true
+    to: diagnosis22Code
+  - from: ICD_DGNS_VRSN_CD22
+    optional: true
+    to: diagnosis22CodeVersion
+  - from: CLM_POA_IND_SW22
+    optional: true
+    to: diagnosis22PresentOnAdmissionCode
+  - from: ICD_DGNS_CD23
+    optional: true
+    to: diagnosis23Code
+  - from: ICD_DGNS_VRSN_CD23
+    optional: true
+    to: diagnosis23CodeVersion
+  - from: CLM_POA_IND_SW23
+    optional: true
+    to: diagnosis23PresentOnAdmissionCode
+  - from: ICD_DGNS_CD24
+    optional: true
+    to: diagnosis24Code
+  - from: ICD_DGNS_VRSN_CD24
+    optional: true
+    to: diagnosis24CodeVersion
+  - from: CLM_POA_IND_SW24
+    optional: true
+    to: diagnosis24PresentOnAdmissionCode
+  - from: ICD_DGNS_CD25
+    optional: true
+    to: diagnosis25Code
+  - from: ICD_DGNS_VRSN_CD25
+    optional: true
+    to: diagnosis25CodeVersion
+  - from: CLM_POA_IND_SW25
+    optional: true
+    to: diagnosis25PresentOnAdmissionCode
+  - from: FST_DGNS_E_CD
+    optional: true
+    to: diagnosisExternalFirstCode
+  - from: FST_DGNS_E_VRSN_CD
+    optional: true
+    to: diagnosisExternalFirstCodeVersion
+  - from: ICD_DGNS_E_CD1
+    optional: true
+    to: diagnosisExternal1Code
+  - from: ICD_DGNS_E_VRSN_CD1
+    optional: true
+    to: diagnosisExternal1CodeVersion
+  - from: CLM_E_POA_IND_SW1
+    optional: true
+    to: diagnosisExternal1PresentOnAdmissionCode
+  - from: ICD_DGNS_E_CD2
+    optional: true
+    to: diagnosisExternal2Code
+  - from: ICD_DGNS_E_VRSN_CD2
+    optional: true
+    to: diagnosisExternal2CodeVersion
+  - from: CLM_E_POA_IND_SW2
+    optional: true
+    to: diagnosisExternal2PresentOnAdmissionCode
+  - from: ICD_DGNS_E_CD3
+    optional: true
+    to: diagnosisExternal3Code
+  - from: ICD_DGNS_E_VRSN_CD3
+    optional: true
+    to: diagnosisExternal3CodeVersion
+  - from: CLM_E_POA_IND_SW3
+    optional: true
+    to: diagnosisExternal3PresentOnAdmissionCode
+  - from: ICD_DGNS_E_CD4
+    optional: true
+    to: diagnosisExternal4Code
+  - from: ICD_DGNS_E_VRSN_CD4
+    optional: true
+    to: diagnosisExternal4CodeVersion
+  - from: CLM_E_POA_IND_SW4
+    optional: true
+    to: diagnosisExternal4PresentOnAdmissionCode
+  - from: ICD_DGNS_E_CD5
+    optional: true
+    to: diagnosisExternal5Code
+  - from: ICD_DGNS_E_VRSN_CD5
+    optional: true
+    to: diagnosisExternal5CodeVersion
+  - from: CLM_E_POA_IND_SW5
+    optional: true
+    to: diagnosisExternal5PresentOnAdmissionCode
+  - from: ICD_DGNS_E_CD6
+    optional: true
+    to: diagnosisExternal6Code
+  - from: ICD_DGNS_E_VRSN_CD6
+    optional: true
+    to: diagnosisExternal6CodeVersion
+  - from: CLM_E_POA_IND_SW6
+    optional: true
+    to: diagnosisExternal6PresentOnAdmissionCode
+  - from: ICD_DGNS_E_CD7
+    optional: true
+    to: diagnosisExternal7Code
+  - from: ICD_DGNS_E_VRSN_CD7
+    optional: true
+    to: diagnosisExternal7CodeVersion
+  - from: CLM_E_POA_IND_SW7
+    optional: true
+    to: diagnosisExternal7PresentOnAdmissionCode
+  - from: ICD_DGNS_E_CD8
+    optional: true
+    to: diagnosisExternal8Code
+  - from: ICD_DGNS_E_VRSN_CD8
+    optional: true
+    to: diagnosisExternal8CodeVersion
+  - from: CLM_E_POA_IND_SW8
+    optional: true
+    to: diagnosisExternal8PresentOnAdmissionCode
+  - from: ICD_DGNS_E_CD9
+    optional: true
+    to: diagnosisExternal9Code
+  - from: ICD_DGNS_E_VRSN_CD9
+    optional: true
+    to: diagnosisExternal9CodeVersion
+  - from: CLM_E_POA_IND_SW9
+    optional: true
+    to: diagnosisExternal9PresentOnAdmissionCode
+  - from: ICD_DGNS_E_CD10
+    optional: true
+    to: diagnosisExternal10Code
+  - from: ICD_DGNS_E_VRSN_CD10
+    optional: true
+    to: diagnosisExternal10CodeVersion
+  - from: CLM_E_POA_IND_SW10
+    optional: true
+    to: diagnosisExternal10PresentOnAdmissionCode
+  - from: ICD_DGNS_E_CD11
+    optional: true
+    to: diagnosisExternal11Code
+  - from: ICD_DGNS_E_VRSN_CD11
+    optional: true
+    to: diagnosisExternal11CodeVersion
+  - from: CLM_E_POA_IND_SW11
+    optional: true
+    to: diagnosisExternal11PresentOnAdmissionCode
+  - from: ICD_DGNS_E_CD12
+    optional: true
+    to: diagnosisExternal12Code
+  - from: ICD_DGNS_E_VRSN_CD12
+    optional: true
+    to: diagnosisExternal12CodeVersion
+  - from: CLM_E_POA_IND_SW12
+    optional: true
+    to: diagnosisExternal12PresentOnAdmissionCode
+  - from: ICD_PRCDR_CD1
+    optional: true
+    to: procedure1Code
+  - from: ICD_PRCDR_VRSN_CD1
+    optional: true
+    to: procedure1CodeVersion
+  - from: PRCDR_DT1
+    optional: true
+    to: procedure1Date
+  - from: ICD_PRCDR_CD2
+    optional: true
+    to: procedure2Code
+  - from: ICD_PRCDR_VRSN_CD2
+    optional: true
+    to: procedure2CodeVersion
+  - from: PRCDR_DT2
+    optional: true
+    to: procedure2Date
+  - from: ICD_PRCDR_CD3
+    optional: true
+    to: procedure3Code
+  - from: ICD_PRCDR_VRSN_CD3
+    optional: true
+    to: procedure3CodeVersion
+  - from: PRCDR_DT3
+    optional: true
+    to: procedure3Date
+  - from: ICD_PRCDR_CD4
+    optional: true
+    to: procedure4Code
+  - from: ICD_PRCDR_VRSN_CD4
+    optional: true
+    to: procedure4CodeVersion
+  - from: PRCDR_DT4
+    optional: true
+    to: procedure4Date
+  - from: ICD_PRCDR_CD5
+    optional: true
+    to: procedure5Code
+  - from: ICD_PRCDR_VRSN_CD5
+    optional: true
+    to: procedure5CodeVersion
+  - from: PRCDR_DT5
+    optional: true
+    to: procedure5Date
+  - from: ICD_PRCDR_CD6
+    optional: true
+    to: procedure6Code
+  - from: ICD_PRCDR_VRSN_CD6
+    optional: true
+    to: procedure6CodeVersion
+  - from: PRCDR_DT6
+    optional: true
+    to: procedure6Date
+  - from: ICD_PRCDR_CD7
+    optional: true
+    to: procedure7Code
+  - from: ICD_PRCDR_VRSN_CD7
+    optional: true
+    to: procedure7CodeVersion
+  - from: PRCDR_DT7
+    optional: true
+    to: procedure7Date
+  - from: ICD_PRCDR_CD8
+    optional: true
+    to: procedure8Code
+  - from: ICD_PRCDR_VRSN_CD8
+    optional: true
+    to: procedure8CodeVersion
+  - from: PRCDR_DT8
+    optional: true
+    to: procedure8Date
+  - from: ICD_PRCDR_CD9
+    optional: true
+    to: procedure9Code
+  - from: ICD_PRCDR_VRSN_CD9
+    optional: true
+    to: procedure9CodeVersion
+  - from: PRCDR_DT9
+    optional: true
+    to: procedure9Date
+  - from: ICD_PRCDR_CD10
+    optional: true
+    to: procedure10Code
+  - from: ICD_PRCDR_VRSN_CD10
+    optional: true
+    to: procedure10CodeVersion
+  - from: PRCDR_DT10
+    optional: true
+    to: procedure10Date
+  - from: ICD_PRCDR_CD11
+    optional: true
+    to: procedure11Code
+  - from: ICD_PRCDR_VRSN_CD11
+    optional: true
+    to: procedure11CodeVersion
+  - from: PRCDR_DT11
+    optional: true
+    to: procedure11Date
+  - from: ICD_PRCDR_CD12
+    optional: true
+    to: procedure12Code
+  - from: ICD_PRCDR_VRSN_CD12
+    optional: true
+    to: procedure12CodeVersion
+  - from: PRCDR_DT12
+    optional: true
+    to: procedure12Date
+  - from: ICD_PRCDR_CD13
+    optional: true
+    to: procedure13Code
+  - from: ICD_PRCDR_VRSN_CD13
+    optional: true
+    to: procedure13CodeVersion
+  - from: PRCDR_DT13
+    optional: true
+    to: procedure13Date
+  - from: ICD_PRCDR_CD14
+    optional: true
+    to: procedure14Code
+  - from: ICD_PRCDR_VRSN_CD14
+    optional: true
+    to: procedure14CodeVersion
+  - from: PRCDR_DT14
+    optional: true
+    to: procedure14Date
+  - from: ICD_PRCDR_CD15
+    optional: true
+    to: procedure15Code
+  - from: ICD_PRCDR_VRSN_CD15
+    optional: true
+    to: procedure15CodeVersion
+  - from: PRCDR_DT15
+    optional: true
+    to: procedure15Date
+  - from: ICD_PRCDR_CD16
+    optional: true
+    to: procedure16Code
+  - from: ICD_PRCDR_VRSN_CD16
+    optional: true
+    to: procedure16CodeVersion
+  - from: PRCDR_DT16
+    optional: true
+    to: procedure16Date
+  - from: ICD_PRCDR_CD17
+    optional: true
+    to: procedure17Code
+  - from: ICD_PRCDR_VRSN_CD17
+    optional: true
+    to: procedure17CodeVersion
+  - from: PRCDR_DT17
+    optional: true
+    to: procedure17Date
+  - from: ICD_PRCDR_CD18
+    optional: true
+    to: procedure18Code
+  - from: ICD_PRCDR_VRSN_CD18
+    optional: true
+    to: procedure18CodeVersion
+  - from: PRCDR_DT18
+    optional: true
+    to: procedure18Date
+  - from: ICD_PRCDR_CD19
+    optional: true
+    to: procedure19Code
+  - from: ICD_PRCDR_VRSN_CD19
+    optional: true
+    to: procedure19CodeVersion
+  - from: PRCDR_DT19
+    optional: true
+    to: procedure19Date
+  - from: ICD_PRCDR_CD20
+    optional: true
+    to: procedure20Code
+  - from: ICD_PRCDR_VRSN_CD20
+    optional: true
+    to: procedure20CodeVersion
+  - from: PRCDR_DT20
+    optional: true
+    to: procedure20Date
+  - from: ICD_PRCDR_CD21
+    optional: true
+    to: procedure21Code
+  - from: ICD_PRCDR_VRSN_CD21
+    optional: true
+    to: procedure21CodeVersion
+  - from: PRCDR_DT21
+    optional: true
+    to: procedure21Date
+  - from: ICD_PRCDR_CD22
+    optional: true
+    to: procedure22Code
+  - from: ICD_PRCDR_VRSN_CD22
+    optional: true
+    to: procedure22CodeVersion
+  - from: PRCDR_DT22
+    optional: true
+    to: procedure22Date
+  - from: ICD_PRCDR_CD23
+    optional: true
+    to: procedure23Code
+  - from: ICD_PRCDR_VRSN_CD23
+    optional: true
+    to: procedure23CodeVersion
+  - from: PRCDR_DT23
+    optional: true
+    to: procedure23Date
+  - from: ICD_PRCDR_CD24
+    optional: true
+    to: procedure24Code
+  - from: ICD_PRCDR_VRSN_CD24
+    optional: true
+    to: procedure24CodeVersion
+  - from: PRCDR_DT24
+    optional: true
+    to: procedure24Date
+  - from: ICD_PRCDR_CD25
+    optional: true
+    to: procedure25Code
+  - from: ICD_PRCDR_VRSN_CD25
+    optional: true
+    to: procedure25CodeVersion
+  - from: PRCDR_DT25
+    optional: true
+    to: procedure25Date
+  - from: IME_OP_CLM_VAL_AMT
+    optional: true
+    to: indirectMedicalEducationAmount
+  - from: DSH_OP_CLM_VAL_AMT
+    optional: true
+    to: disproportionateShareAmount
+  - from: CLM_UNCOMPD_CARE_PMT_AMT
+    optional: true
+    to: claimUncompensatedCareAmount
+  - from: FI_DOC_CLM_CNTL_NUM
+    optional: true
+    to: fiDocumentClaimControlNumber
+  - from: FI_ORIG_CLM_CNTL_NUM
+    optional: true
+    to: fiOriginalClaimControlNumber
+  transformerClassName: gov.cms.bfd.model.rif.InpatientClaimTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.InpatientClaimLinePoc
   id: InpatientClaimLine
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: Claim Line Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/clm_ln.txt)
@@ -3263,7 +5121,7 @@ mappings:
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
     joins:
-    - entityClass: gov.cms.bfd.model.rif.InpatientClaimZ
+    - entityClass: gov.cms.bfd.model.rif.InpatientClaimPoc
       fetchType: EAGER
       fieldName: parentClaim
       foreignKey: inpatient_claims_lines_clm_id_to_inpatient_claims
@@ -3273,8 +5131,12 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
-- entityClassName: gov.cms.bfd.model.rif.OutpatientClaimZ
+  transformations: []
+  transformerClassName: gov.cms.bfd.model.rif.InpatientClaimLineTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.OutpatientClaimPoc
   id: OutpatientClaim
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: 723 Beneficiary ID (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/bene_id.txt)
@@ -4221,8 +6083,606 @@ mappings:
     name: outpatient_claims
     primaryKeyColumns:
     - claimId
-- entityClassName: gov.cms.bfd.model.rif.OutpatientClaimLineZ
+  transformations:
+  - from: BENE_ID
+    optional: false
+    to: beneficiaryId
+  - from: CLM_ID
+    optional: false
+    to: claimId
+  - from: CLM_GRP_ID
+    optional: false
+    to: claimGroupId
+  - from: FINAL_ACTION
+    optional: false
+    to: finalAction
+  - from: NCH_NEAR_LINE_REC_IDENT_CD
+    optional: false
+    to: nearLineRecordIdCode
+  - from: NCH_CLM_TYPE_CD
+    optional: false
+    to: claimTypeCode
+  - from: CLM_FROM_DT
+    optional: false
+    to: dateFrom
+  - from: CLM_THRU_DT
+    optional: false
+    to: dateThrough
+  - from: NCH_WKLY_PROC_DT
+    optional: false
+    to: weeklyProcessDate
+  - from: FI_CLM_PROC_DT
+    optional: true
+    to: fiscalIntermediaryClaimProcessDate
+  - from: CLAIM_QUERY_CODE
+    optional: false
+    to: claimQueryCode
+  - from: PRVDR_NUM
+    optional: false
+    to: providerNumber
+  - from: CLM_FAC_TYPE_CD
+    optional: false
+    to: claimFacilityTypeCode
+  - from: CLM_SRVC_CLSFCTN_TYPE_CD
+    optional: false
+    to: claimServiceClassificationTypeCode
+  - from: CLM_FREQ_CD
+    optional: false
+    to: claimFrequencyCode
+  - from: FI_NUM
+    optional: true
+    to: fiscalIntermediaryNumber
+  - from: CLM_MDCR_NON_PMT_RSN_CD
+    optional: true
+    to: claimNonPaymentReasonCode
+  - from: CLM_PMT_AMT
+    optional: false
+    to: paymentAmount
+  - from: NCH_PRMRY_PYR_CLM_PD_AMT
+    optional: false
+    to: primaryPayerPaidAmount
+  - from: NCH_PRMRY_PYR_CD
+    optional: true
+    to: claimPrimaryPayerCode
+  - from: PRVDR_STATE_CD
+    optional: false
+    to: providerStateCode
+  - from: ORG_NPI_NUM
+    optional: true
+    to: organizationNpi
+  - from: AT_PHYSN_UPIN
+    optional: true
+    to: attendingPhysicianUpin
+  - from: AT_PHYSN_NPI
+    optional: true
+    to: attendingPhysicianNpi
+  - from: OP_PHYSN_UPIN
+    optional: true
+    to: operatingPhysicianUpin
+  - from: OP_PHYSN_NPI
+    optional: true
+    to: operatingPhysicianNpi
+  - from: OT_PHYSN_UPIN
+    optional: true
+    to: otherPhysicianUpin
+  - from: OT_PHYSN_NPI
+    optional: true
+    to: otherPhysicianNpi
+  - from: CLM_MCO_PD_SW
+    optional: true
+    to: mcoPaidSw
+  - from: PTNT_DSCHRG_STUS_CD
+    optional: true
+    to: patientDischargeStatusCode
+  - from: CLM_TOT_CHRG_AMT
+    optional: false
+    to: totalChargeAmount
+  - from: NCH_BENE_BLOOD_DDCTBL_LBLTY_AM
+    optional: false
+    to: bloodDeductibleLiabilityAmount
+  - from: NCH_PROFNL_CMPNT_CHRG_AMT
+    optional: false
+    to: professionalComponentCharge
+  - from: PRNCPAL_DGNS_CD
+    optional: true
+    to: diagnosisPrincipalCode
+  - from: PRNCPAL_DGNS_VRSN_CD
+    optional: true
+    to: diagnosisPrincipalCodeVersion
+  - from: ICD_DGNS_CD1
+    optional: true
+    to: diagnosis1Code
+  - from: ICD_DGNS_VRSN_CD1
+    optional: true
+    to: diagnosis1CodeVersion
+  - from: ICD_DGNS_CD2
+    optional: true
+    to: diagnosis2Code
+  - from: ICD_DGNS_VRSN_CD2
+    optional: true
+    to: diagnosis2CodeVersion
+  - from: ICD_DGNS_CD3
+    optional: true
+    to: diagnosis3Code
+  - from: ICD_DGNS_VRSN_CD3
+    optional: true
+    to: diagnosis3CodeVersion
+  - from: ICD_DGNS_CD4
+    optional: true
+    to: diagnosis4Code
+  - from: ICD_DGNS_VRSN_CD4
+    optional: true
+    to: diagnosis4CodeVersion
+  - from: ICD_DGNS_CD5
+    optional: true
+    to: diagnosis5Code
+  - from: ICD_DGNS_VRSN_CD5
+    optional: true
+    to: diagnosis5CodeVersion
+  - from: ICD_DGNS_CD6
+    optional: true
+    to: diagnosis6Code
+  - from: ICD_DGNS_VRSN_CD6
+    optional: true
+    to: diagnosis6CodeVersion
+  - from: ICD_DGNS_CD7
+    optional: true
+    to: diagnosis7Code
+  - from: ICD_DGNS_VRSN_CD7
+    optional: true
+    to: diagnosis7CodeVersion
+  - from: ICD_DGNS_CD8
+    optional: true
+    to: diagnosis8Code
+  - from: ICD_DGNS_VRSN_CD8
+    optional: true
+    to: diagnosis8CodeVersion
+  - from: ICD_DGNS_CD9
+    optional: true
+    to: diagnosis9Code
+  - from: ICD_DGNS_VRSN_CD9
+    optional: true
+    to: diagnosis9CodeVersion
+  - from: ICD_DGNS_CD10
+    optional: true
+    to: diagnosis10Code
+  - from: ICD_DGNS_VRSN_CD10
+    optional: true
+    to: diagnosis10CodeVersion
+  - from: ICD_DGNS_CD11
+    optional: true
+    to: diagnosis11Code
+  - from: ICD_DGNS_VRSN_CD11
+    optional: true
+    to: diagnosis11CodeVersion
+  - from: ICD_DGNS_CD12
+    optional: true
+    to: diagnosis12Code
+  - from: ICD_DGNS_VRSN_CD12
+    optional: true
+    to: diagnosis12CodeVersion
+  - from: ICD_DGNS_CD13
+    optional: true
+    to: diagnosis13Code
+  - from: ICD_DGNS_VRSN_CD13
+    optional: true
+    to: diagnosis13CodeVersion
+  - from: ICD_DGNS_CD14
+    optional: true
+    to: diagnosis14Code
+  - from: ICD_DGNS_VRSN_CD14
+    optional: true
+    to: diagnosis14CodeVersion
+  - from: ICD_DGNS_CD15
+    optional: true
+    to: diagnosis15Code
+  - from: ICD_DGNS_VRSN_CD15
+    optional: true
+    to: diagnosis15CodeVersion
+  - from: ICD_DGNS_CD16
+    optional: true
+    to: diagnosis16Code
+  - from: ICD_DGNS_VRSN_CD16
+    optional: true
+    to: diagnosis16CodeVersion
+  - from: ICD_DGNS_CD17
+    optional: true
+    to: diagnosis17Code
+  - from: ICD_DGNS_VRSN_CD17
+    optional: true
+    to: diagnosis17CodeVersion
+  - from: ICD_DGNS_CD18
+    optional: true
+    to: diagnosis18Code
+  - from: ICD_DGNS_VRSN_CD18
+    optional: true
+    to: diagnosis18CodeVersion
+  - from: ICD_DGNS_CD19
+    optional: true
+    to: diagnosis19Code
+  - from: ICD_DGNS_VRSN_CD19
+    optional: true
+    to: diagnosis19CodeVersion
+  - from: ICD_DGNS_CD20
+    optional: true
+    to: diagnosis20Code
+  - from: ICD_DGNS_VRSN_CD20
+    optional: true
+    to: diagnosis20CodeVersion
+  - from: ICD_DGNS_CD21
+    optional: true
+    to: diagnosis21Code
+  - from: ICD_DGNS_VRSN_CD21
+    optional: true
+    to: diagnosis21CodeVersion
+  - from: ICD_DGNS_CD22
+    optional: true
+    to: diagnosis22Code
+  - from: ICD_DGNS_VRSN_CD22
+    optional: true
+    to: diagnosis22CodeVersion
+  - from: ICD_DGNS_CD23
+    optional: true
+    to: diagnosis23Code
+  - from: ICD_DGNS_VRSN_CD23
+    optional: true
+    to: diagnosis23CodeVersion
+  - from: ICD_DGNS_CD24
+    optional: true
+    to: diagnosis24Code
+  - from: ICD_DGNS_VRSN_CD24
+    optional: true
+    to: diagnosis24CodeVersion
+  - from: ICD_DGNS_CD25
+    optional: true
+    to: diagnosis25Code
+  - from: ICD_DGNS_VRSN_CD25
+    optional: true
+    to: diagnosis25CodeVersion
+  - from: FST_DGNS_E_CD
+    optional: true
+    to: diagnosisExternalFirstCode
+  - from: FST_DGNS_E_VRSN_CD
+    optional: true
+    to: diagnosisExternalFirstCodeVersion
+  - from: ICD_DGNS_E_CD1
+    optional: true
+    to: diagnosisExternal1Code
+  - from: ICD_DGNS_E_VRSN_CD1
+    optional: true
+    to: diagnosisExternal1CodeVersion
+  - from: ICD_DGNS_E_CD2
+    optional: true
+    to: diagnosisExternal2Code
+  - from: ICD_DGNS_E_VRSN_CD2
+    optional: true
+    to: diagnosisExternal2CodeVersion
+  - from: ICD_DGNS_E_CD3
+    optional: true
+    to: diagnosisExternal3Code
+  - from: ICD_DGNS_E_VRSN_CD3
+    optional: true
+    to: diagnosisExternal3CodeVersion
+  - from: ICD_DGNS_E_CD4
+    optional: true
+    to: diagnosisExternal4Code
+  - from: ICD_DGNS_E_VRSN_CD4
+    optional: true
+    to: diagnosisExternal4CodeVersion
+  - from: ICD_DGNS_E_CD5
+    optional: true
+    to: diagnosisExternal5Code
+  - from: ICD_DGNS_E_VRSN_CD5
+    optional: true
+    to: diagnosisExternal5CodeVersion
+  - from: ICD_DGNS_E_CD6
+    optional: true
+    to: diagnosisExternal6Code
+  - from: ICD_DGNS_E_VRSN_CD6
+    optional: true
+    to: diagnosisExternal6CodeVersion
+  - from: ICD_DGNS_E_CD7
+    optional: true
+    to: diagnosisExternal7Code
+  - from: ICD_DGNS_E_VRSN_CD7
+    optional: true
+    to: diagnosisExternal7CodeVersion
+  - from: ICD_DGNS_E_CD8
+    optional: true
+    to: diagnosisExternal8Code
+  - from: ICD_DGNS_E_VRSN_CD8
+    optional: true
+    to: diagnosisExternal8CodeVersion
+  - from: ICD_DGNS_E_CD9
+    optional: true
+    to: diagnosisExternal9Code
+  - from: ICD_DGNS_E_VRSN_CD9
+    optional: true
+    to: diagnosisExternal9CodeVersion
+  - from: ICD_DGNS_E_CD10
+    optional: true
+    to: diagnosisExternal10Code
+  - from: ICD_DGNS_E_VRSN_CD10
+    optional: true
+    to: diagnosisExternal10CodeVersion
+  - from: ICD_DGNS_E_CD11
+    optional: true
+    to: diagnosisExternal11Code
+  - from: ICD_DGNS_E_VRSN_CD11
+    optional: true
+    to: diagnosisExternal11CodeVersion
+  - from: ICD_DGNS_E_CD12
+    optional: true
+    to: diagnosisExternal12Code
+  - from: ICD_DGNS_E_VRSN_CD12
+    optional: true
+    to: diagnosisExternal12CodeVersion
+  - from: ICD_PRCDR_CD1
+    optional: true
+    to: procedure1Code
+  - from: ICD_PRCDR_VRSN_CD1
+    optional: true
+    to: procedure1CodeVersion
+  - from: PRCDR_DT1
+    optional: true
+    to: procedure1Date
+  - from: ICD_PRCDR_CD2
+    optional: true
+    to: procedure2Code
+  - from: ICD_PRCDR_VRSN_CD2
+    optional: true
+    to: procedure2CodeVersion
+  - from: PRCDR_DT2
+    optional: true
+    to: procedure2Date
+  - from: ICD_PRCDR_CD3
+    optional: true
+    to: procedure3Code
+  - from: ICD_PRCDR_VRSN_CD3
+    optional: true
+    to: procedure3CodeVersion
+  - from: PRCDR_DT3
+    optional: true
+    to: procedure3Date
+  - from: ICD_PRCDR_CD4
+    optional: true
+    to: procedure4Code
+  - from: ICD_PRCDR_VRSN_CD4
+    optional: true
+    to: procedure4CodeVersion
+  - from: PRCDR_DT4
+    optional: true
+    to: procedure4Date
+  - from: ICD_PRCDR_CD5
+    optional: true
+    to: procedure5Code
+  - from: ICD_PRCDR_VRSN_CD5
+    optional: true
+    to: procedure5CodeVersion
+  - from: PRCDR_DT5
+    optional: true
+    to: procedure5Date
+  - from: ICD_PRCDR_CD6
+    optional: true
+    to: procedure6Code
+  - from: ICD_PRCDR_VRSN_CD6
+    optional: true
+    to: procedure6CodeVersion
+  - from: PRCDR_DT6
+    optional: true
+    to: procedure6Date
+  - from: ICD_PRCDR_CD7
+    optional: true
+    to: procedure7Code
+  - from: ICD_PRCDR_VRSN_CD7
+    optional: true
+    to: procedure7CodeVersion
+  - from: PRCDR_DT7
+    optional: true
+    to: procedure7Date
+  - from: ICD_PRCDR_CD8
+    optional: true
+    to: procedure8Code
+  - from: ICD_PRCDR_VRSN_CD8
+    optional: true
+    to: procedure8CodeVersion
+  - from: PRCDR_DT8
+    optional: true
+    to: procedure8Date
+  - from: ICD_PRCDR_CD9
+    optional: true
+    to: procedure9Code
+  - from: ICD_PRCDR_VRSN_CD9
+    optional: true
+    to: procedure9CodeVersion
+  - from: PRCDR_DT9
+    optional: true
+    to: procedure9Date
+  - from: ICD_PRCDR_CD10
+    optional: true
+    to: procedure10Code
+  - from: ICD_PRCDR_VRSN_CD10
+    optional: true
+    to: procedure10CodeVersion
+  - from: PRCDR_DT10
+    optional: true
+    to: procedure10Date
+  - from: ICD_PRCDR_CD11
+    optional: true
+    to: procedure11Code
+  - from: ICD_PRCDR_VRSN_CD11
+    optional: true
+    to: procedure11CodeVersion
+  - from: PRCDR_DT11
+    optional: true
+    to: procedure11Date
+  - from: ICD_PRCDR_CD12
+    optional: true
+    to: procedure12Code
+  - from: ICD_PRCDR_VRSN_CD12
+    optional: true
+    to: procedure12CodeVersion
+  - from: PRCDR_DT12
+    optional: true
+    to: procedure12Date
+  - from: ICD_PRCDR_CD13
+    optional: true
+    to: procedure13Code
+  - from: ICD_PRCDR_VRSN_CD13
+    optional: true
+    to: procedure13CodeVersion
+  - from: PRCDR_DT13
+    optional: true
+    to: procedure13Date
+  - from: ICD_PRCDR_CD14
+    optional: true
+    to: procedure14Code
+  - from: ICD_PRCDR_VRSN_CD14
+    optional: true
+    to: procedure14CodeVersion
+  - from: PRCDR_DT14
+    optional: true
+    to: procedure14Date
+  - from: ICD_PRCDR_CD15
+    optional: true
+    to: procedure15Code
+  - from: ICD_PRCDR_VRSN_CD15
+    optional: true
+    to: procedure15CodeVersion
+  - from: PRCDR_DT15
+    optional: true
+    to: procedure15Date
+  - from: ICD_PRCDR_CD16
+    optional: true
+    to: procedure16Code
+  - from: ICD_PRCDR_VRSN_CD16
+    optional: true
+    to: procedure16CodeVersion
+  - from: PRCDR_DT16
+    optional: true
+    to: procedure16Date
+  - from: ICD_PRCDR_CD17
+    optional: true
+    to: procedure17Code
+  - from: ICD_PRCDR_VRSN_CD17
+    optional: true
+    to: procedure17CodeVersion
+  - from: PRCDR_DT17
+    optional: true
+    to: procedure17Date
+  - from: ICD_PRCDR_CD18
+    optional: true
+    to: procedure18Code
+  - from: ICD_PRCDR_VRSN_CD18
+    optional: true
+    to: procedure18CodeVersion
+  - from: PRCDR_DT18
+    optional: true
+    to: procedure18Date
+  - from: ICD_PRCDR_CD19
+    optional: true
+    to: procedure19Code
+  - from: ICD_PRCDR_VRSN_CD19
+    optional: true
+    to: procedure19CodeVersion
+  - from: PRCDR_DT19
+    optional: true
+    to: procedure19Date
+  - from: ICD_PRCDR_CD20
+    optional: true
+    to: procedure20Code
+  - from: ICD_PRCDR_VRSN_CD20
+    optional: true
+    to: procedure20CodeVersion
+  - from: PRCDR_DT20
+    optional: true
+    to: procedure20Date
+  - from: ICD_PRCDR_CD21
+    optional: true
+    to: procedure21Code
+  - from: ICD_PRCDR_VRSN_CD21
+    optional: true
+    to: procedure21CodeVersion
+  - from: PRCDR_DT21
+    optional: true
+    to: procedure21Date
+  - from: ICD_PRCDR_CD22
+    optional: true
+    to: procedure22Code
+  - from: ICD_PRCDR_VRSN_CD22
+    optional: true
+    to: procedure22CodeVersion
+  - from: PRCDR_DT22
+    optional: true
+    to: procedure22Date
+  - from: ICD_PRCDR_CD23
+    optional: true
+    to: procedure23Code
+  - from: ICD_PRCDR_VRSN_CD23
+    optional: true
+    to: procedure23CodeVersion
+  - from: PRCDR_DT23
+    optional: true
+    to: procedure23Date
+  - from: ICD_PRCDR_CD24
+    optional: true
+    to: procedure24Code
+  - from: ICD_PRCDR_VRSN_CD24
+    optional: true
+    to: procedure24CodeVersion
+  - from: PRCDR_DT24
+    optional: true
+    to: procedure24Date
+  - from: ICD_PRCDR_CD25
+    optional: true
+    to: procedure25Code
+  - from: ICD_PRCDR_VRSN_CD25
+    optional: true
+    to: procedure25CodeVersion
+  - from: PRCDR_DT25
+    optional: true
+    to: procedure25Date
+  - from: RSN_VISIT_CD1
+    optional: true
+    to: diagnosisAdmission1Code
+  - from: RSN_VISIT_VRSN_CD1
+    optional: true
+    to: diagnosisAdmission1CodeVersion
+  - from: RSN_VISIT_CD2
+    optional: true
+    to: diagnosisAdmission2Code
+  - from: RSN_VISIT_VRSN_CD2
+    optional: true
+    to: diagnosisAdmission2CodeVersion
+  - from: RSN_VISIT_CD3
+    optional: true
+    to: diagnosisAdmission3Code
+  - from: RSN_VISIT_VRSN_CD3
+    optional: true
+    to: diagnosisAdmission3CodeVersion
+  - from: NCH_BENE_PTB_DDCTBL_AMT
+    optional: false
+    to: deductibleAmount
+  - from: NCH_BENE_PTB_COINSRNC_AMT
+    optional: false
+    to: coinsuranceAmount
+  - from: CLM_OP_PRVDR_PMT_AMT
+    optional: false
+    to: providerPaymentAmount
+  - from: CLM_OP_BENE_PMT_AMT
+    optional: false
+    to: beneficiaryPaymentAmount
+  - from: FI_DOC_CLM_CNTL_NUM
+    optional: true
+    to: fiDocumentClaimControlNumber
+  - from: FI_ORIG_CLM_CNTL_NUM
+    optional: true
+    to: fiOriginalClaimControlNumber
+  transformerClassName: gov.cms.bfd.model.rif.OutpatientClaimTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.OutpatientClaimLinePoc
   id: OutpatientClaimLine
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: Claim Line Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/clm_ln.txt)
@@ -4385,7 +6845,7 @@ mappings:
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
     joins:
-    - entityClass: gov.cms.bfd.model.rif.OutpatientClaimZ
+    - entityClass: gov.cms.bfd.model.rif.OutpatientClaimPoc
       fetchType: EAGER
       fieldName: parentClaim
       foreignKey: outpatient_claims_lines_clm_id_to_outpatient_claims
@@ -4395,8 +6855,12 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
-- entityClassName: gov.cms.bfd.model.rif.HHAClaimZ
+  transformations: []
+  transformerClassName: gov.cms.bfd.model.rif.OutpatientClaimLineTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.HHAClaimPoc
   id: HHAClaim
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: 723 Beneficiary ID (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/bene_id.txt)
@@ -4933,8 +7397,342 @@ mappings:
     name: hha_claims
     primaryKeyColumns:
     - claimId
-- entityClassName: gov.cms.bfd.model.rif.HHAClaimLineZ
+  transformations:
+  - from: BENE_ID
+    optional: false
+    to: beneficiaryId
+  - from: CLM_ID
+    optional: false
+    to: claimId
+  - from: CLM_GRP_ID
+    optional: false
+    to: claimGroupId
+  - from: FINAL_ACTION
+    optional: false
+    to: finalAction
+  - from: NCH_NEAR_LINE_REC_IDENT_CD
+    optional: false
+    to: nearLineRecordIdCode
+  - from: NCH_CLM_TYPE_CD
+    optional: false
+    to: claimTypeCode
+  - from: CLM_FROM_DT
+    optional: false
+    to: dateFrom
+  - from: CLM_THRU_DT
+    optional: false
+    to: dateThrough
+  - from: NCH_WKLY_PROC_DT
+    optional: false
+    to: weeklyProcessDate
+  - from: FI_CLM_PROC_DT
+    optional: true
+    to: fiscalIntermediaryClaimProcessDate
+  - from: PRVDR_NUM
+    optional: false
+    to: providerNumber
+  - from: CLM_FAC_TYPE_CD
+    optional: false
+    to: claimFacilityTypeCode
+  - from: CLM_SRVC_CLSFCTN_TYPE_CD
+    optional: false
+    to: claimServiceClassificationTypeCode
+  - from: CLM_FREQ_CD
+    optional: false
+    to: claimFrequencyCode
+  - from: FI_NUM
+    optional: true
+    to: fiscalIntermediaryNumber
+  - from: CLM_MDCR_NON_PMT_RSN_CD
+    optional: true
+    to: claimNonPaymentReasonCode
+  - from: CLM_PMT_AMT
+    optional: false
+    to: paymentAmount
+  - from: NCH_PRMRY_PYR_CLM_PD_AMT
+    optional: false
+    to: primaryPayerPaidAmount
+  - from: NCH_PRMRY_PYR_CD
+    optional: true
+    to: claimPrimaryPayerCode
+  - from: PRVDR_STATE_CD
+    optional: false
+    to: providerStateCode
+  - from: ORG_NPI_NUM
+    optional: true
+    to: organizationNpi
+  - from: AT_PHYSN_UPIN
+    optional: true
+    to: attendingPhysicianUpin
+  - from: AT_PHYSN_NPI
+    optional: true
+    to: attendingPhysicianNpi
+  - from: PTNT_DSCHRG_STUS_CD
+    optional: false
+    to: patientDischargeStatusCode
+  - from: CLM_PPS_IND_CD
+    optional: false
+    to: prospectivePaymentCode
+  - from: CLM_TOT_CHRG_AMT
+    optional: false
+    to: totalChargeAmount
+  - from: PRNCPAL_DGNS_CD
+    optional: true
+    to: diagnosisPrincipalCode
+  - from: PRNCPAL_DGNS_VRSN_CD
+    optional: true
+    to: diagnosisPrincipalCodeVersion
+  - from: ICD_DGNS_CD1
+    optional: true
+    to: diagnosis1Code
+  - from: ICD_DGNS_VRSN_CD1
+    optional: true
+    to: diagnosis1CodeVersion
+  - from: ICD_DGNS_CD2
+    optional: true
+    to: diagnosis2Code
+  - from: ICD_DGNS_VRSN_CD2
+    optional: true
+    to: diagnosis2CodeVersion
+  - from: ICD_DGNS_CD3
+    optional: true
+    to: diagnosis3Code
+  - from: ICD_DGNS_VRSN_CD3
+    optional: true
+    to: diagnosis3CodeVersion
+  - from: ICD_DGNS_CD4
+    optional: true
+    to: diagnosis4Code
+  - from: ICD_DGNS_VRSN_CD4
+    optional: true
+    to: diagnosis4CodeVersion
+  - from: ICD_DGNS_CD5
+    optional: true
+    to: diagnosis5Code
+  - from: ICD_DGNS_VRSN_CD5
+    optional: true
+    to: diagnosis5CodeVersion
+  - from: ICD_DGNS_CD6
+    optional: true
+    to: diagnosis6Code
+  - from: ICD_DGNS_VRSN_CD6
+    optional: true
+    to: diagnosis6CodeVersion
+  - from: ICD_DGNS_CD7
+    optional: true
+    to: diagnosis7Code
+  - from: ICD_DGNS_VRSN_CD7
+    optional: true
+    to: diagnosis7CodeVersion
+  - from: ICD_DGNS_CD8
+    optional: true
+    to: diagnosis8Code
+  - from: ICD_DGNS_VRSN_CD8
+    optional: true
+    to: diagnosis8CodeVersion
+  - from: ICD_DGNS_CD9
+    optional: true
+    to: diagnosis9Code
+  - from: ICD_DGNS_VRSN_CD9
+    optional: true
+    to: diagnosis9CodeVersion
+  - from: ICD_DGNS_CD10
+    optional: true
+    to: diagnosis10Code
+  - from: ICD_DGNS_VRSN_CD10
+    optional: true
+    to: diagnosis10CodeVersion
+  - from: ICD_DGNS_CD11
+    optional: true
+    to: diagnosis11Code
+  - from: ICD_DGNS_VRSN_CD11
+    optional: true
+    to: diagnosis11CodeVersion
+  - from: ICD_DGNS_CD12
+    optional: true
+    to: diagnosis12Code
+  - from: ICD_DGNS_VRSN_CD12
+    optional: true
+    to: diagnosis12CodeVersion
+  - from: ICD_DGNS_CD13
+    optional: true
+    to: diagnosis13Code
+  - from: ICD_DGNS_VRSN_CD13
+    optional: true
+    to: diagnosis13CodeVersion
+  - from: ICD_DGNS_CD14
+    optional: true
+    to: diagnosis14Code
+  - from: ICD_DGNS_VRSN_CD14
+    optional: true
+    to: diagnosis14CodeVersion
+  - from: ICD_DGNS_CD15
+    optional: true
+    to: diagnosis15Code
+  - from: ICD_DGNS_VRSN_CD15
+    optional: true
+    to: diagnosis15CodeVersion
+  - from: ICD_DGNS_CD16
+    optional: true
+    to: diagnosis16Code
+  - from: ICD_DGNS_VRSN_CD16
+    optional: true
+    to: diagnosis16CodeVersion
+  - from: ICD_DGNS_CD17
+    optional: true
+    to: diagnosis17Code
+  - from: ICD_DGNS_VRSN_CD17
+    optional: true
+    to: diagnosis17CodeVersion
+  - from: ICD_DGNS_CD18
+    optional: true
+    to: diagnosis18Code
+  - from: ICD_DGNS_VRSN_CD18
+    optional: true
+    to: diagnosis18CodeVersion
+  - from: ICD_DGNS_CD19
+    optional: true
+    to: diagnosis19Code
+  - from: ICD_DGNS_VRSN_CD19
+    optional: true
+    to: diagnosis19CodeVersion
+  - from: ICD_DGNS_CD20
+    optional: true
+    to: diagnosis20Code
+  - from: ICD_DGNS_VRSN_CD20
+    optional: true
+    to: diagnosis20CodeVersion
+  - from: ICD_DGNS_CD21
+    optional: true
+    to: diagnosis21Code
+  - from: ICD_DGNS_VRSN_CD21
+    optional: true
+    to: diagnosis21CodeVersion
+  - from: ICD_DGNS_CD22
+    optional: true
+    to: diagnosis22Code
+  - from: ICD_DGNS_VRSN_CD22
+    optional: true
+    to: diagnosis22CodeVersion
+  - from: ICD_DGNS_CD23
+    optional: true
+    to: diagnosis23Code
+  - from: ICD_DGNS_VRSN_CD23
+    optional: true
+    to: diagnosis23CodeVersion
+  - from: ICD_DGNS_CD24
+    optional: true
+    to: diagnosis24Code
+  - from: ICD_DGNS_VRSN_CD24
+    optional: true
+    to: diagnosis24CodeVersion
+  - from: ICD_DGNS_CD25
+    optional: true
+    to: diagnosis25Code
+  - from: ICD_DGNS_VRSN_CD25
+    optional: true
+    to: diagnosis25CodeVersion
+  - from: FST_DGNS_E_CD
+    optional: true
+    to: diagnosisExternalFirstCode
+  - from: FST_DGNS_E_VRSN_CD
+    optional: true
+    to: diagnosisExternalFirstCodeVersion
+  - from: ICD_DGNS_E_CD1
+    optional: true
+    to: diagnosisExternal1Code
+  - from: ICD_DGNS_E_VRSN_CD1
+    optional: true
+    to: diagnosisExternal1CodeVersion
+  - from: ICD_DGNS_E_CD2
+    optional: true
+    to: diagnosisExternal2Code
+  - from: ICD_DGNS_E_VRSN_CD2
+    optional: true
+    to: diagnosisExternal2CodeVersion
+  - from: ICD_DGNS_E_CD3
+    optional: true
+    to: diagnosisExternal3Code
+  - from: ICD_DGNS_E_VRSN_CD3
+    optional: true
+    to: diagnosisExternal3CodeVersion
+  - from: ICD_DGNS_E_CD4
+    optional: true
+    to: diagnosisExternal4Code
+  - from: ICD_DGNS_E_VRSN_CD4
+    optional: true
+    to: diagnosisExternal4CodeVersion
+  - from: ICD_DGNS_E_CD5
+    optional: true
+    to: diagnosisExternal5Code
+  - from: ICD_DGNS_E_VRSN_CD5
+    optional: true
+    to: diagnosisExternal5CodeVersion
+  - from: ICD_DGNS_E_CD6
+    optional: true
+    to: diagnosisExternal6Code
+  - from: ICD_DGNS_E_VRSN_CD6
+    optional: true
+    to: diagnosisExternal6CodeVersion
+  - from: ICD_DGNS_E_CD7
+    optional: true
+    to: diagnosisExternal7Code
+  - from: ICD_DGNS_E_VRSN_CD7
+    optional: true
+    to: diagnosisExternal7CodeVersion
+  - from: ICD_DGNS_E_CD8
+    optional: true
+    to: diagnosisExternal8Code
+  - from: ICD_DGNS_E_VRSN_CD8
+    optional: true
+    to: diagnosisExternal8CodeVersion
+  - from: ICD_DGNS_E_CD9
+    optional: true
+    to: diagnosisExternal9Code
+  - from: ICD_DGNS_E_VRSN_CD9
+    optional: true
+    to: diagnosisExternal9CodeVersion
+  - from: ICD_DGNS_E_CD10
+    optional: true
+    to: diagnosisExternal10Code
+  - from: ICD_DGNS_E_VRSN_CD10
+    optional: true
+    to: diagnosisExternal10CodeVersion
+  - from: ICD_DGNS_E_CD11
+    optional: true
+    to: diagnosisExternal11Code
+  - from: ICD_DGNS_E_VRSN_CD11
+    optional: true
+    to: diagnosisExternal11CodeVersion
+  - from: ICD_DGNS_E_CD12
+    optional: true
+    to: diagnosisExternal12Code
+  - from: ICD_DGNS_E_VRSN_CD12
+    optional: true
+    to: diagnosisExternal12CodeVersion
+  - from: CLM_HHA_LUPA_IND_CD
+    optional: true
+    to: claimLUPACode
+  - from: CLM_HHA_RFRL_CD
+    optional: true
+    to: claimReferralCode
+  - from: CLM_HHA_TOT_VISIT_CNT
+    optional: false
+    to: totalVisitCount
+  - from: CLM_ADMSN_DT
+    optional: true
+    to: careStartDate
+  - from: FI_DOC_CLM_CNTL_NUM
+    optional: true
+    to: fiDocumentClaimControlNumber
+  - from: FI_ORIG_CLM_CNTL_NUM
+    optional: true
+    to: fiOriginalClaimControlNumber
+  transformerClassName: gov.cms.bfd.model.rif.HHAClaimTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.HHAClaimLinePoc
   id: HHAClaimLine
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: Claim Line Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/clm_ln.txt)
@@ -5026,7 +7824,7 @@ mappings:
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
     joins:
-    - entityClass: gov.cms.bfd.model.rif.HHAClaimZ
+    - entityClass: gov.cms.bfd.model.rif.HHAClaimPoc
       fetchType: EAGER
       fieldName: parentClaim
       foreignKey: hha_claims_lines_clm_id_to_hha_claims
@@ -5036,8 +7834,12 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
-- entityClassName: gov.cms.bfd.model.rif.DMEClaimZ
+  transformations: []
+  transformerClassName: gov.cms.bfd.model.rif.HHAClaimLineTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.DMEClaimPoc
   id: DMEClaim
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: 723 Beneficiary ID (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/bene_id.txt)
@@ -5297,8 +8099,168 @@ mappings:
     name: dme_claims
     primaryKeyColumns:
     - claimId
-- entityClassName: gov.cms.bfd.model.rif.DMEClaimLineZ
+  transformations:
+  - from: BENE_ID
+    optional: false
+    to: beneficiaryId
+  - from: CLM_ID
+    optional: false
+    to: claimId
+  - from: CLM_GRP_ID
+    optional: false
+    to: claimGroupId
+  - from: FINAL_ACTION
+    optional: false
+    to: finalAction
+  - from: NCH_NEAR_LINE_REC_IDENT_CD
+    optional: false
+    to: nearLineRecordIdCode
+  - from: NCH_CLM_TYPE_CD
+    optional: false
+    to: claimTypeCode
+  - from: CLM_FROM_DT
+    optional: false
+    to: dateFrom
+  - from: CLM_THRU_DT
+    optional: false
+    to: dateThrough
+  - from: NCH_WKLY_PROC_DT
+    optional: false
+    to: weeklyProcessDate
+  - from: CARR_CLM_ENTRY_CD
+    optional: false
+    to: claimEntryCode
+  - from: CLM_DISP_CD
+    optional: false
+    to: claimDispositionCode
+  - from: CARR_NUM
+    optional: false
+    to: carrierNumber
+  - from: CARR_CLM_PMT_DNL_CD
+    optional: false
+    to: paymentDenialCode
+  - from: CLM_PMT_AMT
+    optional: false
+    to: paymentAmount
+  - from: CARR_CLM_PRMRY_PYR_PD_AMT
+    optional: false
+    to: primaryPayerPaidAmount
+  - from: CARR_CLM_PRVDR_ASGNMT_IND_SW
+    optional: false
+    to: providerAssignmentIndicator
+  - from: NCH_CLM_PRVDR_PMT_AMT
+    optional: false
+    to: providerPaymentAmount
+  - from: NCH_CLM_BENE_PMT_AMT
+    optional: false
+    to: beneficiaryPaymentAmount
+  - from: NCH_CARR_CLM_SBMTD_CHRG_AMT
+    optional: false
+    to: submittedChargeAmount
+  - from: NCH_CARR_CLM_ALOWD_AMT
+    optional: false
+    to: allowedChargeAmount
+  - from: CARR_CLM_CASH_DDCTBL_APLD_AMT
+    optional: false
+    to: beneficiaryPartBDeductAmount
+  - from: CARR_CLM_HCPCS_YR_CD
+    optional: true
+    to: hcpcsYearCode
+  - from: PRNCPAL_DGNS_CD
+    optional: true
+    to: diagnosisPrincipalCode
+  - from: PRNCPAL_DGNS_VRSN_CD
+    optional: true
+    to: diagnosisPrincipalCodeVersion
+  - from: ICD_DGNS_CD1
+    optional: true
+    to: diagnosis1Code
+  - from: ICD_DGNS_VRSN_CD1
+    optional: true
+    to: diagnosis1CodeVersion
+  - from: ICD_DGNS_CD2
+    optional: true
+    to: diagnosis2Code
+  - from: ICD_DGNS_VRSN_CD2
+    optional: true
+    to: diagnosis2CodeVersion
+  - from: ICD_DGNS_CD3
+    optional: true
+    to: diagnosis3Code
+  - from: ICD_DGNS_VRSN_CD3
+    optional: true
+    to: diagnosis3CodeVersion
+  - from: ICD_DGNS_CD4
+    optional: true
+    to: diagnosis4Code
+  - from: ICD_DGNS_VRSN_CD4
+    optional: true
+    to: diagnosis4CodeVersion
+  - from: ICD_DGNS_CD5
+    optional: true
+    to: diagnosis5Code
+  - from: ICD_DGNS_VRSN_CD5
+    optional: true
+    to: diagnosis5CodeVersion
+  - from: ICD_DGNS_CD6
+    optional: true
+    to: diagnosis6Code
+  - from: ICD_DGNS_VRSN_CD6
+    optional: true
+    to: diagnosis6CodeVersion
+  - from: ICD_DGNS_CD7
+    optional: true
+    to: diagnosis7Code
+  - from: ICD_DGNS_VRSN_CD7
+    optional: true
+    to: diagnosis7CodeVersion
+  - from: ICD_DGNS_CD8
+    optional: true
+    to: diagnosis8Code
+  - from: ICD_DGNS_VRSN_CD8
+    optional: true
+    to: diagnosis8CodeVersion
+  - from: ICD_DGNS_CD9
+    optional: true
+    to: diagnosis9Code
+  - from: ICD_DGNS_VRSN_CD9
+    optional: true
+    to: diagnosis9CodeVersion
+  - from: ICD_DGNS_CD10
+    optional: true
+    to: diagnosis10Code
+  - from: ICD_DGNS_VRSN_CD10
+    optional: true
+    to: diagnosis10CodeVersion
+  - from: ICD_DGNS_CD11
+    optional: true
+    to: diagnosis11Code
+  - from: ICD_DGNS_VRSN_CD11
+    optional: true
+    to: diagnosis11CodeVersion
+  - from: ICD_DGNS_CD12
+    optional: true
+    to: diagnosis12Code
+  - from: ICD_DGNS_VRSN_CD12
+    optional: true
+    to: diagnosis12CodeVersion
+  - from: RFR_PHYSN_UPIN
+    optional: true
+    to: referringPhysicianUpin
+  - from: RFR_PHYSN_NPI
+    optional: true
+    to: referringPhysicianNpi
+  - from: CLM_CLNCL_TRIL_NUM
+    optional: true
+    to: clinicalTrialNumber
+  - from: CARR_CLM_CNTL_NUM
+    optional: true
+    to: claimCarrierControlNumber
+  transformerClassName: gov.cms.bfd.model.rif.DMEClaimTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.DMEClaimLinePoc
   id: DMEClaimLine
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: Claim Line Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/line_num.txt)
@@ -5496,7 +8458,7 @@ mappings:
       name: nationalDrugCode
       sqlType: varchar(11)
     joins:
-    - entityClass: gov.cms.bfd.model.rif.DMEClaimZ
+    - entityClass: gov.cms.bfd.model.rif.DMEClaimPoc
       fetchType: EAGER
       fieldName: parentClaim
       foreignKey: dme_claims_lines_clm_id_to_dme_claims
@@ -5506,8 +8468,12 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
-- entityClassName: gov.cms.bfd.model.rif.HospiceClaimZ
+  transformations: []
+  transformerClassName: gov.cms.bfd.model.rif.DMEClaimLineTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.HospiceClaimPoc
   id: HospiceClaim
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: 723 Beneficiary ID (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/bene_id.txt)
@@ -6040,8 +9006,342 @@ mappings:
     name: hospice_claims
     primaryKeyColumns:
     - claimId
-- entityClassName: gov.cms.bfd.model.rif.HospiceClaimLineZ
+  transformations:
+  - from: BENE_ID
+    optional: false
+    to: beneficiaryId
+  - from: CLM_ID
+    optional: false
+    to: claimId
+  - from: CLM_GRP_ID
+    optional: false
+    to: claimGroupId
+  - from: FINAL_ACTION
+    optional: false
+    to: finalAction
+  - from: NCH_NEAR_LINE_REC_IDENT_CD
+    optional: false
+    to: nearLineRecordIdCode
+  - from: NCH_CLM_TYPE_CD
+    optional: false
+    to: claimTypeCode
+  - from: CLM_FROM_DT
+    optional: false
+    to: dateFrom
+  - from: CLM_THRU_DT
+    optional: false
+    to: dateThrough
+  - from: NCH_WKLY_PROC_DT
+    optional: false
+    to: weeklyProcessDate
+  - from: FI_CLM_PROC_DT
+    optional: true
+    to: fiscalIntermediaryClaimProcessDate
+  - from: PRVDR_NUM
+    optional: false
+    to: providerNumber
+  - from: CLM_FAC_TYPE_CD
+    optional: false
+    to: claimFacilityTypeCode
+  - from: CLM_SRVC_CLSFCTN_TYPE_CD
+    optional: false
+    to: claimServiceClassificationTypeCode
+  - from: CLM_FREQ_CD
+    optional: false
+    to: claimFrequencyCode
+  - from: FI_NUM
+    optional: true
+    to: fiscalIntermediaryNumber
+  - from: CLM_MDCR_NON_PMT_RSN_CD
+    optional: true
+    to: claimNonPaymentReasonCode
+  - from: CLM_PMT_AMT
+    optional: false
+    to: paymentAmount
+  - from: NCH_PRMRY_PYR_CLM_PD_AMT
+    optional: false
+    to: primaryPayerPaidAmount
+  - from: NCH_PRMRY_PYR_CD
+    optional: true
+    to: claimPrimaryPayerCode
+  - from: PRVDR_STATE_CD
+    optional: false
+    to: providerStateCode
+  - from: ORG_NPI_NUM
+    optional: true
+    to: organizationNpi
+  - from: AT_PHYSN_UPIN
+    optional: true
+    to: attendingPhysicianUpin
+  - from: AT_PHYSN_NPI
+    optional: true
+    to: attendingPhysicianNpi
+  - from: PTNT_DSCHRG_STUS_CD
+    optional: false
+    to: patientDischargeStatusCode
+  - from: CLM_TOT_CHRG_AMT
+    optional: false
+    to: totalChargeAmount
+  - from: NCH_PTNT_STATUS_IND_CD
+    optional: true
+    to: patientStatusCd
+  - from: CLM_UTLZTN_DAY_CNT
+    optional: false
+    to: utilizationDayCount
+  - from: NCH_BENE_DSCHRG_DT
+    optional: true
+    to: beneficiaryDischargeDate
+  - from: PRNCPAL_DGNS_CD
+    optional: true
+    to: diagnosisPrincipalCode
+  - from: PRNCPAL_DGNS_VRSN_CD
+    optional: true
+    to: diagnosisPrincipalCodeVersion
+  - from: ICD_DGNS_CD1
+    optional: true
+    to: diagnosis1Code
+  - from: ICD_DGNS_VRSN_CD1
+    optional: true
+    to: diagnosis1CodeVersion
+  - from: ICD_DGNS_CD2
+    optional: true
+    to: diagnosis2Code
+  - from: ICD_DGNS_VRSN_CD2
+    optional: true
+    to: diagnosis2CodeVersion
+  - from: ICD_DGNS_CD3
+    optional: true
+    to: diagnosis3Code
+  - from: ICD_DGNS_VRSN_CD3
+    optional: true
+    to: diagnosis3CodeVersion
+  - from: ICD_DGNS_CD4
+    optional: true
+    to: diagnosis4Code
+  - from: ICD_DGNS_VRSN_CD4
+    optional: true
+    to: diagnosis4CodeVersion
+  - from: ICD_DGNS_CD5
+    optional: true
+    to: diagnosis5Code
+  - from: ICD_DGNS_VRSN_CD5
+    optional: true
+    to: diagnosis5CodeVersion
+  - from: ICD_DGNS_CD6
+    optional: true
+    to: diagnosis6Code
+  - from: ICD_DGNS_VRSN_CD6
+    optional: true
+    to: diagnosis6CodeVersion
+  - from: ICD_DGNS_CD7
+    optional: true
+    to: diagnosis7Code
+  - from: ICD_DGNS_VRSN_CD7
+    optional: true
+    to: diagnosis7CodeVersion
+  - from: ICD_DGNS_CD8
+    optional: true
+    to: diagnosis8Code
+  - from: ICD_DGNS_VRSN_CD8
+    optional: true
+    to: diagnosis8CodeVersion
+  - from: ICD_DGNS_CD9
+    optional: true
+    to: diagnosis9Code
+  - from: ICD_DGNS_VRSN_CD9
+    optional: true
+    to: diagnosis9CodeVersion
+  - from: ICD_DGNS_CD10
+    optional: true
+    to: diagnosis10Code
+  - from: ICD_DGNS_VRSN_CD10
+    optional: true
+    to: diagnosis10CodeVersion
+  - from: ICD_DGNS_CD11
+    optional: true
+    to: diagnosis11Code
+  - from: ICD_DGNS_VRSN_CD11
+    optional: true
+    to: diagnosis11CodeVersion
+  - from: ICD_DGNS_CD12
+    optional: true
+    to: diagnosis12Code
+  - from: ICD_DGNS_VRSN_CD12
+    optional: true
+    to: diagnosis12CodeVersion
+  - from: ICD_DGNS_CD13
+    optional: true
+    to: diagnosis13Code
+  - from: ICD_DGNS_VRSN_CD13
+    optional: true
+    to: diagnosis13CodeVersion
+  - from: ICD_DGNS_CD14
+    optional: true
+    to: diagnosis14Code
+  - from: ICD_DGNS_VRSN_CD14
+    optional: true
+    to: diagnosis14CodeVersion
+  - from: ICD_DGNS_CD15
+    optional: true
+    to: diagnosis15Code
+  - from: ICD_DGNS_VRSN_CD15
+    optional: true
+    to: diagnosis15CodeVersion
+  - from: ICD_DGNS_CD16
+    optional: true
+    to: diagnosis16Code
+  - from: ICD_DGNS_VRSN_CD16
+    optional: true
+    to: diagnosis16CodeVersion
+  - from: ICD_DGNS_CD17
+    optional: true
+    to: diagnosis17Code
+  - from: ICD_DGNS_VRSN_CD17
+    optional: true
+    to: diagnosis17CodeVersion
+  - from: ICD_DGNS_CD18
+    optional: true
+    to: diagnosis18Code
+  - from: ICD_DGNS_VRSN_CD18
+    optional: true
+    to: diagnosis18CodeVersion
+  - from: ICD_DGNS_CD19
+    optional: true
+    to: diagnosis19Code
+  - from: ICD_DGNS_VRSN_CD19
+    optional: true
+    to: diagnosis19CodeVersion
+  - from: ICD_DGNS_CD20
+    optional: true
+    to: diagnosis20Code
+  - from: ICD_DGNS_VRSN_CD20
+    optional: true
+    to: diagnosis20CodeVersion
+  - from: ICD_DGNS_CD21
+    optional: true
+    to: diagnosis21Code
+  - from: ICD_DGNS_VRSN_CD21
+    optional: true
+    to: diagnosis21CodeVersion
+  - from: ICD_DGNS_CD22
+    optional: true
+    to: diagnosis22Code
+  - from: ICD_DGNS_VRSN_CD22
+    optional: true
+    to: diagnosis22CodeVersion
+  - from: ICD_DGNS_CD23
+    optional: true
+    to: diagnosis23Code
+  - from: ICD_DGNS_VRSN_CD23
+    optional: true
+    to: diagnosis23CodeVersion
+  - from: ICD_DGNS_CD24
+    optional: true
+    to: diagnosis24Code
+  - from: ICD_DGNS_VRSN_CD24
+    optional: true
+    to: diagnosis24CodeVersion
+  - from: ICD_DGNS_CD25
+    optional: true
+    to: diagnosis25Code
+  - from: ICD_DGNS_VRSN_CD25
+    optional: true
+    to: diagnosis25CodeVersion
+  - from: FST_DGNS_E_CD
+    optional: true
+    to: diagnosisExternalFirstCode
+  - from: FST_DGNS_E_VRSN_CD
+    optional: true
+    to: diagnosisExternalFirstCodeVersion
+  - from: ICD_DGNS_E_CD1
+    optional: true
+    to: diagnosisExternal1Code
+  - from: ICD_DGNS_E_VRSN_CD1
+    optional: true
+    to: diagnosisExternal1CodeVersion
+  - from: ICD_DGNS_E_CD2
+    optional: true
+    to: diagnosisExternal2Code
+  - from: ICD_DGNS_E_VRSN_CD2
+    optional: true
+    to: diagnosisExternal2CodeVersion
+  - from: ICD_DGNS_E_CD3
+    optional: true
+    to: diagnosisExternal3Code
+  - from: ICD_DGNS_E_VRSN_CD3
+    optional: true
+    to: diagnosisExternal3CodeVersion
+  - from: ICD_DGNS_E_CD4
+    optional: true
+    to: diagnosisExternal4Code
+  - from: ICD_DGNS_E_VRSN_CD4
+    optional: true
+    to: diagnosisExternal4CodeVersion
+  - from: ICD_DGNS_E_CD5
+    optional: true
+    to: diagnosisExternal5Code
+  - from: ICD_DGNS_E_VRSN_CD5
+    optional: true
+    to: diagnosisExternal5CodeVersion
+  - from: ICD_DGNS_E_CD6
+    optional: true
+    to: diagnosisExternal6Code
+  - from: ICD_DGNS_E_VRSN_CD6
+    optional: true
+    to: diagnosisExternal6CodeVersion
+  - from: ICD_DGNS_E_CD7
+    optional: true
+    to: diagnosisExternal7Code
+  - from: ICD_DGNS_E_VRSN_CD7
+    optional: true
+    to: diagnosisExternal7CodeVersion
+  - from: ICD_DGNS_E_CD8
+    optional: true
+    to: diagnosisExternal8Code
+  - from: ICD_DGNS_E_VRSN_CD8
+    optional: true
+    to: diagnosisExternal8CodeVersion
+  - from: ICD_DGNS_E_CD9
+    optional: true
+    to: diagnosisExternal9Code
+  - from: ICD_DGNS_E_VRSN_CD9
+    optional: true
+    to: diagnosisExternal9CodeVersion
+  - from: ICD_DGNS_E_CD10
+    optional: true
+    to: diagnosisExternal10Code
+  - from: ICD_DGNS_E_VRSN_CD10
+    optional: true
+    to: diagnosisExternal10CodeVersion
+  - from: ICD_DGNS_E_CD11
+    optional: true
+    to: diagnosisExternal11Code
+  - from: ICD_DGNS_E_VRSN_CD11
+    optional: true
+    to: diagnosisExternal11CodeVersion
+  - from: ICD_DGNS_E_CD12
+    optional: true
+    to: diagnosisExternal12Code
+  - from: ICD_DGNS_E_VRSN_CD12
+    optional: true
+    to: diagnosisExternal12CodeVersion
+  - from: CLM_HOSPC_START_DT_ID
+    optional: true
+    to: claimHospiceStartDate
+  - from: BENE_HOSPC_PRD_CNT
+    optional: true
+    to: hospicePeriodCount
+  - from: FI_DOC_CLM_CNTL_NUM
+    optional: true
+    to: fiDocumentClaimControlNumber
+  - from: FI_ORIG_CLM_CNTL_NUM
+    optional: true
+    to: fiOriginalClaimControlNumber
+  transformerClassName: gov.cms.bfd.model.rif.HospiceClaimTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.HospiceClaimLinePoc
   id: HospiceClaimLine
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: Claim Line Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/clm_ln.txt)
@@ -6126,7 +9426,7 @@ mappings:
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
     joins:
-    - entityClass: gov.cms.bfd.model.rif.HospiceClaimZ
+    - entityClass: gov.cms.bfd.model.rif.HospiceClaimPoc
       fetchType: EAGER
       fieldName: parentClaim
       foreignKey: hospice_claims_lines_clm_id_to_hospice_claims
@@ -6136,8 +9436,12 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
-- entityClassName: gov.cms.bfd.model.rif.SNFClaimZ
+  transformations: []
+  transformerClassName: gov.cms.bfd.model.rif.HospiceClaimLineTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.SNFClaimPoc
   id: SNFClaim
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: 723 Beneficiary ID (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/bene_id.txt)
@@ -7166,8 +10470,663 @@ mappings:
     name: snf_claims
     primaryKeyColumns:
     - claimId
-- entityClassName: gov.cms.bfd.model.rif.SNFClaimLineZ
+  transformations:
+  - from: BENE_ID
+    optional: false
+    to: beneficiaryId
+  - from: CLM_ID
+    optional: false
+    to: claimId
+  - from: CLM_GRP_ID
+    optional: false
+    to: claimGroupId
+  - from: FINAL_ACTION
+    optional: false
+    to: finalAction
+  - from: NCH_NEAR_LINE_REC_IDENT_CD
+    optional: false
+    to: nearLineRecordIdCode
+  - from: NCH_CLM_TYPE_CD
+    optional: false
+    to: claimTypeCode
+  - from: CLM_FROM_DT
+    optional: false
+    to: dateFrom
+  - from: CLM_THRU_DT
+    optional: false
+    to: dateThrough
+  - from: NCH_WKLY_PROC_DT
+    optional: false
+    to: weeklyProcessDate
+  - from: FI_CLM_PROC_DT
+    optional: true
+    to: fiscalIntermediaryClaimProcessDate
+  - from: CLAIM_QUERY_CODE
+    optional: false
+    to: claimQueryCode
+  - from: PRVDR_NUM
+    optional: false
+    to: providerNumber
+  - from: CLM_FAC_TYPE_CD
+    optional: false
+    to: claimFacilityTypeCode
+  - from: CLM_SRVC_CLSFCTN_TYPE_CD
+    optional: false
+    to: claimServiceClassificationTypeCode
+  - from: CLM_FREQ_CD
+    optional: false
+    to: claimFrequencyCode
+  - from: FI_NUM
+    optional: true
+    to: fiscalIntermediaryNumber
+  - from: CLM_MDCR_NON_PMT_RSN_CD
+    optional: true
+    to: claimNonPaymentReasonCode
+  - from: CLM_PMT_AMT
+    optional: false
+    to: paymentAmount
+  - from: NCH_PRMRY_PYR_CLM_PD_AMT
+    optional: false
+    to: primaryPayerPaidAmount
+  - from: NCH_PRMRY_PYR_CD
+    optional: true
+    to: claimPrimaryPayerCode
+  - from: FI_CLM_ACTN_CD
+    optional: true
+    to: fiscalIntermediaryClaimActionCode
+  - from: PRVDR_STATE_CD
+    optional: false
+    to: providerStateCode
+  - from: ORG_NPI_NUM
+    optional: true
+    to: organizationNpi
+  - from: AT_PHYSN_UPIN
+    optional: true
+    to: attendingPhysicianUpin
+  - from: AT_PHYSN_NPI
+    optional: true
+    to: attendingPhysicianNpi
+  - from: OP_PHYSN_UPIN
+    optional: true
+    to: operatingPhysicianUpin
+  - from: OP_PHYSN_NPI
+    optional: true
+    to: operatingPhysicianNpi
+  - from: OT_PHYSN_UPIN
+    optional: true
+    to: otherPhysicianUpin
+  - from: OT_PHYSN_NPI
+    optional: true
+    to: otherPhysicianNpi
+  - from: CLM_MCO_PD_SW
+    optional: true
+    to: mcoPaidSw
+  - from: PTNT_DSCHRG_STUS_CD
+    optional: false
+    to: patientDischargeStatusCode
+  - from: CLM_PPS_IND_CD
+    optional: true
+    to: prospectivePaymentCode
+  - from: CLM_TOT_CHRG_AMT
+    optional: false
+    to: totalChargeAmount
+  - from: CLM_ADMSN_DT
+    optional: true
+    to: claimAdmissionDate
+  - from: CLM_IP_ADMSN_TYPE_CD
+    optional: false
+    to: admissionTypeCd
+  - from: CLM_SRC_IP_ADMSN_CD
+    optional: true
+    to: sourceAdmissionCd
+  - from: NCH_PTNT_STATUS_IND_CD
+    optional: true
+    to: patientStatusCd
+  - from: NCH_BENE_IP_DDCTBL_AMT
+    optional: false
+    to: deductibleAmount
+  - from: NCH_BENE_PTA_COINSRNC_LBLTY_AM
+    optional: false
+    to: partACoinsuranceLiabilityAmount
+  - from: NCH_BENE_BLOOD_DDCTBL_LBLTY_AM
+    optional: false
+    to: bloodDeductibleLiabilityAmount
+  - from: NCH_IP_NCVRD_CHRG_AMT
+    optional: false
+    to: noncoveredCharge
+  - from: NCH_IP_TOT_DDCTN_AMT
+    optional: false
+    to: totalDeductionAmount
+  - from: CLM_PPS_CPTL_FSP_AMT
+    optional: true
+    to: claimPPSCapitalFSPAmount
+  - from: CLM_PPS_CPTL_OUTLIER_AMT
+    optional: true
+    to: claimPPSCapitalOutlierAmount
+  - from: CLM_PPS_CPTL_DSPRPRTNT_SHR_AMT
+    optional: true
+    to: claimPPSCapitalDisproportionateShareAmt
+  - from: CLM_PPS_CPTL_IME_AMT
+    optional: true
+    to: claimPPSCapitalIMEAmount
+  - from: CLM_PPS_CPTL_EXCPTN_AMT
+    optional: true
+    to: claimPPSCapitalExceptionAmount
+  - from: CLM_PPS_OLD_CPTL_HLD_HRMLS_AMT
+    optional: true
+    to: claimPPSOldCapitalHoldHarmlessAmount
+  - from: CLM_UTLZTN_DAY_CNT
+    optional: false
+    to: utilizationDayCount
+  - from: BENE_TOT_COINSRNC_DAYS_CNT
+    optional: false
+    to: coinsuranceDayCount
+  - from: CLM_NON_UTLZTN_DAYS_CNT
+    optional: false
+    to: nonUtilizationDayCount
+  - from: NCH_BLOOD_PNTS_FRNSHD_QTY
+    optional: false
+    to: bloodPintsFurnishedQty
+  - from: NCH_QLFYD_STAY_FROM_DT
+    optional: true
+    to: qualifiedStayFromDate
+  - from: NCH_QLFYD_STAY_THRU_DT
+    optional: true
+    to: qualifiedStayThroughDate
+  - from: NCH_VRFD_NCVRD_STAY_FROM_DT
+    optional: true
+    to: noncoveredStayFromDate
+  - from: NCH_VRFD_NCVRD_STAY_THRU_DT
+    optional: true
+    to: noncoveredStayThroughDate
+  - from: NCH_ACTV_OR_CVRD_LVL_CARE_THRU
+    optional: true
+    to: coveredCareThroughDate
+  - from: NCH_BENE_MDCR_BNFTS_EXHTD_DT_I
+    optional: true
+    to: medicareBenefitsExhaustedDate
+  - from: NCH_BENE_DSCHRG_DT
+    optional: true
+    to: beneficiaryDischargeDate
+  - from: CLM_DRG_CD
+    optional: true
+    to: diagnosisRelatedGroupCd
+  - from: ADMTG_DGNS_CD
+    optional: true
+    to: diagnosisAdmittingCode
+  - from: ADMTG_DGNS_VRSN_CD
+    optional: true
+    to: diagnosisAdmittingCodeVersion
+  - from: PRNCPAL_DGNS_CD
+    optional: true
+    to: diagnosisPrincipalCode
+  - from: PRNCPAL_DGNS_VRSN_CD
+    optional: true
+    to: diagnosisPrincipalCodeVersion
+  - from: ICD_DGNS_CD1
+    optional: true
+    to: diagnosis1Code
+  - from: ICD_DGNS_VRSN_CD1
+    optional: true
+    to: diagnosis1CodeVersion
+  - from: ICD_DGNS_CD2
+    optional: true
+    to: diagnosis2Code
+  - from: ICD_DGNS_VRSN_CD2
+    optional: true
+    to: diagnosis2CodeVersion
+  - from: ICD_DGNS_CD3
+    optional: true
+    to: diagnosis3Code
+  - from: ICD_DGNS_VRSN_CD3
+    optional: true
+    to: diagnosis3CodeVersion
+  - from: ICD_DGNS_CD4
+    optional: true
+    to: diagnosis4Code
+  - from: ICD_DGNS_VRSN_CD4
+    optional: true
+    to: diagnosis4CodeVersion
+  - from: ICD_DGNS_CD5
+    optional: true
+    to: diagnosis5Code
+  - from: ICD_DGNS_VRSN_CD5
+    optional: true
+    to: diagnosis5CodeVersion
+  - from: ICD_DGNS_CD6
+    optional: true
+    to: diagnosis6Code
+  - from: ICD_DGNS_VRSN_CD6
+    optional: true
+    to: diagnosis6CodeVersion
+  - from: ICD_DGNS_CD7
+    optional: true
+    to: diagnosis7Code
+  - from: ICD_DGNS_VRSN_CD7
+    optional: true
+    to: diagnosis7CodeVersion
+  - from: ICD_DGNS_CD8
+    optional: true
+    to: diagnosis8Code
+  - from: ICD_DGNS_VRSN_CD8
+    optional: true
+    to: diagnosis8CodeVersion
+  - from: ICD_DGNS_CD9
+    optional: true
+    to: diagnosis9Code
+  - from: ICD_DGNS_VRSN_CD9
+    optional: true
+    to: diagnosis9CodeVersion
+  - from: ICD_DGNS_CD10
+    optional: true
+    to: diagnosis10Code
+  - from: ICD_DGNS_VRSN_CD10
+    optional: true
+    to: diagnosis10CodeVersion
+  - from: ICD_DGNS_CD11
+    optional: true
+    to: diagnosis11Code
+  - from: ICD_DGNS_VRSN_CD11
+    optional: true
+    to: diagnosis11CodeVersion
+  - from: ICD_DGNS_CD12
+    optional: true
+    to: diagnosis12Code
+  - from: ICD_DGNS_VRSN_CD12
+    optional: true
+    to: diagnosis12CodeVersion
+  - from: ICD_DGNS_CD13
+    optional: true
+    to: diagnosis13Code
+  - from: ICD_DGNS_VRSN_CD13
+    optional: true
+    to: diagnosis13CodeVersion
+  - from: ICD_DGNS_CD14
+    optional: true
+    to: diagnosis14Code
+  - from: ICD_DGNS_VRSN_CD14
+    optional: true
+    to: diagnosis14CodeVersion
+  - from: ICD_DGNS_CD15
+    optional: true
+    to: diagnosis15Code
+  - from: ICD_DGNS_VRSN_CD15
+    optional: true
+    to: diagnosis15CodeVersion
+  - from: ICD_DGNS_CD16
+    optional: true
+    to: diagnosis16Code
+  - from: ICD_DGNS_VRSN_CD16
+    optional: true
+    to: diagnosis16CodeVersion
+  - from: ICD_DGNS_CD17
+    optional: true
+    to: diagnosis17Code
+  - from: ICD_DGNS_VRSN_CD17
+    optional: true
+    to: diagnosis17CodeVersion
+  - from: ICD_DGNS_CD18
+    optional: true
+    to: diagnosis18Code
+  - from: ICD_DGNS_VRSN_CD18
+    optional: true
+    to: diagnosis18CodeVersion
+  - from: ICD_DGNS_CD19
+    optional: true
+    to: diagnosis19Code
+  - from: ICD_DGNS_VRSN_CD19
+    optional: true
+    to: diagnosis19CodeVersion
+  - from: ICD_DGNS_CD20
+    optional: true
+    to: diagnosis20Code
+  - from: ICD_DGNS_VRSN_CD20
+    optional: true
+    to: diagnosis20CodeVersion
+  - from: ICD_DGNS_CD21
+    optional: true
+    to: diagnosis21Code
+  - from: ICD_DGNS_VRSN_CD21
+    optional: true
+    to: diagnosis21CodeVersion
+  - from: ICD_DGNS_CD22
+    optional: true
+    to: diagnosis22Code
+  - from: ICD_DGNS_VRSN_CD22
+    optional: true
+    to: diagnosis22CodeVersion
+  - from: ICD_DGNS_CD23
+    optional: true
+    to: diagnosis23Code
+  - from: ICD_DGNS_VRSN_CD23
+    optional: true
+    to: diagnosis23CodeVersion
+  - from: ICD_DGNS_CD24
+    optional: true
+    to: diagnosis24Code
+  - from: ICD_DGNS_VRSN_CD24
+    optional: true
+    to: diagnosis24CodeVersion
+  - from: ICD_DGNS_CD25
+    optional: true
+    to: diagnosis25Code
+  - from: ICD_DGNS_VRSN_CD25
+    optional: true
+    to: diagnosis25CodeVersion
+  - from: FST_DGNS_E_CD
+    optional: true
+    to: diagnosisExternalFirstCode
+  - from: FST_DGNS_E_VRSN_CD
+    optional: true
+    to: diagnosisExternalFirstCodeVersion
+  - from: ICD_DGNS_E_CD1
+    optional: true
+    to: diagnosisExternal1Code
+  - from: ICD_DGNS_E_VRSN_CD1
+    optional: true
+    to: diagnosisExternal1CodeVersion
+  - from: ICD_DGNS_E_CD2
+    optional: true
+    to: diagnosisExternal2Code
+  - from: ICD_DGNS_E_VRSN_CD2
+    optional: true
+    to: diagnosisExternal2CodeVersion
+  - from: ICD_DGNS_E_CD3
+    optional: true
+    to: diagnosisExternal3Code
+  - from: ICD_DGNS_E_VRSN_CD3
+    optional: true
+    to: diagnosisExternal3CodeVersion
+  - from: ICD_DGNS_E_CD4
+    optional: true
+    to: diagnosisExternal4Code
+  - from: ICD_DGNS_E_VRSN_CD4
+    optional: true
+    to: diagnosisExternal4CodeVersion
+  - from: ICD_DGNS_E_CD5
+    optional: true
+    to: diagnosisExternal5Code
+  - from: ICD_DGNS_E_VRSN_CD5
+    optional: true
+    to: diagnosisExternal5CodeVersion
+  - from: ICD_DGNS_E_CD6
+    optional: true
+    to: diagnosisExternal6Code
+  - from: ICD_DGNS_E_VRSN_CD6
+    optional: true
+    to: diagnosisExternal6CodeVersion
+  - from: ICD_DGNS_E_CD7
+    optional: true
+    to: diagnosisExternal7Code
+  - from: ICD_DGNS_E_VRSN_CD7
+    optional: true
+    to: diagnosisExternal7CodeVersion
+  - from: ICD_DGNS_E_CD8
+    optional: true
+    to: diagnosisExternal8Code
+  - from: ICD_DGNS_E_VRSN_CD8
+    optional: true
+    to: diagnosisExternal8CodeVersion
+  - from: ICD_DGNS_E_CD9
+    optional: true
+    to: diagnosisExternal9Code
+  - from: ICD_DGNS_E_VRSN_CD9
+    optional: true
+    to: diagnosisExternal9CodeVersion
+  - from: ICD_DGNS_E_CD10
+    optional: true
+    to: diagnosisExternal10Code
+  - from: ICD_DGNS_E_VRSN_CD10
+    optional: true
+    to: diagnosisExternal10CodeVersion
+  - from: ICD_DGNS_E_CD11
+    optional: true
+    to: diagnosisExternal11Code
+  - from: ICD_DGNS_E_VRSN_CD11
+    optional: true
+    to: diagnosisExternal11CodeVersion
+  - from: ICD_DGNS_E_CD12
+    optional: true
+    to: diagnosisExternal12Code
+  - from: ICD_DGNS_E_VRSN_CD12
+    optional: true
+    to: diagnosisExternal12CodeVersion
+  - from: ICD_PRCDR_CD1
+    optional: true
+    to: procedure1Code
+  - from: ICD_PRCDR_VRSN_CD1
+    optional: true
+    to: procedure1CodeVersion
+  - from: PRCDR_DT1
+    optional: true
+    to: procedure1Date
+  - from: ICD_PRCDR_CD2
+    optional: true
+    to: procedure2Code
+  - from: ICD_PRCDR_VRSN_CD2
+    optional: true
+    to: procedure2CodeVersion
+  - from: PRCDR_DT2
+    optional: true
+    to: procedure2Date
+  - from: ICD_PRCDR_CD3
+    optional: true
+    to: procedure3Code
+  - from: ICD_PRCDR_VRSN_CD3
+    optional: true
+    to: procedure3CodeVersion
+  - from: PRCDR_DT3
+    optional: true
+    to: procedure3Date
+  - from: ICD_PRCDR_CD4
+    optional: true
+    to: procedure4Code
+  - from: ICD_PRCDR_VRSN_CD4
+    optional: true
+    to: procedure4CodeVersion
+  - from: PRCDR_DT4
+    optional: true
+    to: procedure4Date
+  - from: ICD_PRCDR_CD5
+    optional: true
+    to: procedure5Code
+  - from: ICD_PRCDR_VRSN_CD5
+    optional: true
+    to: procedure5CodeVersion
+  - from: PRCDR_DT5
+    optional: true
+    to: procedure5Date
+  - from: ICD_PRCDR_CD6
+    optional: true
+    to: procedure6Code
+  - from: ICD_PRCDR_VRSN_CD6
+    optional: true
+    to: procedure6CodeVersion
+  - from: PRCDR_DT6
+    optional: true
+    to: procedure6Date
+  - from: ICD_PRCDR_CD7
+    optional: true
+    to: procedure7Code
+  - from: ICD_PRCDR_VRSN_CD7
+    optional: true
+    to: procedure7CodeVersion
+  - from: PRCDR_DT7
+    optional: true
+    to: procedure7Date
+  - from: ICD_PRCDR_CD8
+    optional: true
+    to: procedure8Code
+  - from: ICD_PRCDR_VRSN_CD8
+    optional: true
+    to: procedure8CodeVersion
+  - from: PRCDR_DT8
+    optional: true
+    to: procedure8Date
+  - from: ICD_PRCDR_CD9
+    optional: true
+    to: procedure9Code
+  - from: ICD_PRCDR_VRSN_CD9
+    optional: true
+    to: procedure9CodeVersion
+  - from: PRCDR_DT9
+    optional: true
+    to: procedure9Date
+  - from: ICD_PRCDR_CD10
+    optional: true
+    to: procedure10Code
+  - from: ICD_PRCDR_VRSN_CD10
+    optional: true
+    to: procedure10CodeVersion
+  - from: PRCDR_DT10
+    optional: true
+    to: procedure10Date
+  - from: ICD_PRCDR_CD11
+    optional: true
+    to: procedure11Code
+  - from: ICD_PRCDR_VRSN_CD11
+    optional: true
+    to: procedure11CodeVersion
+  - from: PRCDR_DT11
+    optional: true
+    to: procedure11Date
+  - from: ICD_PRCDR_CD12
+    optional: true
+    to: procedure12Code
+  - from: ICD_PRCDR_VRSN_CD12
+    optional: true
+    to: procedure12CodeVersion
+  - from: PRCDR_DT12
+    optional: true
+    to: procedure12Date
+  - from: ICD_PRCDR_CD13
+    optional: true
+    to: procedure13Code
+  - from: ICD_PRCDR_VRSN_CD13
+    optional: true
+    to: procedure13CodeVersion
+  - from: PRCDR_DT13
+    optional: true
+    to: procedure13Date
+  - from: ICD_PRCDR_CD14
+    optional: true
+    to: procedure14Code
+  - from: ICD_PRCDR_VRSN_CD14
+    optional: true
+    to: procedure14CodeVersion
+  - from: PRCDR_DT14
+    optional: true
+    to: procedure14Date
+  - from: ICD_PRCDR_CD15
+    optional: true
+    to: procedure15Code
+  - from: ICD_PRCDR_VRSN_CD15
+    optional: true
+    to: procedure15CodeVersion
+  - from: PRCDR_DT15
+    optional: true
+    to: procedure15Date
+  - from: ICD_PRCDR_CD16
+    optional: true
+    to: procedure16Code
+  - from: ICD_PRCDR_VRSN_CD16
+    optional: true
+    to: procedure16CodeVersion
+  - from: PRCDR_DT16
+    optional: true
+    to: procedure16Date
+  - from: ICD_PRCDR_CD17
+    optional: true
+    to: procedure17Code
+  - from: ICD_PRCDR_VRSN_CD17
+    optional: true
+    to: procedure17CodeVersion
+  - from: PRCDR_DT17
+    optional: true
+    to: procedure17Date
+  - from: ICD_PRCDR_CD18
+    optional: true
+    to: procedure18Code
+  - from: ICD_PRCDR_VRSN_CD18
+    optional: true
+    to: procedure18CodeVersion
+  - from: PRCDR_DT18
+    optional: true
+    to: procedure18Date
+  - from: ICD_PRCDR_CD19
+    optional: true
+    to: procedure19Code
+  - from: ICD_PRCDR_VRSN_CD19
+    optional: true
+    to: procedure19CodeVersion
+  - from: PRCDR_DT19
+    optional: true
+    to: procedure19Date
+  - from: ICD_PRCDR_CD20
+    optional: true
+    to: procedure20Code
+  - from: ICD_PRCDR_VRSN_CD20
+    optional: true
+    to: procedure20CodeVersion
+  - from: PRCDR_DT20
+    optional: true
+    to: procedure20Date
+  - from: ICD_PRCDR_CD21
+    optional: true
+    to: procedure21Code
+  - from: ICD_PRCDR_VRSN_CD21
+    optional: true
+    to: procedure21CodeVersion
+  - from: PRCDR_DT21
+    optional: true
+    to: procedure21Date
+  - from: ICD_PRCDR_CD22
+    optional: true
+    to: procedure22Code
+  - from: ICD_PRCDR_VRSN_CD22
+    optional: true
+    to: procedure22CodeVersion
+  - from: PRCDR_DT22
+    optional: true
+    to: procedure22Date
+  - from: ICD_PRCDR_CD23
+    optional: true
+    to: procedure23Code
+  - from: ICD_PRCDR_VRSN_CD23
+    optional: true
+    to: procedure23CodeVersion
+  - from: PRCDR_DT23
+    optional: true
+    to: procedure23Date
+  - from: ICD_PRCDR_CD24
+    optional: true
+    to: procedure24Code
+  - from: ICD_PRCDR_VRSN_CD24
+    optional: true
+    to: procedure24CodeVersion
+  - from: PRCDR_DT24
+    optional: true
+    to: procedure24Date
+  - from: ICD_PRCDR_CD25
+    optional: true
+    to: procedure25Code
+  - from: ICD_PRCDR_VRSN_CD25
+    optional: true
+    to: procedure25CodeVersion
+  - from: PRCDR_DT25
+    optional: true
+    to: procedure25Date
+  - from: FI_DOC_CLM_CNTL_NUM
+    optional: true
+    to: fiDocumentClaimControlNumber
+  - from: FI_ORIG_CLM_CNTL_NUM
+    optional: true
+    to: fiOriginalClaimControlNumber
+  transformerClassName: gov.cms.bfd.model.rif.SNFClaimTransformerPoc
+- entityClassName: gov.cms.bfd.model.rif.SNFClaimLinePoc
   id: SNFClaimLine
+  messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  sourceType: RifCsv
   table:
     columns:
     - comment: Claim Line Number (https://www.ccwdata.org/cs/groups/public/documents/datadictionary/clm_ln.txt)
@@ -7226,7 +11185,7 @@ mappings:
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
     joins:
-    - entityClass: gov.cms.bfd.model.rif.SNFClaimZ
+    - entityClass: gov.cms.bfd.model.rif.SNFClaimPoc
       fetchType: EAGER
       fieldName: parentClaim
       foreignKey: snf_claims_lines_clm_id_to_snf_claims
@@ -7236,4 +11195,5 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
-
+  transformations: []
+  transformerClassName: gov.cms.bfd.model.rif.SNFClaimLineTransformerPoc

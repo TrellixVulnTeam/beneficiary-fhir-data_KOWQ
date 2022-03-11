@@ -181,6 +181,12 @@
 				utilities in that scope. -->
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<!-- Pulls in library of classes that are used for actual data copying so that plugin can reference them when generating code that calls them. -->
+			<groupId>gov.cms.bfd</groupId>
+			<artifactId>bfd-model-rda-codegen-library</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -198,6 +204,7 @@
 						<goals>
 							<goal>entities</goal>
 							<goal>sql</goal>
+							<goal>transformers</goal>
 						</goals>
 					</execution>
 				</executions>

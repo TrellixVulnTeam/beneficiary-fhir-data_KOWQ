@@ -246,6 +246,32 @@ public class DataTransformer {
   }
 
   /**
+   * Copies an optional field only if its value exists. Uses lambda expressions for the existence
+   * test as well as the value extraction. Optional fields must be nullable at the database level
+   * but must return non-null values when the supplier is called. Optional character fields must be
+   * of java type {@code Character}.
+   *
+   * <p>If the value exists extracts the first character of the string and delivers it to the
+   * Consumer. The string MUST not be null and MUST have length one to be valid.
+   *
+   * @param fieldName name of the field from which the value originates
+   * @param exists returns true if the value exists
+   * @param value returns the string value of length 1 to copy
+   * @param copier Consumer to receive the hashed value
+   * @return this
+   */
+  public DataTransformer copyOptionalCharacter(
+      String fieldName,
+      BooleanSupplier exists,
+      Supplier<String> value,
+      Consumer<Character> copier) {
+    if (exists.getAsBoolean()) {
+      copyCharacter(fieldName, value.get(), copier);
+    }
+    return this;
+  }
+
+  /**
    * Parses the string into a LocalDate and delivers it to the Consumer. The string value must be in
    * ISO-8601 format (YYYY-MM-DD). Valid null values are silently accepted without calling the
    * Consumer.

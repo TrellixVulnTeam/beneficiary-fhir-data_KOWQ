@@ -105,6 +105,10 @@ public class ColumnBean {
     return "char".equals(javaType);
   }
 
+  public boolean isCharacter() {
+    return "Character".equals(javaType);
+  }
+
   public boolean isInt() {
     return "int".equals(javaType) || isIntType(mapSqlTypeToTypeName());
   }

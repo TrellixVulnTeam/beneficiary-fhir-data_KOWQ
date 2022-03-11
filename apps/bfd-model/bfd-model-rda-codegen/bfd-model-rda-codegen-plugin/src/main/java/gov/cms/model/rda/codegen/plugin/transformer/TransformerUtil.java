@@ -51,6 +51,8 @@ public class TransformerUtil {
         answer = Optional.empty();
       } else if (column.isChar()) {
         answer = Optional.of(CharInstance);
+      } else if (column.isCharacter()) {
+        answer = Optional.of(CharInstance);
       } else if (column.isString()) {
         answer = Optional.of(StringInstance);
       } else if (column.isInt()) {

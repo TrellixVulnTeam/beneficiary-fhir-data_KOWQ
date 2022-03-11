@@ -13,7 +13,7 @@ public class CharFieldTransformer extends AbstractFieldTransformer {
       TransformationBean transformation,
       MessageCodeGenerator messageCodeGenerator) {
     return transformation.isOptional()
-        ? generateBlockForOptional()
+        ? generateBlockForOptional(mapping, column, transformation, messageCodeGenerator)
         : generateBlockForRequired(mapping, column, transformation, messageCodeGenerator);
   }
 
@@ -32,7 +32,19 @@ public class CharFieldTransformer extends AbstractFieldTransformer {
         .build();
   }
 
-  private CodeBlock generateBlockForOptional() {
-    throw new IllegalArgumentException("optional chars are not currently supported");
+  private CodeBlock generateBlockForOptional(
+      MappingBean mapping,
+      ColumnBean column,
+      TransformationBean transformation,
+      MessageCodeGenerator messageCodeGenerator) {
+    return CodeBlock.builder()
+        .addStatement(
+            "$L.copyOptionalCharacter($L, $L, $L, $L)",
+            TRANSFORMER_VAR,
+            fieldNameReference(mapping, column),
+            messageCodeGenerator.createHasRef(transformation),
+            messageCodeGenerator.createGetRef(transformation),
+            destSetRef(column))
+        .build();
   }
 }
