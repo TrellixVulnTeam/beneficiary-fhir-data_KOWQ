@@ -29,7 +29,7 @@ public class StringFieldTransformer extends AbstractFieldTransformer {
             fieldNameReference(mapping, column),
             column.isNullable(),
             column.computeLength(),
-            messageCodeGenerator.createGetValue(transformation),
+            messageCodeGenerator.createGetCall(transformation),
             destSetRef(column))
         .build();
   }

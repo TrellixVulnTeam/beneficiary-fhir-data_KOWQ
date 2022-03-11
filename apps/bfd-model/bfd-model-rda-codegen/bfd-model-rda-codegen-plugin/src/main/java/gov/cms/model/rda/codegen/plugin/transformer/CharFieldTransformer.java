@@ -27,7 +27,7 @@ public class CharFieldTransformer extends AbstractFieldTransformer {
             "$L.copyCharacter($L, $L, $L)",
             TRANSFORMER_VAR,
             fieldNameReference(mapping, column),
-            messageCodeGenerator.createGetValue(transformation),
+            messageCodeGenerator.createGetCall(transformation),
             destSetRef(column))
         .build();
   }

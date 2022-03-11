@@ -35,7 +35,7 @@ public class GrpcMessageCodeGenerator implements MessageCodeGenerator {
    * @param transformation defines the {@code from} field
    * @return CodeBlock for an expression
    */
-  public CodeBlock createHasValue(TransformationBean transformation) {
+  public CodeBlock createHasCall(TransformationBean transformation) {
     return transformationPropertyCodeBlock(
         transformation,
         fieldName -> CodeBlock.of("$L.has$L()", SOURCE_VAR, fieldName),
@@ -69,7 +69,7 @@ public class GrpcMessageCodeGenerator implements MessageCodeGenerator {
    * @param transformation defines the {@code from} field
    * @return CodeBlock for an expression
    */
-  public CodeBlock createGetValue(TransformationBean transformation) {
+  public CodeBlock createGetCall(TransformationBean transformation) {
     return transformationPropertyCodeBlock(
         transformation,
         fieldName -> CodeBlock.of("$L.get$L()", SOURCE_VAR, fieldName),

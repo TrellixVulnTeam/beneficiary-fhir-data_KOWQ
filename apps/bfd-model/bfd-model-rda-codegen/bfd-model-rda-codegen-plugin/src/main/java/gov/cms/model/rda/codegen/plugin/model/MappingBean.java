@@ -20,6 +20,7 @@ public class MappingBean {
   private String entityClassName;
   private String transformerClassName;
   private SourceType sourceType = SourceType.Grpc;
+  private NullableFieldAccessorType nullableFieldAccessorType = NullableFieldAccessorType.Standard;
   private TableBean table;
   @Singular private List<EnumTypeBean> enumTypes = new ArrayList<>();
   @Singular private List<TransformationBean> transformations = new ArrayList<>();
@@ -80,5 +81,10 @@ public class MappingBean {
   public enum SourceType {
     Grpc,
     RifCsv
+  }
+
+  public enum NullableFieldAccessorType {
+    Standard,
+    Optional
   }
 }

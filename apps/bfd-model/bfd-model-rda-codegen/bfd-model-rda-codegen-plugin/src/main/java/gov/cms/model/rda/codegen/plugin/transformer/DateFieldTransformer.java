@@ -28,7 +28,7 @@ public class DateFieldTransformer extends AbstractFieldTransformer {
             TRANSFORMER_VAR,
             fieldNameReference(mapping, column),
             column.isNullable(),
-            messageCodeGenerator.createGetValue(transformation),
+            messageCodeGenerator.createGetCall(transformation),
             destSetRef(column))
         .build();
   }

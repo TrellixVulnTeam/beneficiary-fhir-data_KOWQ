@@ -29,7 +29,7 @@ public class EnumValueIfPresentTransformer extends AbstractFieldTransformer {
         ClassName.get(mapping.entityPackageName(), mapping.entityClassName(), enumType.getName());
     CodeBlock.Builder builder =
         CodeBlock.builder()
-            .beginControlFlow("if ($L)", messageCodeGenerator.createHasValue(transformation))
+            .beginControlFlow("if ($L)", messageCodeGenerator.createHasCall(transformation))
             .add(destSetter(column, CodeBlock.of("$T.$L", enumClass, enumValue)))
             .endControlFlow();
     return builder.build();

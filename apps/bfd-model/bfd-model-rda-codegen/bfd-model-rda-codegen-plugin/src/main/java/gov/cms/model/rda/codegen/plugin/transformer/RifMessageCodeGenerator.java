@@ -21,7 +21,7 @@ public class RifMessageCodeGenerator implements MessageCodeGenerator {
   }
 
   @Override
-  public CodeBlock createHasValue(TransformationBean transformation) {
+  public CodeBlock createHasCall(TransformationBean transformation) {
     return transformationPropertyCodeBlock(
         transformation, fieldName -> CodeBlock.of("$L.hasValue($S)", SOURCE_VAR, fieldName));
   }
@@ -33,7 +33,7 @@ public class RifMessageCodeGenerator implements MessageCodeGenerator {
   }
 
   @Override
-  public CodeBlock createGetValue(TransformationBean transformation) {
+  public CodeBlock createGetCall(TransformationBean transformation) {
     return transformationPropertyCodeBlock(
         transformation, fieldName -> CodeBlock.of("$L.getValue($S)", SOURCE_VAR, fieldName));
   }

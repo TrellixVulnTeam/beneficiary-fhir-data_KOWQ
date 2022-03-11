@@ -19,7 +19,7 @@ public interface MessageCodeGenerator {
    * @param transformation defines the {@code from} field
    * @return CodeBlock for an expression
    */
-  CodeBlock createHasValue(TransformationBean transformation);
+  CodeBlock createHasCall(TransformationBean transformation);
 
   /**
    * Generates a {@code Supplier<T>} compatible CodeBlock that that returns the value of the field.
@@ -35,5 +35,5 @@ public interface MessageCodeGenerator {
    * @param transformation defines the {@code from} field
    * @return CodeBlock for an expression
    */
-  CodeBlock createGetValue(TransformationBean transformation);
+  CodeBlock createGetCall(TransformationBean transformation);
 }

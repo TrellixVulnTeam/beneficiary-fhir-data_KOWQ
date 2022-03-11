@@ -25,6 +25,7 @@ def create_mapping(summary):
         "messageClassName": "gov.cms.model.rda.codegen.library.RifObjectWrapper",
         "transformerClassName": f'{summary["packageName"]}.{summary["headerEntity"]}Transformer{classNameSuffix}',
         "sourceType": "RifCsv",
+        "nullableFieldAccessorType": "Optional",
         "table": table,
         "transformations": transformations
     }
@@ -96,6 +97,7 @@ def create_line_mapping(summary):
         "messageClassName": "gov.cms.model.rda.codegen.library.RifObjectWrapper",
         "transformerClassName": f'{summary["packageName"]}.{line_name}Transformer{classNameSuffix}',
         "sourceType": "RifCsv",
+        "nullableFieldAccessorType": "Optional",
         "table": table,
         "transformations": transformations
     }

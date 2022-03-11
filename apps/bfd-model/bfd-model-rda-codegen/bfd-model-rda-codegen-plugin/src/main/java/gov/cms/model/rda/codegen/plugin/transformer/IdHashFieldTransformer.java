@@ -24,7 +24,7 @@ public class IdHashFieldTransformer extends AbstractFieldTransformer {
       MessageCodeGenerator messageCodeGenerator) {
     final String value =
         String.format(
-            "%s.apply(%s)", HASHER_VAR, messageCodeGenerator.createGetValue(transformation));
+            "%s.apply(%s)", HASHER_VAR, messageCodeGenerator.createGetCall(transformation));
     return CodeBlock.builder()
         .addStatement(
             "$L.copyString($L, $L, 1, $L, $L, $L)",
@@ -44,7 +44,7 @@ public class IdHashFieldTransformer extends AbstractFieldTransformer {
       MessageCodeGenerator messageCodeGenerator) {
     final String valueFunc =
         String.format(
-            "()-> %s.apply(%s)", HASHER_VAR, messageCodeGenerator.createGetValue(transformation));
+            "()-> %s.apply(%s)", HASHER_VAR, messageCodeGenerator.createGetCall(transformation));
     return CodeBlock.builder()
         .addStatement(
             "$L.copyOptionalString($L, 1, $L, $L, $L, $L)",

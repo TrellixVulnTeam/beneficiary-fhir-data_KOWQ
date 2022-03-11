@@ -45,9 +45,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldNameConstants;
 import org.apache.maven.plugin.AbstractMojo;
@@ -107,8 +105,6 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
         TypeSpec.classBuilder(mapping.entityClassName())
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(Entity.class)
-            .addAnnotation(Getter.class)
-            .addAnnotation(Setter.class)
             .addAnnotation(Builder.class)
             .addAnnotation(AllArgsConstructor.class)
             .addAnnotation(NoArgsConstructor.class)
@@ -124,10 +120,14 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
     addEnums(mapping.getEnumTypes(), classBuilder);
     var primaryKeySpecs = new ArrayList<FieldSpec>();
     var primaryKeyFieldNames = Set.copyOf(mapping.getTable().getPrimaryKeyColumns());
-    addPrimaryKeyFields(mapping, classBuilder, findMappingWithEntityClassName, primaryKeySpecs);
-    addColumnFields(mapping, classBuilder, primaryKeyFieldNames);
-    addArrayFields(mapping, findMappingWithId, classBuilder, primaryKeyFieldNames.size());
-    addJoinFields(mapping, classBuilder, primaryKeyFieldNames);
+    var accessorSpecs = new ArrayList<AccessorSpec>();
+    addPrimaryKeyFields(
+        mapping, classBuilder, findMappingWithEntityClassName, primaryKeySpecs, accessorSpecs);
+    addColumnFields(mapping, classBuilder, primaryKeyFieldNames, accessorSpecs);
+    addArrayFields(
+        mapping, findMappingWithId, classBuilder, primaryKeyFieldNames.size(), accessorSpecs);
+    addJoinFields(mapping, classBuilder, primaryKeyFieldNames, accessorSpecs);
+    addAccessors(mapping, classBuilder, accessorSpecs);
     if (primaryKeySpecs.size() > 1) {
       classBuilder
           .addAnnotation(createIdClassAnnotation(mapping))
@@ -155,12 +155,13 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
       MappingBean mapping,
       TypeSpec.Builder classBuilder,
       Function<String, Optional<MappingBean>> findMappingWithEntityClassName,
-      List<FieldSpec> primaryKeySpecs)
+      List<FieldSpec> primaryKeySpecs,
+      List<AccessorSpec> accessorSpecs)
       throws MojoExecutionException {
     for (String primaryKeyColumn : mapping.getTable().getPrimaryKeyColumns()) {
       var join = mapping.findJoinByFieldName(primaryKeyColumn);
       if (join.isPresent()) {
-        addJoinField(mapping, join.get(), classBuilder);
+        addJoinField(mapping, join.get(), classBuilder, accessorSpecs);
         primaryKeySpecs.add(
             createPrimaryKeyFieldSpecForJoin(
                 mapping, findMappingWithEntityClassName, primaryKeyColumn, join.get()));
@@ -168,7 +169,7 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
       }
       var column = mapping.findColumnByFieldName(primaryKeyColumn);
       if (column.isPresent()) {
-        addColumnField(mapping, column.get(), classBuilder);
+        addColumnField(mapping, column.get(), classBuilder, accessorSpecs);
         primaryKeySpecs.add(
             createPrimaryKeyFieldSpecForColumn(mapping, primaryKeyColumn, column.get()));
         continue;
@@ -205,7 +206,10 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
   }
 
   private void addJoinFields(
-      MappingBean mapping, TypeSpec.Builder classBuilder, Collection<String> namesToSkip)
+      MappingBean mapping,
+      TypeSpec.Builder classBuilder,
+      Collection<String> namesToSkip,
+      List<AccessorSpec> accessorSpecs)
       throws MojoExecutionException {
     for (JoinBean join : mapping.getTable().getJoins()) {
       if (namesToSkip.contains(join.getFieldName())) {
@@ -214,11 +218,15 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
       if (isJoinForArray(mapping, join)) {
         continue;
       }
-      addJoinField(mapping, join, classBuilder);
+      addJoinField(mapping, join, classBuilder, accessorSpecs);
     }
   }
 
-  private void addJoinField(MappingBean mapping, JoinBean join, TypeSpec.Builder classBuilder)
+  private void addJoinField(
+      MappingBean mapping,
+      JoinBean join,
+      TypeSpec.Builder classBuilder,
+      List<AccessorSpec> accessorSpecs)
       throws MojoExecutionException {
     if (!join.isValidEntityClass()) {
       throw failure(
@@ -230,24 +238,47 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
           "array join field added as ordinary join: mapping=%s join=%s entityClass=%s",
           mapping.getId(), join.getFieldName(), join.getEntityClass());
     }
-    final var fieldBuilder = createFieldSpecBuilderForJoin(mapping, join);
+    final var fieldBuilder = createFieldSpecBuilderForJoin(mapping, join, accessorSpecs);
     classBuilder.addField(fieldBuilder.build());
   }
 
   private void addColumnFields(
-      MappingBean mapping, TypeSpec.Builder classBuilder, Collection<String> namesToSkip)
+      MappingBean mapping,
+      TypeSpec.Builder classBuilder,
+      Collection<String> namesToSkip,
+      List<AccessorSpec> accessorSpecs)
       throws MojoExecutionException {
     for (ColumnBean column : mapping.getTable().getColumns()) {
       if (!namesToSkip.contains(column.getName())) {
-        addColumnField(mapping, column, classBuilder);
+        addColumnField(mapping, column, classBuilder, accessorSpecs);
       }
     }
   }
 
-  private void addColumnField(MappingBean mapping, ColumnBean column, TypeSpec.Builder classBuilder)
+  private void addAccessors(
+      MappingBean mapping, TypeSpec.Builder classBuilder, List<AccessorSpec> accessorSpecs) {
+    for (AccessorSpec spec : accessorSpecs) {
+      if (spec.isNullableColumn
+          && mapping.getNullableFieldAccessorType()
+              == MappingBean.NullableFieldAccessorType.Optional) {
+        classBuilder.addMethod(PoetUtil.createOptionalGetter(spec.fieldName, spec.fieldType));
+        classBuilder.addMethod(PoetUtil.createOptionalSetter(spec.fieldName, spec.fieldType));
+      } else {
+        classBuilder.addMethod(PoetUtil.createStandardGetter(spec.fieldName, spec.fieldType));
+        classBuilder.addMethod(PoetUtil.createStandardSetter(spec.fieldName, spec.fieldType));
+      }
+    }
+  }
+
+  private void addColumnField(
+      MappingBean mapping,
+      ColumnBean column,
+      TypeSpec.Builder classBuilder,
+      List<AccessorSpec> accessorSpecs)
       throws MojoExecutionException {
     final var equalsFields = mapping.getTable().getColumnsForEqualsMethod();
     final TypeName fieldType = createFieldTypeForColumn(mapping, column);
+    accessorSpecs.add(new AccessorSpec(column.getName(), fieldType, column.isNullable()));
     FieldSpec.Builder builder =
         FieldSpec.builder(fieldType, column.getName()).addModifiers(Modifier.PRIVATE);
     if (column.hasComment()) {
@@ -316,12 +347,14 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
     }
   }
 
-  private FieldSpec.Builder createFieldSpecBuilderForJoin(MappingBean mapping, JoinBean join)
+  private FieldSpec.Builder createFieldSpecBuilderForJoin(
+      MappingBean mapping, JoinBean join, List<AccessorSpec> accessorSpecs)
       throws MojoExecutionException {
     TypeName fieldType = join.getEntityClassType();
     if (join.getJoinType().isMultiValue()) {
       fieldType = ParameterizedTypeName.get(join.getCollectionType().getInterfaceName(), fieldType);
     }
+    accessorSpecs.add(new AccessorSpec(join.getFieldName(), fieldType, false));
     FieldSpec.Builder builder =
         FieldSpec.builder(fieldType, join.getFieldName()).addModifiers(Modifier.PRIVATE);
     if (mapping.getTable().isPrimaryKey(join)) {
@@ -368,7 +401,8 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
       MappingBean mapping,
       Function<String, Optional<MappingBean>> mappingFinder,
       TypeSpec.Builder classBuilder,
-      int primaryKeyFieldCount)
+      int primaryKeyFieldCount,
+      List<AccessorSpec> accessorSpecs)
       throws MojoExecutionException {
     if (mapping.getArrays().size() > 0 && primaryKeyFieldCount != 1) {
       throw failure(
@@ -387,7 +421,8 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
           classBuilder,
           mapping.getTable().getPrimaryKeyColumns().get(0),
           arrayElement,
-          arrayMapping.get());
+          arrayMapping.get(),
+          accessorSpecs);
     }
   }
 
@@ -498,7 +533,8 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
       TypeSpec.Builder classBuilder,
       String primaryKeyFieldName,
       ArrayElement arrayElement,
-      MappingBean elementMapping)
+      MappingBean elementMapping,
+      List<AccessorSpec> accessorSpecs)
       throws MojoExecutionException {
     final var join = getJoinForArray(mapping, primaryKeyFieldName, arrayElement, elementMapping);
     if (!join.getJoinType().isMultiValue()) {
@@ -506,7 +542,7 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
           "array mappings must have multi-value joins: array=%s joinType=%s",
           arrayElement.getTo(), join.getJoinType());
     }
-    final var fieldBuilder = createFieldSpecBuilderForJoin(mapping, join);
+    final var fieldBuilder = createFieldSpecBuilderForJoin(mapping, join, accessorSpecs);
     classBuilder.addField(fieldBuilder.build());
   }
 
@@ -574,5 +610,12 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
       throws MojoExecutionException {
     String message = String.format(formatString, args);
     return new MojoExecutionException(message);
+  }
+
+  @AllArgsConstructor
+  private static class AccessorSpec {
+    private String fieldName;
+    private TypeName fieldType;
+    private boolean isNullableColumn;
   }
 }

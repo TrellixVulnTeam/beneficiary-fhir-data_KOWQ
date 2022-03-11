@@ -2,6 +2,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.BeneficiaryPoc
   id: Beneficiary
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -1531,6 +1532,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.BeneficiaryMonthlyPoc
   id: BeneficiaryMonthly
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -1652,6 +1654,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.BeneficiaryHistoryPoc
   id: BeneficiaryHistory
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -1848,6 +1851,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.MedicareBeneficiaryIdHistoryPoc
   id: MedicareBeneficiaryIdHistory
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -1990,6 +1994,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.PartDEventPoc
   id: PartDEvent
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -2326,6 +2331,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.CarrierClaimPoc
   id: CarrierClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -2754,6 +2760,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.CarrierClaimLinePoc
   id: CarrierClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -2984,6 +2991,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.InpatientClaimPoc
   id: InpatientClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -5062,6 +5070,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.InpatientClaimLinePoc
   id: InpatientClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -5136,6 +5145,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.OutpatientClaimPoc
   id: OutpatientClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -6682,6 +6692,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.OutpatientClaimLinePoc
   id: OutpatientClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -6860,6 +6871,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.HHAClaimPoc
   id: HHAClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -7732,6 +7744,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.HHAClaimLinePoc
   id: HHAClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -7839,6 +7852,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.DMEClaimPoc
   id: DMEClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -8260,6 +8274,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.DMEClaimLinePoc
   id: DMEClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -8473,6 +8488,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.HospiceClaimPoc
   id: HospiceClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -9341,6 +9357,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.HospiceClaimLinePoc
   id: HospiceClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -9441,6 +9458,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.SNFClaimPoc
   id: SNFClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
@@ -11126,6 +11144,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.SNFClaimLinePoc
   id: SNFClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
     columns:
