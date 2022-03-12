@@ -2332,6 +2332,7 @@ mappings:
   - from: lines
     mapping: CarrierClaimLine
     namePrefix: line
+    parentField: parentClaim
     to: lines
   entityClassName: gov.cms.bfd.model.rif.CarrierClaimPoc
   id: CarrierClaim
@@ -3142,6 +3143,7 @@ mappings:
   - from: lines
     mapping: InpatientClaimLine
     namePrefix: line
+    parentField: parentClaim
     to: lines
   entityClassName: gov.cms.bfd.model.rif.InpatientClaimPoc
   id: InpatientClaim
@@ -5347,6 +5349,7 @@ mappings:
   - from: lines
     mapping: OutpatientClaimLine
     namePrefix: line
+    parentField: parentClaim
     to: lines
   entityClassName: gov.cms.bfd.model.rif.OutpatientClaimPoc
   id: OutpatientClaim
@@ -7193,6 +7196,7 @@ mappings:
   - from: lines
     mapping: HHAClaimLine
     namePrefix: line
+    parentField: parentClaim
     to: lines
   entityClassName: gov.cms.bfd.model.rif.HHAClaimPoc
   id: HHAClaim
@@ -8249,6 +8253,7 @@ mappings:
   - from: lines
     mapping: DMEClaimLine
     namePrefix: line
+    parentField: parentClaim
     to: lines
   entityClassName: gov.cms.bfd.model.rif.DMEClaimPoc
   id: DMEClaim
@@ -9026,6 +9031,7 @@ mappings:
   - from: lines
     mapping: HospiceClaimLine
     namePrefix: line
+    parentField: parentClaim
     to: lines
   entityClassName: gov.cms.bfd.model.rif.HospiceClaimPoc
   id: HospiceClaim
@@ -10065,6 +10071,7 @@ mappings:
   - from: lines
     mapping: SNFClaimLine
     namePrefix: line
+    parentField: parentClaim
     to: lines
   entityClassName: gov.cms.bfd.model.rif.SNFClaimPoc
   id: SNFClaim

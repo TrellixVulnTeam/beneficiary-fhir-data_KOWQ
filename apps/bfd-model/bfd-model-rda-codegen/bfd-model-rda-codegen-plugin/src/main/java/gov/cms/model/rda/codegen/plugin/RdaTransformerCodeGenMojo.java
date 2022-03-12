@@ -1,5 +1,7 @@
 package gov.cms.model.rda.codegen.plugin;
 
+import static gov.cms.model.rda.codegen.plugin.transformer.TransformerUtil.capitalize;
+
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -331,7 +333,7 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
               .beginControlFlow(
                   "for (short index = 0; index < $L.get$LCount(); ++index)",
                   AbstractFieldTransformer.SOURCE_VAR,
-                  TransformerUtil.capitalize(arrayElement.getFrom()));
+                  capitalize(arrayElement.getFrom()));
       loop.addStatement(
               "final String itemNamePrefix = $L + $S + \"-\" + index + \"-\"",
               AbstractFieldTransformer.NAME_PREFIX_VAR,
@@ -340,7 +342,7 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
               "final $T itemFrom = $L.get$L(index)",
               PoetUtil.toClassName(elementMapping.getMessageClassName()),
               AbstractFieldTransformer.SOURCE_VAR,
-              TransformerUtil.capitalize(arrayElement.getFrom()))
+              capitalize(arrayElement.getFrom()))
           .addStatement(
               "final $T itemTo = $L(itemFrom,$L,$L,itemNamePrefix)",
               PoetUtil.toClassName(elementMapping.getEntityClassName()),
@@ -351,16 +353,18 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
         final String elementFrom = elementField.getFrom();
         if (elementFrom.equals(TransformerUtil.IndexFromName)) {
           // set the column to the current array element's index within the array
-          loop.addStatement(
-              "itemTo.set$L(index)", TransformerUtil.capitalize(elementField.getTo()));
+          loop.addStatement("itemTo.set$L(index)", capitalize(elementField.getTo()));
         } else if (elementFrom.equals(TransformerUtil.ParentFromName)) {
           // copy the same column from parent into the array element field
           loop.addStatement(
               "itemTo.set$L($L.get$L())",
-              TransformerUtil.capitalize(elementField.getTo()),
+              capitalize(elementField.getTo()),
               AbstractFieldTransformer.SOURCE_VAR,
-              TransformerUtil.capitalize(elementField.getTo()));
+              capitalize(elementField.getTo()));
         }
+      }
+      if (arrayElement.hasParentField()) {
+        loop.addStatement("itemTo.set$L(to)", capitalize(arrayElement.getParentField()));
       }
       if (elementMapping.hasArrayElements()) {
         loop.addStatement(
@@ -372,7 +376,7 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
       loop.addStatement(
               "$L.get$L().add(itemTo)",
               AbstractFieldTransformer.DEST_VAR,
-              TransformerUtil.capitalize(arrayElement.getTo()))
+              capitalize(arrayElement.getTo()))
           .endControlFlow();
       builder.addCode(loop.build());
     }

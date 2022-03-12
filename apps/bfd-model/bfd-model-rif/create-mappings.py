@@ -63,7 +63,8 @@ def create_mapping(summary):
             "from": "lines",
             "to": "lines",
             "mapping": line_name,
-            "namePrefix": "line"
+            "namePrefix": "line",
+            "parentField": "parentClaim"
         }
         mapping["arrays"] = [line_array]
 
