@@ -5,6 +5,8 @@ import com.google.protobuf.Timestamp;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,15 @@ import java.util.function.Supplier;
  * return this instance so that calls can be chained.
  */
 public class DataTransformer {
+  private static final DateTimeFormatter RifEightCharacterDate =
+      new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("yyyyMMdd").toFormatter();
+
+  private static final DateTimeFormatter RifElevenCharacterDate =
+      new DateTimeFormatterBuilder()
+          .parseCaseInsensitive()
+          .appendPattern("dd-MMM-yyyy")
+          .toFormatter();
+
   private final List<ErrorMessage> errors = new ArrayList<>();
 
   /**
@@ -286,7 +297,18 @@ public class DataTransformer {
       String fieldName, boolean nullable, String value, Consumer<LocalDate> copier) {
     if (nonNull(fieldName, value, nullable)) {
       try {
-        LocalDate date = LocalDate.parse(value);
+        LocalDate date;
+        switch (value.length()) {
+          case 8:
+            date = LocalDate.parse(value, RifEightCharacterDate);
+            break;
+          case 11:
+            date = LocalDate.parse(value, RifElevenCharacterDate);
+            break;
+          default:
+            date = LocalDate.parse(value);
+            break;
+        }
         copier.accept(date);
       } catch (DateTimeParseException ex) {
         addError(fieldName, "invalid date");

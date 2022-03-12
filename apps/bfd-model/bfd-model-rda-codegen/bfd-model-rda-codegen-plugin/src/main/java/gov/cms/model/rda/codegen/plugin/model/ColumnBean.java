@@ -114,7 +114,7 @@ public class ColumnBean {
   }
 
   public boolean isDecimal() {
-    return sqlType.contains("decimal");
+    return sqlType.contains("decimal") || sqlType.contains("numeric");
   }
 
   public boolean isDate() {
