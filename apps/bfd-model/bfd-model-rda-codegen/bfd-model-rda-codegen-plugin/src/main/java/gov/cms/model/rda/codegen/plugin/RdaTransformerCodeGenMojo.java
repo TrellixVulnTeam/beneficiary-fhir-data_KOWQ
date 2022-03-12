@@ -51,7 +51,7 @@ import org.apache.maven.project.MavenProject;
 @Mojo(name = "transformers", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class RdaTransformerCodeGenMojo extends AbstractMojo {
   private static final String PUBLIC_TRANSFORM_METHOD_NAME = "transformMessage";
-  private static final String PRIVATE_TRANSFORM_METHOD_NAME = "transformMessageImpl";
+  private static final String PRIVATE_TRANSFORM_METHOD_NAME_BASE = "transformMessageTo";
   private static final String PRIVATE_TRANSFORM_ARRAYS_METHOD_NAME = "transformMessageArrays";
 
   @Parameter(property = "mappingFile")
@@ -235,7 +235,7 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
         "final $T $L = $L($L,$L,$L,$S)",
         entityClassType,
         AbstractFieldTransformer.DEST_VAR,
-        PRIVATE_TRANSFORM_METHOD_NAME,
+        createPrivateTransformMethodNameForMapping(mapping),
         AbstractFieldTransformer.SOURCE_VAR,
         AbstractFieldTransformer.TRANSFORMER_VAR,
         AbstractFieldTransformer.NOW_VAR,
@@ -259,7 +259,7 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
     final TypeName messageClassType = ModelUtil.classType(mapping.getMessageClassName());
     final TypeName entityClassType = ModelUtil.classType(mapping.getEntityClassName());
     final MethodSpec.Builder builder =
-        MethodSpec.methodBuilder(PRIVATE_TRANSFORM_METHOD_NAME)
+        MethodSpec.methodBuilder(createPrivateTransformMethodNameForMapping(mapping))
             .returns(entityClassType)
             .addModifiers(Modifier.PRIVATE)
             .addParameter(messageClassType, AbstractFieldTransformer.SOURCE_VAR)
@@ -344,7 +344,7 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
           .addStatement(
               "final $T itemTo = $L(itemFrom,$L,$L,itemNamePrefix)",
               PoetUtil.toClassName(elementMapping.getEntityClassName()),
-              PRIVATE_TRANSFORM_METHOD_NAME,
+              createPrivateTransformMethodNameForMapping(elementMapping),
               AbstractFieldTransformer.TRANSFORMER_VAR,
               AbstractFieldTransformer.NOW_VAR);
       for (TransformationBean elementField : elementMapping.getTransformations()) {
@@ -377,6 +377,10 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
       builder.addCode(loop.build());
     }
     return builder.build();
+  }
+
+  private String createPrivateTransformMethodNameForMapping(MappingBean mapping) {
+    return PRIVATE_TRANSFORM_METHOD_NAME_BASE + mapping.getId();
   }
 
   private MojoExecutionException failure(String formatString, Object... args) {

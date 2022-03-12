@@ -606,8 +606,7 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
   }
   // endregion
 
-  private MojoExecutionException failure(String formatString, Object... args)
-      throws MojoExecutionException {
+  private MojoExecutionException failure(String formatString, Object... args) {
     String message = String.format(formatString, args);
     return new MojoExecutionException(message);
   }

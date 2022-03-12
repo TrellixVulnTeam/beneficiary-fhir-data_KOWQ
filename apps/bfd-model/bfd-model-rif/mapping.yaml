@@ -2328,7 +2328,12 @@ mappings:
     optional: true
     to: submissionClarificationCode
   transformerClassName: gov.cms.bfd.model.rif.PartDEventTransformerPoc
-- entityClassName: gov.cms.bfd.model.rif.CarrierClaimPoc
+- arrays:
+  - from: lines
+    mapping: CarrierClaimLine
+    namePrefix: line
+    to: lines
+  entityClassName: gov.cms.bfd.model.rif.CarrierClaimPoc
   id: CarrierClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -2593,6 +2598,17 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    joins:
+    - cascadeTypes:
+      - ALL
+      collectionType: List
+      entityClass: gov.cms.bfd.model.rif.CarrierClaimLinePoc
+      fetchType: LAZY
+      fieldName: lines
+      joinType: OneToMany
+      mappedBy: parentClaim
+      orderBy: LINE_NUM ASC
+      orphanRemoval: true
     name: carrier_claims
     primaryKeyColumns:
     - claimId
@@ -2986,9 +3002,148 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
-  transformations: []
-  transformerClassName: gov.cms.bfd.model.rif.CarrierClaimLineTransformerPoc
-- entityClassName: gov.cms.bfd.model.rif.InpatientClaimPoc
+  transformations:
+  - from: LINE_NUM
+    optional: false
+    to: lineNumber
+  - from: CARR_PRFRNG_PIN_NUM
+    optional: false
+    to: performingProviderIdNumber
+  - from: PRF_PHYSN_UPIN
+    optional: true
+    to: performingPhysicianUpin
+  - from: PRF_PHYSN_NPI
+    optional: true
+    to: performingPhysicianNpi
+  - from: ORG_NPI_NUM
+    optional: true
+    to: organizationNpi
+  - from: CARR_LINE_PRVDR_TYPE_CD
+    optional: false
+    to: providerTypeCode
+  - from: TAX_NUM
+    optional: false
+    to: providerTaxNumber
+  - from: PRVDR_STATE_CD
+    optional: true
+    to: providerStateCode
+  - from: PRVDR_ZIP
+    optional: true
+    to: providerZipCode
+  - from: PRVDR_SPCLTY
+    optional: true
+    to: providerSpecialityCode
+  - from: PRTCPTNG_IND_CD
+    optional: true
+    to: providerParticipatingIndCode
+  - from: CARR_LINE_RDCD_PMT_PHYS_ASTN_C
+    optional: false
+    to: reducedPaymentPhysicianAsstCode
+  - from: LINE_SRVC_CNT
+    optional: false
+    to: serviceCount
+  - from: LINE_CMS_TYPE_SRVC_CD
+    optional: false
+    to: cmsServiceTypeCode
+  - from: LINE_PLACE_OF_SRVC_CD
+    optional: false
+    to: placeOfServiceCode
+  - from: CARR_LINE_PRCNG_LCLTY_CD
+    optional: false
+    to: linePricingLocalityCode
+  - from: LINE_1ST_EXPNS_DT
+    optional: true
+    to: firstExpenseDate
+  - from: LINE_LAST_EXPNS_DT
+    optional: true
+    to: lastExpenseDate
+  - from: HCPCS_CD
+    optional: true
+    to: hcpcsCode
+  - from: HCPCS_1ST_MDFR_CD
+    optional: true
+    to: hcpcsInitialModifierCode
+  - from: HCPCS_2ND_MDFR_CD
+    optional: true
+    to: hcpcsSecondModifierCode
+  - from: BETOS_CD
+    optional: true
+    to: betosCode
+  - from: LINE_NCH_PMT_AMT
+    optional: false
+    to: paymentAmount
+  - from: LINE_BENE_PMT_AMT
+    optional: false
+    to: beneficiaryPaymentAmount
+  - from: LINE_PRVDR_PMT_AMT
+    optional: false
+    to: providerPaymentAmount
+  - from: LINE_BENE_PTB_DDCTBL_AMT
+    optional: false
+    to: beneficiaryPartBDeductAmount
+  - from: LINE_BENE_PRMRY_PYR_CD
+    optional: true
+    to: primaryPayerCode
+  - from: LINE_BENE_PRMRY_PYR_PD_AMT
+    optional: false
+    to: primaryPayerPaidAmount
+  - from: LINE_COINSRNC_AMT
+    optional: false
+    to: coinsuranceAmount
+  - from: LINE_SBMTD_CHRG_AMT
+    optional: false
+    to: submittedChargeAmount
+  - from: LINE_ALOWD_CHRG_AMT
+    optional: false
+    to: allowedChargeAmount
+  - from: LINE_PRCSG_IND_CD
+    optional: true
+    to: processingIndicatorCode
+  - from: LINE_PMT_80_100_CD
+    optional: true
+    to: paymentCode
+  - from: LINE_SERVICE_DEDUCTIBLE
+    optional: true
+    to: serviceDeductibleCode
+  - from: CARR_LINE_MTUS_CNT
+    optional: false
+    to: mtusCount
+  - from: CARR_LINE_MTUS_CD
+    optional: true
+    to: mtusCode
+  - from: LINE_ICD_DGNS_CD
+    optional: true
+    to: diagnosisCode
+  - from: LINE_ICD_DGNS_VRSN_CD
+    optional: true
+    to: diagnosisCodeVersion
+  - from: HPSA_SCRCTY_IND_CD
+    optional: true
+    to: hpsaScarcityCode
+  - from: CARR_LINE_RX_NUM
+    optional: true
+    to: rxNumber
+  - from: LINE_HCT_HGB_RSLT_NUM
+    optional: false
+    to: hctHgbTestResult
+  - from: LINE_HCT_HGB_TYPE_CD
+    optional: true
+    to: hctHgbTestTypeCode
+  - from: LINE_NDC_CD
+    optional: true
+    to: nationalDrugCode
+  - from: CARR_LINE_CLIA_LAB_NUM
+    optional: true
+    to: cliaLabNumber
+  - from: CARR_LINE_ANSTHSA_UNIT_CNT
+    optional: false
+    to: anesthesiaUnitCount
+- arrays:
+  - from: lines
+    mapping: InpatientClaimLine
+    namePrefix: line
+    to: lines
+  entityClassName: gov.cms.bfd.model.rif.InpatientClaimPoc
   id: InpatientClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -4276,6 +4431,17 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    joins:
+    - cascadeTypes:
+      - ALL
+      collectionType: List
+      entityClass: gov.cms.bfd.model.rif.InpatientClaimLinePoc
+      fetchType: LAZY
+      fieldName: lines
+      joinType: OneToMany
+      mappedBy: parentClaim
+      orderBy: LINE_NUM ASC
+      orphanRemoval: true
     name: inpatient_claims
     primaryKeyColumns:
     - claimId
@@ -5140,9 +5306,49 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
-  transformations: []
-  transformerClassName: gov.cms.bfd.model.rif.InpatientClaimLineTransformerPoc
-- entityClassName: gov.cms.bfd.model.rif.OutpatientClaimPoc
+  transformations:
+  - from: CLM_LINE_NUM
+    optional: false
+    to: lineNumber
+  - from: REV_CNTR
+    optional: false
+    to: revenueCenter
+  - from: HCPCS_CD
+    optional: true
+    to: hcpcsCode
+  - from: REV_CNTR_UNIT_CNT
+    optional: false
+    to: unitCount
+  - from: REV_CNTR_RATE_AMT
+    optional: false
+    to: rateAmount
+  - from: REV_CNTR_TOT_CHRG_AMT
+    optional: false
+    to: totalChargeAmount
+  - from: REV_CNTR_NCVRD_CHRG_AMT
+    optional: false
+    to: nonCoveredChargeAmount
+  - from: REV_CNTR_DDCTBL_COINSRNC_CD
+    optional: true
+    to: deductibleCoinsuranceCd
+  - from: REV_CNTR_NDC_QTY
+    optional: true
+    to: nationalDrugCodeQuantity
+  - from: REV_CNTR_NDC_QTY_QLFR_CD
+    optional: true
+    to: nationalDrugCodeQualifierCode
+  - from: RNDRNG_PHYSN_UPIN
+    optional: true
+    to: revenueCenterRenderingPhysicianUPIN
+  - from: RNDRNG_PHYSN_NPI
+    optional: true
+    to: revenueCenterRenderingPhysicianNPI
+- arrays:
+  - from: lines
+    mapping: OutpatientClaimLine
+    namePrefix: line
+    to: lines
+  entityClassName: gov.cms.bfd.model.rif.OutpatientClaimPoc
   id: OutpatientClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -6090,6 +6296,17 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    joins:
+    - cascadeTypes:
+      - ALL
+      collectionType: List
+      entityClass: gov.cms.bfd.model.rif.OutpatientClaimLinePoc
+      fetchType: LAZY
+      fieldName: lines
+      joinType: OneToMany
+      mappedBy: parentClaim
+      orderBy: LINE_NUM ASC
+      orphanRemoval: true
     name: outpatient_claims
     primaryKeyColumns:
     - claimId
@@ -6866,9 +7083,118 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
-  transformations: []
-  transformerClassName: gov.cms.bfd.model.rif.OutpatientClaimLineTransformerPoc
-- entityClassName: gov.cms.bfd.model.rif.HHAClaimPoc
+  transformations:
+  - from: CLM_LINE_NUM
+    optional: false
+    to: lineNumber
+  - from: REV_CNTR
+    optional: false
+    to: revenueCenterCode
+  - from: REV_CNTR_DT
+    optional: true
+    to: revenueCenterDate
+  - from: REV_CNTR_1ST_ANSI_CD
+    optional: true
+    to: revCntr1stAnsiCd
+  - from: REV_CNTR_2ND_ANSI_CD
+    optional: true
+    to: revCntr2ndAnsiCd
+  - from: REV_CNTR_3RD_ANSI_CD
+    optional: true
+    to: revCntr3rdAnsiCd
+  - from: REV_CNTR_4TH_ANSI_CD
+    optional: true
+    to: revCntr4thAnsiCd
+  - from: REV_CNTR_APC_HIPPS_CD
+    optional: true
+    to: apcOrHippsCode
+  - from: HCPCS_CD
+    optional: true
+    to: hcpcsCode
+  - from: HCPCS_1ST_MDFR_CD
+    optional: true
+    to: hcpcsInitialModifierCode
+  - from: HCPCS_2ND_MDFR_CD
+    optional: true
+    to: hcpcsSecondModifierCode
+  - from: REV_CNTR_PMT_MTHD_IND_CD
+    optional: true
+    to: paymentMethodCode
+  - from: REV_CNTR_DSCNT_IND_CD
+    optional: true
+    to: discountCode
+  - from: REV_CNTR_PACKG_IND_CD
+    optional: true
+    to: packagingCode
+  - from: REV_CNTR_OTAF_PMT_CD
+    optional: true
+    to: obligationToAcceptAsFullPaymentCode
+  - from: REV_CNTR_IDE_NDC_UPC_NUM
+    optional: true
+    to: nationalDrugCode
+  - from: REV_CNTR_UNIT_CNT
+    optional: false
+    to: unitCount
+  - from: REV_CNTR_RATE_AMT
+    optional: false
+    to: rateAmount
+  - from: REV_CNTR_BLOOD_DDCTBL_AMT
+    optional: false
+    to: bloodDeductibleAmount
+  - from: REV_CNTR_CASH_DDCTBL_AMT
+    optional: false
+    to: cashDeductibleAmount
+  - from: REV_CNTR_COINSRNC_WGE_ADJSTD_C
+    optional: false
+    to: wageAdjustedCoinsuranceAmount
+  - from: REV_CNTR_RDCD_COINSRNC_AMT
+    optional: false
+    to: reducedCoinsuranceAmount
+  - from: REV_CNTR_1ST_MSP_PD_AMT
+    optional: false
+    to: firstMspPaidAmount
+  - from: REV_CNTR_2ND_MSP_PD_AMT
+    optional: false
+    to: secondMspPaidAmount
+  - from: REV_CNTR_PRVDR_PMT_AMT
+    optional: false
+    to: providerPaymentAmount
+  - from: REV_CNTR_BENE_PMT_AMT
+    optional: false
+    to: benficiaryPaymentAmount
+  - from: REV_CNTR_PTNT_RSPNSBLTY_PMT
+    optional: false
+    to: patientResponsibilityAmount
+  - from: REV_CNTR_PMT_AMT_AMT
+    optional: false
+    to: paymentAmount
+  - from: REV_CNTR_TOT_CHRG_AMT
+    optional: false
+    to: totalChargeAmount
+  - from: REV_CNTR_NCVRD_CHRG_AMT
+    optional: false
+    to: nonCoveredChargeAmount
+  - from: REV_CNTR_STUS_IND_CD
+    optional: true
+    to: statusCode
+  - from: REV_CNTR_NDC_QTY
+    optional: true
+    to: nationalDrugCodeQuantity
+  - from: REV_CNTR_NDC_QTY_QLFR_CD
+    optional: true
+    to: nationalDrugCodeQualifierCode
+  - from: RNDRNG_PHYSN_UPIN
+    optional: true
+    to: revenueCenterRenderingPhysicianUPIN
+  - from: RNDRNG_PHYSN_NPI
+    optional: true
+    to: revenueCenterRenderingPhysicianNPI
+- arrays:
+  - from: lines
+    mapping: HHAClaimLine
+    namePrefix: line
+    to: lines
+  entityClassName: gov.cms.bfd.model.rif.HHAClaimPoc
   id: HHAClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -7406,6 +7732,17 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    joins:
+    - cascadeTypes:
+      - ALL
+      collectionType: List
+      entityClass: gov.cms.bfd.model.rif.HHAClaimLinePoc
+      fetchType: LAZY
+      fieldName: lines
+      joinType: OneToMany
+      mappedBy: parentClaim
+      orderBy: LINE_NUM ASC
+      orphanRemoval: true
     name: hha_claims
     primaryKeyColumns:
     - claimId
@@ -7847,9 +8184,73 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
-  transformations: []
-  transformerClassName: gov.cms.bfd.model.rif.HHAClaimLineTransformerPoc
-- entityClassName: gov.cms.bfd.model.rif.DMEClaimPoc
+  transformations:
+  - from: CLM_LINE_NUM
+    optional: false
+    to: lineNumber
+  - from: REV_CNTR
+    optional: false
+    to: revenueCenterCode
+  - from: REV_CNTR_DT
+    optional: true
+    to: revenueCenterDate
+  - from: REV_CNTR_1ST_ANSI_CD
+    optional: true
+    to: revCntr1stAnsiCd
+  - from: REV_CNTR_APC_HIPPS_CD
+    optional: true
+    to: apcOrHippsCode
+  - from: HCPCS_CD
+    optional: true
+    to: hcpcsCode
+  - from: HCPCS_1ST_MDFR_CD
+    optional: true
+    to: hcpcsInitialModifierCode
+  - from: HCPCS_2ND_MDFR_CD
+    optional: true
+    to: hcpcsSecondModifierCode
+  - from: REV_CNTR_PMT_MTHD_IND_CD
+    optional: true
+    to: paymentMethodCode
+  - from: REV_CNTR_UNIT_CNT
+    optional: false
+    to: unitCount
+  - from: REV_CNTR_RATE_AMT
+    optional: false
+    to: rateAmount
+  - from: REV_CNTR_PMT_AMT_AMT
+    optional: false
+    to: paymentAmount
+  - from: REV_CNTR_TOT_CHRG_AMT
+    optional: false
+    to: totalChargeAmount
+  - from: REV_CNTR_NCVRD_CHRG_AMT
+    optional: false
+    to: nonCoveredChargeAmount
+  - from: REV_CNTR_DDCTBL_COINSRNC_CD
+    optional: true
+    to: deductibleCoinsuranceCd
+  - from: REV_CNTR_STUS_IND_CD
+    optional: true
+    to: statusCode
+  - from: REV_CNTR_NDC_QTY
+    optional: true
+    to: nationalDrugCodeQuantity
+  - from: REV_CNTR_NDC_QTY_QLFR_CD
+    optional: true
+    to: nationalDrugCodeQualifierCode
+  - from: RNDRNG_PHYSN_UPIN
+    optional: true
+    to: revenueCenterRenderingPhysicianUPIN
+  - from: RNDRNG_PHYSN_NPI
+    optional: true
+    to: revenueCenterRenderingPhysicianNPI
+- arrays:
+  - from: lines
+    mapping: DMEClaimLine
+    namePrefix: line
+    to: lines
+  entityClassName: gov.cms.bfd.model.rif.DMEClaimPoc
   id: DMEClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -8110,6 +8511,17 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    joins:
+    - cascadeTypes:
+      - ALL
+      collectionType: List
+      entityClass: gov.cms.bfd.model.rif.DMEClaimLinePoc
+      fetchType: LAZY
+      fieldName: lines
+      joinType: OneToMany
+      mappedBy: parentClaim
+      orderBy: LINE_NUM ASC
+      orphanRemoval: true
     name: dme_claims
     primaryKeyColumns:
     - claimId
@@ -8483,9 +8895,139 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
-  transformations: []
-  transformerClassName: gov.cms.bfd.model.rif.DMEClaimLineTransformerPoc
-- entityClassName: gov.cms.bfd.model.rif.HospiceClaimPoc
+  transformations:
+  - from: LINE_NUM
+    optional: false
+    to: lineNumber
+  - from: TAX_NUM
+    optional: false
+    to: providerTaxNumber
+  - from: PRVDR_SPCLTY
+    optional: true
+    to: providerSpecialityCode
+  - from: PRTCPTNG_IND_CD
+    optional: true
+    to: providerParticipatingIndCode
+  - from: LINE_SRVC_CNT
+    optional: false
+    to: serviceCount
+  - from: LINE_CMS_TYPE_SRVC_CD
+    optional: false
+    to: cmsServiceTypeCode
+  - from: LINE_PLACE_OF_SRVC_CD
+    optional: false
+    to: placeOfServiceCode
+  - from: LINE_1ST_EXPNS_DT
+    optional: true
+    to: firstExpenseDate
+  - from: LINE_LAST_EXPNS_DT
+    optional: true
+    to: lastExpenseDate
+  - from: HCPCS_CD
+    optional: true
+    to: hcpcsCode
+  - from: HCPCS_1ST_MDFR_CD
+    optional: true
+    to: hcpcsInitialModifierCode
+  - from: HCPCS_2ND_MDFR_CD
+    optional: true
+    to: hcpcsSecondModifierCode
+  - from: BETOS_CD
+    optional: true
+    to: betosCode
+  - from: LINE_NCH_PMT_AMT
+    optional: false
+    to: paymentAmount
+  - from: LINE_BENE_PMT_AMT
+    optional: false
+    to: beneficiaryPaymentAmount
+  - from: LINE_PRVDR_PMT_AMT
+    optional: false
+    to: providerPaymentAmount
+  - from: LINE_BENE_PTB_DDCTBL_AMT
+    optional: false
+    to: beneficiaryPartBDeductAmount
+  - from: LINE_BENE_PRMRY_PYR_CD
+    optional: true
+    to: primaryPayerCode
+  - from: LINE_BENE_PRMRY_PYR_PD_AMT
+    optional: false
+    to: primaryPayerPaidAmount
+  - from: LINE_COINSRNC_AMT
+    optional: false
+    to: coinsuranceAmount
+  - from: LINE_PRMRY_ALOWD_CHRG_AMT
+    optional: false
+    to: primaryPayerAllowedChargeAmount
+  - from: LINE_SBMTD_CHRG_AMT
+    optional: false
+    to: submittedChargeAmount
+  - from: LINE_ALOWD_CHRG_AMT
+    optional: false
+    to: allowedChargeAmount
+  - from: LINE_PRCSG_IND_CD
+    optional: true
+    to: processingIndicatorCode
+  - from: LINE_PMT_80_100_CD
+    optional: true
+    to: paymentCode
+  - from: LINE_SERVICE_DEDUCTIBLE
+    optional: true
+    to: serviceDeductibleCode
+  - from: LINE_ICD_DGNS_CD
+    optional: true
+    to: diagnosisCode
+  - from: LINE_ICD_DGNS_VRSN_CD
+    optional: true
+    to: diagnosisCodeVersion
+  - from: LINE_DME_PRCHS_PRICE_AMT
+    optional: false
+    to: purchasePriceAmount
+  - from: PRVDR_NUM
+    optional: true
+    to: providerBillingNumber
+  - from: PRVDR_NPI
+    optional: true
+    to: providerNPI
+  - from: DMERC_LINE_PRCNG_STATE_CD
+    optional: true
+    to: pricingStateCode
+  - from: PRVDR_STATE_CD
+    optional: false
+    to: providerStateCode
+  - from: DMERC_LINE_SUPPLR_TYPE_CD
+    optional: true
+    to: supplierTypeCode
+  - from: HCPCS_3RD_MDFR_CD
+    optional: true
+    to: hcpcsThirdModifierCode
+  - from: HCPCS_4TH_MDFR_CD
+    optional: true
+    to: hcpcsFourthModifierCode
+  - from: DMERC_LINE_SCRN_SVGS_AMT
+    optional: true
+    to: screenSavingsAmount
+  - from: DMERC_LINE_MTUS_CNT
+    optional: false
+    to: mtusCount
+  - from: DMERC_LINE_MTUS_CD
+    optional: true
+    to: mtusCode
+  - from: LINE_HCT_HGB_RSLT_NUM
+    optional: false
+    to: hctHgbTestResult
+  - from: LINE_HCT_HGB_TYPE_CD
+    optional: true
+    to: hctHgbTestTypeCode
+  - from: LINE_NDC_CD
+    optional: true
+    to: nationalDrugCode
+- arrays:
+  - from: lines
+    mapping: HospiceClaimLine
+    namePrefix: line
+    to: lines
+  entityClassName: gov.cms.bfd.model.rif.HospiceClaimPoc
   id: HospiceClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -9019,6 +9561,17 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    joins:
+    - cascadeTypes:
+      - ALL
+      collectionType: List
+      entityClass: gov.cms.bfd.model.rif.HospiceClaimLinePoc
+      fetchType: LAZY
+      fieldName: lines
+      joinType: OneToMany
+      mappedBy: parentClaim
+      orderBy: LINE_NUM ASC
+      orphanRemoval: true
     name: hospice_claims
     primaryKeyColumns:
     - claimId
@@ -9453,9 +10006,67 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
-  transformations: []
-  transformerClassName: gov.cms.bfd.model.rif.HospiceClaimLineTransformerPoc
-- entityClassName: gov.cms.bfd.model.rif.SNFClaimPoc
+  transformations:
+  - from: CLM_LINE_NUM
+    optional: false
+    to: lineNumber
+  - from: REV_CNTR
+    optional: false
+    to: revenueCenterCode
+  - from: REV_CNTR_DT
+    optional: true
+    to: revenueCenterDate
+  - from: HCPCS_CD
+    optional: true
+    to: hcpcsCode
+  - from: HCPCS_1ST_MDFR_CD
+    optional: true
+    to: hcpcsInitialModifierCode
+  - from: HCPCS_2ND_MDFR_CD
+    optional: true
+    to: hcpcsSecondModifierCode
+  - from: REV_CNTR_UNIT_CNT
+    optional: false
+    to: unitCount
+  - from: REV_CNTR_RATE_AMT
+    optional: false
+    to: rateAmount
+  - from: REV_CNTR_PRVDR_PMT_AMT
+    optional: false
+    to: providerPaymentAmount
+  - from: REV_CNTR_BENE_PMT_AMT
+    optional: false
+    to: benficiaryPaymentAmount
+  - from: REV_CNTR_PMT_AMT_AMT
+    optional: false
+    to: paymentAmount
+  - from: REV_CNTR_TOT_CHRG_AMT
+    optional: false
+    to: totalChargeAmount
+  - from: REV_CNTR_NCVRD_CHRG_AMT
+    optional: true
+    to: nonCoveredChargeAmount
+  - from: REV_CNTR_DDCTBL_COINSRNC_CD
+    optional: true
+    to: deductibleCoinsuranceCd
+  - from: REV_CNTR_NDC_QTY
+    optional: true
+    to: nationalDrugCodeQuantity
+  - from: REV_CNTR_NDC_QTY_QLFR_CD
+    optional: true
+    to: nationalDrugCodeQualifierCode
+  - from: RNDRNG_PHYSN_UPIN
+    optional: true
+    to: revenueCenterRenderingPhysicianUPIN
+  - from: RNDRNG_PHYSN_NPI
+    optional: true
+    to: revenueCenterRenderingPhysicianNPI
+- arrays:
+  - from: lines
+    mapping: SNFClaimLine
+    namePrefix: line
+    to: lines
+  entityClassName: gov.cms.bfd.model.rif.SNFClaimPoc
   id: SNFClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -10485,6 +11096,17 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    joins:
+    - cascadeTypes:
+      - ALL
+      collectionType: List
+      entityClass: gov.cms.bfd.model.rif.SNFClaimLinePoc
+      fetchType: LAZY
+      fieldName: lines
+      joinType: OneToMany
+      mappedBy: parentClaim
+      orderBy: LINE_NUM ASC
+      orphanRemoval: true
     name: snf_claims
     primaryKeyColumns:
     - claimId
@@ -11214,5 +11836,40 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
-  transformations: []
-  transformerClassName: gov.cms.bfd.model.rif.SNFClaimLineTransformerPoc
+  transformations:
+  - from: CLM_LINE_NUM
+    optional: false
+    to: lineNumber
+  - from: REV_CNTR
+    optional: false
+    to: revenueCenter
+  - from: HCPCS_CD
+    optional: true
+    to: hcpcsCode
+  - from: REV_CNTR_UNIT_CNT
+    optional: false
+    to: unitCount
+  - from: REV_CNTR_RATE_AMT
+    optional: false
+    to: rateAmount
+  - from: REV_CNTR_TOT_CHRG_AMT
+    optional: false
+    to: totalChargeAmount
+  - from: REV_CNTR_NCVRD_CHRG_AMT
+    optional: false
+    to: nonCoveredChargeAmount
+  - from: REV_CNTR_DDCTBL_COINSRNC_CD
+    optional: true
+    to: deductibleCoinsuranceCd
+  - from: REV_CNTR_NDC_QTY
+    optional: true
+    to: nationalDrugCodeQuantity
+  - from: REV_CNTR_NDC_QTY_QLFR_CD
+    optional: true
+    to: nationalDrugCodeQualifierCode
+  - from: RNDRNG_PHYSN_UPIN
+    optional: true
+    to: revenueCenterRenderingPhysicianUPIN
+  - from: RNDRNG_PHYSN_NPI
+    optional: true
+    to: revenueCenterRenderingPhysicianNPI

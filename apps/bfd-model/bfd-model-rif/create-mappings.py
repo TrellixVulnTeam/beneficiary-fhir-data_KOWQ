@@ -44,6 +44,7 @@ def create_mapping(summary):
         column = create_column(rif_field)
         add_transient_to_column(summary, column)
         columns.append(column)
+        add_field_transform(rif_field, transformations)
 
     for rif_field in summary["headerEntityAdditionalDatabaseFields"]:
         column = create_column(rif_field)
@@ -56,12 +57,28 @@ def create_mapping(summary):
     for join_relationship in summary["innerJoinRelationship"]:
         joins_for_mapping(mapping).append(create_join(summary, join_relationship))
 
-    for rif_field in summary["rifLayout"]["fields"]:
-        column_name = rif_field["rifColumnName"]
-        if line_number_column_name == column_name:
-            break
+    if summary["hasLines"]:
+        line_name = f'{summary["headerEntity"]}Line'
+        line_array = {
+            "from": "lines",
+            "to": "lines",
+            "mapping": line_name,
+            "namePrefix": "line"
+        }
+        mapping["arrays"] = [line_array]
 
-        add_field_transform(rif_field, transformations)
+        line_join = {
+            "mappedBy": "parentClaim",
+            "orphanRemoval": True,
+            "fetchType": "LAZY",
+            "cascadeTypes": ["ALL"],
+            "orderBy": "LINE_NUM ASC",
+            "collectionType": "List",
+            "fieldName": "lines",
+            "entityClass": f'{summary["packageName"]}.{line_name}{classNameSuffix}',
+            "joinType": "OneToMany"
+        }
+        joins_for_mapping(mapping).append(line_join)
 
     return mapping
 
@@ -95,7 +112,6 @@ def create_line_mapping(summary):
         "id": line_name,
         "entityClassName": f'{summary["packageName"]}.{line_name}{classNameSuffix}',
         "messageClassName": "gov.cms.model.rda.codegen.library.RifObjectWrapper",
-        "transformerClassName": f'{summary["packageName"]}.{line_name}Transformer{classNameSuffix}',
         "sourceType": "RifCsv",
         "nullableFieldAccessorType": "Optional",
         "table": table,
@@ -112,6 +128,7 @@ def create_line_mapping(summary):
             continue
 
         columns.append(create_column(rif_field))
+        add_field_transform(rif_field, transformations)
 
     parent_entity = f'{summary["packageName"]}.{parent_name}{classNameSuffix}'
     join = {

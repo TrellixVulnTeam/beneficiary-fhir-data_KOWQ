@@ -19,6 +19,11 @@ public class RifObjectWrapper {
     header = lines.get(0);
   }
 
+  public RifObjectWrapper(RifLineWrapper singleLine) {
+    lines = ImmutableList.of(singleLine);
+    header = singleLine;
+  }
+
   /**
    * Gets the header line.
    *
@@ -28,13 +33,12 @@ public class RifObjectWrapper {
     return header;
   }
 
-  /**
-   * Returns an immutable list of RifLineWrappers.
-   *
-   * @return an immutable list of RifLineWrappers.
-   */
-  public List<RifLineWrapper> getLines() {
-    return lines;
+  public int getLinesCount() {
+    return lines.size();
+  }
+
+  public RifObjectWrapper getLines(int index) {
+    return new RifObjectWrapper(lines.get(index));
   }
 
   /**
