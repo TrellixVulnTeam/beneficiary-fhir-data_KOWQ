@@ -25,7 +25,11 @@ public class TimestampFieldTransformerTest {
     TimestampFieldTransformer generator = new TimestampFieldTransformer();
     CodeBlock block =
         generator.generateCodeBlock(
-            mapping, column, transformation, GrpcMessageCodeGenerator.Instance);
+            mapping,
+            column,
+            transformation,
+            GrpcFromCodeGenerator.Instance,
+            StandardToCodeGenerator.Instance);
     assertEquals("to.setLastUpdated(now);\n", block.toString());
   }
 }

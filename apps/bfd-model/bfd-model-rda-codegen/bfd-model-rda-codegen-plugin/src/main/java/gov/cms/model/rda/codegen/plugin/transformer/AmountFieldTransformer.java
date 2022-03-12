@@ -11,25 +11,29 @@ public class AmountFieldTransformer extends AbstractFieldTransformer {
       MappingBean mapping,
       ColumnBean column,
       TransformationBean transformation,
-      MessageCodeGenerator messageCodeGenerator) {
+      FromCodeGenerator fromCodeGenerator,
+      ToCodeGenerator toCodeGenerator) {
     return transformation.isOptional()
-        ? generateBlockForOptional(mapping, column, transformation, messageCodeGenerator)
-        : generateBlockForRequired(mapping, column, transformation, messageCodeGenerator);
+        ? generateBlockForOptional(
+            mapping, column, transformation, fromCodeGenerator, toCodeGenerator)
+        : generateBlockForRequired(
+            mapping, column, transformation, fromCodeGenerator, toCodeGenerator);
   }
 
   private CodeBlock generateBlockForRequired(
       MappingBean mapping,
       ColumnBean column,
       TransformationBean transformation,
-      MessageCodeGenerator messageCodeGenerator) {
+      FromCodeGenerator fromCodeGenerator,
+      ToCodeGenerator toCodeGenerator) {
     return CodeBlock.builder()
         .addStatement(
             "$L.copyAmount($L, $L, $L, $L)",
             TRANSFORMER_VAR,
             fieldNameReference(mapping, column),
             column.isNullable(),
-            messageCodeGenerator.createGetCall(transformation),
-            destSetRef(column))
+            fromCodeGenerator.createGetCall(transformation),
+            toCodeGenerator.createSetRef(column))
         .build();
   }
 
@@ -37,15 +41,16 @@ public class AmountFieldTransformer extends AbstractFieldTransformer {
       MappingBean mapping,
       ColumnBean column,
       TransformationBean transformation,
-      MessageCodeGenerator messageCodeGenerator) {
+      FromCodeGenerator fromCodeGenerator,
+      ToCodeGenerator toCodeGenerator) {
     return CodeBlock.builder()
         .addStatement(
             "$L.copyOptionalAmount($L, $L, $L, $L)",
             TRANSFORMER_VAR,
             fieldNameReference(mapping, column),
-            messageCodeGenerator.createHasRef(transformation),
-            messageCodeGenerator.createGetRef(transformation),
-            destSetRef(column))
+            fromCodeGenerator.createHasRef(transformation),
+            fromCodeGenerator.createGetRef(transformation),
+            toCodeGenerator.createSetRef(column))
         .build();
   }
 }

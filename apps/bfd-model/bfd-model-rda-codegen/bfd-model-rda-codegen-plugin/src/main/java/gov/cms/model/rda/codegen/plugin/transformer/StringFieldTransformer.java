@@ -11,17 +11,21 @@ public class StringFieldTransformer extends AbstractFieldTransformer {
       MappingBean mapping,
       ColumnBean column,
       TransformationBean transformation,
-      MessageCodeGenerator messageCodeGenerator) {
+      FromCodeGenerator fromCodeGenerator,
+      ToCodeGenerator toCodeGenerator) {
     return transformation.isOptional()
-        ? generateBlockForOptional(mapping, column, transformation, messageCodeGenerator)
-        : generateBlockForRequired(mapping, column, transformation, messageCodeGenerator);
+        ? generateBlockForOptional(
+            mapping, column, transformation, fromCodeGenerator, toCodeGenerator)
+        : generateBlockForRequired(
+            mapping, column, transformation, fromCodeGenerator, toCodeGenerator);
   }
 
   private CodeBlock generateBlockForRequired(
       MappingBean mapping,
       ColumnBean column,
       TransformationBean transformation,
-      MessageCodeGenerator messageCodeGenerator) {
+      FromCodeGenerator fromCodeGenerator,
+      ToCodeGenerator toCodeGenerator) {
     return CodeBlock.builder()
         .addStatement(
             "$L.copyString($L, $L, 1, $L, $L, $L)",
@@ -29,8 +33,8 @@ public class StringFieldTransformer extends AbstractFieldTransformer {
             fieldNameReference(mapping, column),
             column.isNullable(),
             column.computeLength(),
-            messageCodeGenerator.createGetCall(transformation),
-            destSetRef(column))
+            fromCodeGenerator.createGetCall(transformation),
+            toCodeGenerator.createSetRef(column))
         .build();
   }
 
@@ -38,16 +42,17 @@ public class StringFieldTransformer extends AbstractFieldTransformer {
       MappingBean mapping,
       ColumnBean column,
       TransformationBean transformation,
-      MessageCodeGenerator messageCodeGenerator) {
+      FromCodeGenerator fromCodeGenerator,
+      ToCodeGenerator toCodeGenerator) {
     return CodeBlock.builder()
         .addStatement(
             "$L.copyOptionalString($L, 1, $L, $L, $L, $L)",
             TRANSFORMER_VAR,
             fieldNameReference(mapping, column),
             column.computeLength(),
-            messageCodeGenerator.createHasRef(transformation),
-            messageCodeGenerator.createGetRef(transformation),
-            destSetRef(column))
+            fromCodeGenerator.createHasRef(transformation),
+            fromCodeGenerator.createGetRef(transformation),
+            toCodeGenerator.createSetRef(column))
         .build();
   }
 }

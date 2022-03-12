@@ -21,7 +21,8 @@ public class EnumValueIfPresentTransformer extends AbstractFieldTransformer {
       MappingBean mapping,
       ColumnBean column,
       TransformationBean transformation,
-      MessageCodeGenerator messageCodeGenerator) {
+      FromCodeGenerator fromCodeGenerator,
+      ToCodeGenerator toCodeGenerator) {
     final String enumTypeName = transformation.findTransformerOption(EnumNameOption);
     EnumTypeBean enumType = mapping.findEnum(enumTypeName);
     String enumValue = enumType.findValue(transformation.findTransformerOption(EnumValueOption));
@@ -29,8 +30,8 @@ public class EnumValueIfPresentTransformer extends AbstractFieldTransformer {
         ClassName.get(mapping.entityPackageName(), mapping.entityClassName(), enumType.getName());
     CodeBlock.Builder builder =
         CodeBlock.builder()
-            .beginControlFlow("if ($L)", messageCodeGenerator.createHasCall(transformation))
-            .add(destSetter(column, CodeBlock.of("$T.$L", enumClass, enumValue)))
+            .beginControlFlow("if ($L)", fromCodeGenerator.createHasCall(transformation))
+            .add(toCodeGenerator.createSetCall(column, CodeBlock.of("$T.$L", enumClass, enumValue)))
             .endControlFlow();
     return builder.build();
   }

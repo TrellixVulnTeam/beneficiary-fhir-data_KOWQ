@@ -20,8 +20,10 @@ import gov.cms.model.rda.codegen.plugin.model.ModelUtil;
 import gov.cms.model.rda.codegen.plugin.model.RootBean;
 import gov.cms.model.rda.codegen.plugin.model.TransformationBean;
 import gov.cms.model.rda.codegen.plugin.transformer.AbstractFieldTransformer;
-import gov.cms.model.rda.codegen.plugin.transformer.GrpcMessageCodeGenerator;
-import gov.cms.model.rda.codegen.plugin.transformer.RifMessageCodeGenerator;
+import gov.cms.model.rda.codegen.plugin.transformer.GrpcFromCodeGenerator;
+import gov.cms.model.rda.codegen.plugin.transformer.OptionalToCodeGenerator;
+import gov.cms.model.rda.codegen.plugin.transformer.RifFromCodeGenerator;
+import gov.cms.model.rda.codegen.plugin.transformer.StandardToCodeGenerator;
 import gov.cms.model.rda.codegen.plugin.transformer.TransformerUtil;
 import java.io.File;
 import java.io.IOException;
@@ -269,17 +271,21 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
                 entityClassType,
                 AbstractFieldTransformer.DEST_VAR,
                 entityClassType);
-    final var messageCodeGenerator =
+    final var fromCodeGenerator =
         mapping.getSourceType() == MappingBean.SourceType.RifCsv
-            ? RifMessageCodeGenerator.Instance
-            : GrpcMessageCodeGenerator.Instance;
+            ? RifFromCodeGenerator.Instance
+            : GrpcFromCodeGenerator.Instance;
+    final var toCodeGenerator =
+        mapping.getNullableFieldAccessorType() == MappingBean.NullableFieldAccessorType.Standard
+            ? StandardToCodeGenerator.Instance
+            : OptionalToCodeGenerator.Instance;
     for (TransformationBean transformation : mapping.getTransformations()) {
       final ColumnBean column = mapping.getTable().findColumnByName(transformation.getTo());
       TransformerUtil.selectTransformerForField(column, transformation)
           .map(
               generator ->
                   generator.generateCodeBlock(
-                      mapping, column, transformation, messageCodeGenerator))
+                      mapping, column, transformation, fromCodeGenerator, toCodeGenerator))
           .ifPresent(builder::addCode);
     }
     if (mapping.hasExternalTransformations()) {

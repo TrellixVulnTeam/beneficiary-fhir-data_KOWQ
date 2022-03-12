@@ -26,7 +26,11 @@ public class CharFieldTransformerTest {
     CharFieldTransformer generator = new CharFieldTransformer();
     CodeBlock block =
         generator.generateCodeBlock(
-            mapping, column, transformation, GrpcMessageCodeGenerator.Instance);
+            mapping,
+            column,
+            transformation,
+            GrpcFromCodeGenerator.Instance,
+            StandardToCodeGenerator.Instance);
     assertEquals(
         "transformer.copyCharacter(namePrefix + gov.cms.bfd.model.rda.PreAdjFissClaim.Fields.curr1Status, from.getCurr1Status(), to::setCurr1Status);\n",
         block.toString());
@@ -47,7 +51,11 @@ public class CharFieldTransformerTest {
     CharFieldTransformer generator = new CharFieldTransformer();
     CodeBlock block =
         generator.generateCodeBlock(
-            mapping, column, transformation, GrpcMessageCodeGenerator.Instance);
+            mapping,
+            column,
+            transformation,
+            GrpcFromCodeGenerator.Instance,
+            StandardToCodeGenerator.Instance);
     assertEquals(
         "transformer.copyCharacter(namePrefix + gov.cms.bfd.model.rda.PreAdjFissClaim.Fields.curr1Status, from::hasCurr1Status, from::getCurr1Status, to::setCurr1Status);\n",
         block.toString());

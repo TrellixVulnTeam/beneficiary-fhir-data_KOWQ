@@ -11,20 +11,23 @@ public class IdHashFieldTransformer extends AbstractFieldTransformer {
       MappingBean mapping,
       ColumnBean column,
       TransformationBean transformation,
-      MessageCodeGenerator messageCodeGenerator) {
+      FromCodeGenerator fromCodeGenerator,
+      ToCodeGenerator toCodeGenerator) {
     return transformation.isOptional()
-        ? generateBlockForOptional(mapping, column, transformation, messageCodeGenerator)
-        : generateBlockForRequired(mapping, column, transformation, messageCodeGenerator);
+        ? generateBlockForOptional(
+            mapping, column, transformation, fromCodeGenerator, toCodeGenerator)
+        : generateBlockForRequired(
+            mapping, column, transformation, fromCodeGenerator, toCodeGenerator);
   }
 
   private CodeBlock generateBlockForRequired(
       MappingBean mapping,
       ColumnBean column,
       TransformationBean transformation,
-      MessageCodeGenerator messageCodeGenerator) {
+      FromCodeGenerator fromCodeGenerator,
+      ToCodeGenerator toCodeGenerator) {
     final String value =
-        String.format(
-            "%s.apply(%s)", HASHER_VAR, messageCodeGenerator.createGetCall(transformation));
+        String.format("%s.apply(%s)", HASHER_VAR, fromCodeGenerator.createGetCall(transformation));
     return CodeBlock.builder()
         .addStatement(
             "$L.copyString($L, $L, 1, $L, $L, $L)",
@@ -33,7 +36,7 @@ public class IdHashFieldTransformer extends AbstractFieldTransformer {
             column.isNullable(),
             column.computeLength(),
             value,
-            destSetRef(column))
+            toCodeGenerator.createSetRef(column))
         .build();
   }
 
@@ -41,19 +44,20 @@ public class IdHashFieldTransformer extends AbstractFieldTransformer {
       MappingBean mapping,
       ColumnBean column,
       TransformationBean transformation,
-      MessageCodeGenerator messageCodeGenerator) {
+      FromCodeGenerator fromCodeGenerator,
+      ToCodeGenerator toCodeGenerator) {
     final String valueFunc =
         String.format(
-            "()-> %s.apply(%s)", HASHER_VAR, messageCodeGenerator.createGetCall(transformation));
+            "()-> %s.apply(%s)", HASHER_VAR, fromCodeGenerator.createGetCall(transformation));
     return CodeBlock.builder()
         .addStatement(
             "$L.copyOptionalString($L, 1, $L, $L, $L, $L)",
             TRANSFORMER_VAR,
             fieldNameReference(mapping, column),
             column.computeLength(),
-            messageCodeGenerator.createHasRef(transformation),
+            fromCodeGenerator.createHasRef(transformation),
             valueFunc,
-            destSetRef(column))
+            toCodeGenerator.createSetRef(column))
         .build();
   }
 }

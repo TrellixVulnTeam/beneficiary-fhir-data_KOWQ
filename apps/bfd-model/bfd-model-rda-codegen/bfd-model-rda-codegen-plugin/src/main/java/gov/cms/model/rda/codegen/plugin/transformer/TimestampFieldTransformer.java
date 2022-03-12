@@ -11,7 +11,8 @@ public class TimestampFieldTransformer extends AbstractFieldTransformer {
       MappingBean mapping,
       ColumnBean column,
       TransformationBean transformation,
-      MessageCodeGenerator messageCodeGenerator) {
-    return destSetter(column, NOW_VALUE);
+      FromCodeGenerator fromCodeGenerator,
+      ToCodeGenerator toCodeGenerator) {
+    return toCodeGenerator.createSetCall(column, NOW_VALUE);
   }
 }

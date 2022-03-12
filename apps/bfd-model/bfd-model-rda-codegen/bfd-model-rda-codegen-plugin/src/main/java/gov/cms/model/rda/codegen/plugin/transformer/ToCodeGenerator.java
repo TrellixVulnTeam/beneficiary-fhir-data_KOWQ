@@ -2,9 +2,8 @@ package gov.cms.model.rda.codegen.plugin.transformer;
 
 import com.squareup.javapoet.CodeBlock;
 import gov.cms.model.rda.codegen.plugin.model.ColumnBean;
-import gov.cms.model.rda.codegen.plugin.model.TransformationBean;
 
-public interface TargetCodeGenerator {
+public interface ToCodeGenerator {
   /**
    * Generates a {@code Consumer<T>} compatible CodeBlock that accepts a value and calls the target
    * object's setter method.
@@ -13,7 +12,7 @@ public interface TargetCodeGenerator {
    * @param transformation defines the {@code to} field
    * @return CodeBlock for a lambda function
    */
-  CodeBlock createSetRef(ColumnBean column, TransformationBean transformation);
+  CodeBlock createSetRef(ColumnBean column);
 
   /**
    * Generates a statement CodeBlock that accepts a value and calls * the target object's setter
@@ -24,5 +23,5 @@ public interface TargetCodeGenerator {
    * @param value CodeBlock for the value to be passed to the setter
    * @return CodeBlock for an expression
    */
-  CodeBlock createSetCall(ColumnBean column, TransformationBean transformation, CodeBlock value);
+  CodeBlock createSetCall(ColumnBean column, CodeBlock value);
 }

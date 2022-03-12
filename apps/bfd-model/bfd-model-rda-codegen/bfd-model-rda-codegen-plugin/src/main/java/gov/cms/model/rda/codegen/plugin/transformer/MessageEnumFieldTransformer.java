@@ -30,7 +30,8 @@ public class MessageEnumFieldTransformer extends AbstractFieldTransformer {
       MappingBean mapping,
       ColumnBean column,
       TransformationBean transformation,
-      MessageCodeGenerator messageCodeGenerator) {
+      FromCodeGenerator fromCodeGenerator,
+      ToCodeGenerator toCodeGenerator) {
     final ClassName enumClass =
         PoetUtil.toClassName(transformation.transformerOption(ENUM_CLASS_OPT).get());
     CodeBlock.Builder builder = CodeBlock.builder();
@@ -41,7 +42,7 @@ public class MessageEnumFieldTransformer extends AbstractFieldTransformer {
           fieldNameReference(mapping, column),
           extractorName(mapping, transformation),
           SOURCE_VAR,
-          destSetRef(column));
+          toCodeGenerator.createSetRef(column));
     } else {
       builder.addStatement(
           "$L.copyEnumAsString($L,$L,0,$L,$L.getEnumString($L),$L)",
@@ -51,7 +52,7 @@ public class MessageEnumFieldTransformer extends AbstractFieldTransformer {
           column.computeLength(),
           extractorName(mapping, transformation),
           SOURCE_VAR,
-          destSetRef(column));
+          toCodeGenerator.createSetRef(column));
     }
     return builder.build();
   }

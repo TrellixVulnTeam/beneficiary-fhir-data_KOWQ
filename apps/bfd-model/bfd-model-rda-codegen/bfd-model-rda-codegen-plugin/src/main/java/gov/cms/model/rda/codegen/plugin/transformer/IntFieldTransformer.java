@@ -11,9 +11,11 @@ public class IntFieldTransformer extends AbstractFieldTransformer {
       MappingBean mapping,
       ColumnBean column,
       TransformationBean transformation,
-      MessageCodeGenerator messageCodeGenerator) {
+      FromCodeGenerator fromCodeGenerator,
+      ToCodeGenerator toCodeGenerator) {
     return transformation.isOptional()
-        ? generateBlockForOptional(mapping, column, transformation, messageCodeGenerator)
+        ? generateBlockForOptional(
+            mapping, column, transformation, fromCodeGenerator, toCodeGenerator)
         : generateBlockForRequired();
   }
 
@@ -25,14 +27,15 @@ public class IntFieldTransformer extends AbstractFieldTransformer {
       MappingBean mapping,
       ColumnBean column,
       TransformationBean transformation,
-      MessageCodeGenerator messageCodeGenerator) {
+      FromCodeGenerator fromCodeGenerator,
+      ToCodeGenerator toCodeGenerator) {
     return CodeBlock.builder()
         .addStatement(
             "$L.copyOptionalInt($L, $L, $L)",
             TRANSFORMER_VAR,
-            messageCodeGenerator.createHasRef(transformation),
-            messageCodeGenerator.createGetRef(transformation),
-            destSetRef(column))
+            fromCodeGenerator.createHasRef(transformation),
+            fromCodeGenerator.createGetRef(transformation),
+            toCodeGenerator.createSetRef(column))
         .build();
   }
 }

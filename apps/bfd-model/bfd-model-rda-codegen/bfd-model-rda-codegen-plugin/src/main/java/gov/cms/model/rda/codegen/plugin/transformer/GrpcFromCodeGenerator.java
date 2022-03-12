@@ -5,8 +5,8 @@ import static gov.cms.model.rda.codegen.plugin.transformer.AbstractFieldTransfor
 import com.squareup.javapoet.CodeBlock;
 import gov.cms.model.rda.codegen.plugin.model.TransformationBean;
 
-public class GrpcMessageCodeGenerator implements MessageCodeGenerator {
-  public static final MessageCodeGenerator Instance = new GrpcMessageCodeGenerator();
+public class GrpcFromCodeGenerator implements FromCodeGenerator {
+  public static final FromCodeGenerator Instance = new GrpcFromCodeGenerator();
 
   /**
    * Generates a {@code Supplier<Boolean>} compatible CodeBlock that that returns true if the field

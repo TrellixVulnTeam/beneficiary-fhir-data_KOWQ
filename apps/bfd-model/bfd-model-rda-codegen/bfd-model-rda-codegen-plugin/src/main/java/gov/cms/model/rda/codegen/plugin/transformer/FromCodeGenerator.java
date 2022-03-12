@@ -3,7 +3,7 @@ package gov.cms.model.rda.codegen.plugin.transformer;
 import com.squareup.javapoet.CodeBlock;
 import gov.cms.model.rda.codegen.plugin.model.TransformationBean;
 
-public interface MessageCodeGenerator {
+public interface FromCodeGenerator {
   /**
    * Generates a {@code Supplier<Boolean>} compatible CodeBlock that that returns true if the field
    * is present in the message.

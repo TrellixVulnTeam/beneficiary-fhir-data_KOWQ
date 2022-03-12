@@ -43,13 +43,15 @@ public abstract class AbstractFieldTransformer {
    *
    * @param mapping The mapping that contains the field.
    * @param transformation The specific field to be copied.
+   * @param toCodeGenerator
    * @return CodeBlock for the generated block of code
    */
   public abstract CodeBlock generateCodeBlock(
       MappingBean mapping,
       ColumnBean column,
       TransformationBean transformation,
-      MessageCodeGenerator messageCodeGenerator);
+      FromCodeGenerator fromCodeGenerator,
+      ToCodeGenerator toCodeGenerator);
 
   public List<FieldSpec> generateFieldSpecs(
       MappingBean mapping, ColumnBean column, TransformationBean transformation) {
@@ -95,15 +97,5 @@ public abstract class AbstractFieldTransformer {
       final String propertyName = capitalize(from.substring(dotIndex + 1));
       return nestedProperty.apply(fieldName, propertyName);
     }
-  }
-
-  protected CodeBlock destSetter(ColumnBean column, CodeBlock value) {
-    return CodeBlock.builder()
-        .addStatement("$L.set$L($L)", DEST_VAR, capitalize(column.getName()), value)
-        .build();
-  }
-
-  protected CodeBlock destSetRef(ColumnBean column) {
-    return CodeBlock.of("$L::set$L", DEST_VAR, capitalize(column.getName()));
   }
 }

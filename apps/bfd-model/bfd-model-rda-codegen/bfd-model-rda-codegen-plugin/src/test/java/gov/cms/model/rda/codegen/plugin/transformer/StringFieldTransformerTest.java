@@ -26,7 +26,11 @@ public class StringFieldTransformerTest {
     StringFieldTransformer generator = new StringFieldTransformer();
     CodeBlock block =
         generator.generateCodeBlock(
-            mapping, column, transformation, GrpcMessageCodeGenerator.Instance);
+            mapping,
+            column,
+            transformation,
+            GrpcFromCodeGenerator.Instance,
+            StandardToCodeGenerator.Instance);
     assertEquals(
         "transformer.copyString(namePrefix + gov.cms.bfd.model.rda.PreAdjFissClaim.Fields.hicNo, true, 1, 12, from.getHicNo(), to::setHicNo);\n",
         block.toString());
@@ -47,7 +51,11 @@ public class StringFieldTransformerTest {
     StringFieldTransformer generator = new StringFieldTransformer();
     CodeBlock block =
         generator.generateCodeBlock(
-            mapping, column, transformation, GrpcMessageCodeGenerator.Instance);
+            mapping,
+            column,
+            transformation,
+            GrpcFromCodeGenerator.Instance,
+            StandardToCodeGenerator.Instance);
     assertEquals(
         "transformer.copyOptionalString(namePrefix + gov.cms.bfd.model.rda.PreAdjFissClaim.Fields.hicNo, 1, 12, from::hasHicNo, from::getHicNo, to::setHicNo);\n",
         block.toString());

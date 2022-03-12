@@ -11,8 +11,8 @@ import java.util.function.Function;
  * gov.cms.model.rda.codegen.library.RifLineWrapper} objects. Also requires that the RIF header
  * label must be specified as the {@code from} in the transformation.
  */
-public class RifMessageCodeGenerator implements MessageCodeGenerator {
-  public static final MessageCodeGenerator Instance = new RifMessageCodeGenerator();
+public class RifFromCodeGenerator implements FromCodeGenerator {
+  public static final FromCodeGenerator Instance = new RifFromCodeGenerator();
 
   @Override
   public CodeBlock createHasRef(TransformationBean transformation) {
