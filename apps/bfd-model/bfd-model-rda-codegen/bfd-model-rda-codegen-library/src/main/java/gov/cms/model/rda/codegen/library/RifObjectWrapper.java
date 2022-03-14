@@ -1,13 +1,14 @@
 package gov.cms.model.rda.codegen.library;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.csv.CSVRecord;
 
 public class RifObjectWrapper {
-  private final ImmutableList<RifLineWrapper> lines;
-  private final RifLineWrapper header;
+  private final List<CSVRecord> lines;
+  private final CSVRecord header;
 
   public RifObjectWrapper(List<CSVRecord> csvRecords) {
     // Verify the inputs.
@@ -15,22 +16,13 @@ public class RifObjectWrapper {
     if (csvRecords.isEmpty()) {
       throw new IllegalArgumentException();
     }
-    lines = csvRecords.stream().map(RifLineWrapper::new).collect(ImmutableList.toImmutableList());
+    lines = csvRecords;
     header = lines.get(0);
   }
 
-  public RifObjectWrapper(RifLineWrapper singleLine) {
+  public RifObjectWrapper(CSVRecord singleLine) {
     lines = ImmutableList.of(singleLine);
     header = singleLine;
-  }
-
-  /**
-   * Gets the header line.
-   *
-   * @return Header line from the RIF record.
-   */
-  public RifLineWrapper getHeader() {
-    return header;
   }
 
   public int getLinesCount() {
@@ -42,22 +34,22 @@ public class RifObjectWrapper {
   }
 
   /**
-   * Tests whether a value exists for {@link Enum}.
+   * Tests whether a value exists for {@code label}.
    *
-   * @param e an enum
+   * @param label the column label for the field to be checked
    * @return true if the value is non-null and non-empty
    */
   public boolean hasValue(final String label) {
-    return header.hasValue(label);
+    return !Strings.isNullOrEmpty(header.get(label));
   }
 
   /**
-   * Returns a (possibly empty) value for {@link Enum}.
+   * Returns a (possibly empty) value for {@code label}.
    *
-   * @param e an enum
+   * @param label the column label for the field to be checked
    * @return the String at the given enum String
    */
   public String getValue(final String label) {
-    return header.getValue(label);
+    return header.get(label);
   }
 }

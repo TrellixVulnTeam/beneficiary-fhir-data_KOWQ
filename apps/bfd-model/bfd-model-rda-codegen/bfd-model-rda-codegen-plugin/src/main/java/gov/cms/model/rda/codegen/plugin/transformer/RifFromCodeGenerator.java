@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 /**
  * Implementation of MessageCodeGenerator that requires the message objects to be {@link
- * gov.cms.model.rda.codegen.library.RifLineWrapper} objects. Also requires that the RIF header
+ * gov.cms.model.rda.codegen.library.RifObjectWrapper} objects. Also requires that the RIF header
  * label must be specified as the {@code from} in the transformation.
  */
 public class RifFromCodeGenerator implements FromCodeGenerator {
