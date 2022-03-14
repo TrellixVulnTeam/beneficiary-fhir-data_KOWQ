@@ -43,8 +43,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldNameConstants;
@@ -60,7 +60,7 @@ import org.hibernate.annotations.BatchSize;
 @Mojo(name = "entities", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class RdaEntityCodeGenMojo extends AbstractMojo {
   // region Fields
-  private static final String PRIMARY_KEY_CLASS_NAME = "PK";
+  private static final String PRIMARY_KEY_CLASS_NAME_SUFFIX = "Id";
   private static final int BATCH_SIZE_FOR_ARRAY_FIELDS = 100;
 
   @Parameter(property = "mappingFile")
@@ -428,7 +428,9 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
 
   private ClassName computePrimaryKeyClassName(MappingBean mapping) {
     return ClassName.get(
-        mapping.entityPackageName(), mapping.entityClassName(), PRIMARY_KEY_CLASS_NAME);
+        mapping.entityPackageName(),
+        mapping.entityClassName(),
+        mapping.entityClassName() + PRIMARY_KEY_CLASS_NAME_SUFFIX);
   }
 
   private AnnotationSpec createIdClassAnnotation(MappingBean mapping) {
@@ -515,13 +517,23 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
   private TypeSpec createPrimaryKeyClass(
       MappingBean mapping, List<FieldSpec> primaryKeyFieldSpecs) {
     TypeSpec.Builder pkClassBuilder =
-        TypeSpec.classBuilder(PRIMARY_KEY_CLASS_NAME)
+        TypeSpec.classBuilder(computePrimaryKeyClassName(mapping))
             .addSuperinterface(Serializable.class)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
-            .addAnnotation(Data.class)
+            .addAnnotation(Getter.class)
+            .addAnnotation(EqualsAndHashCode.class)
             .addAnnotation(NoArgsConstructor.class)
             .addAnnotation(AllArgsConstructor.class)
-            .addJavadoc("PK class for the $L table", mapping.getTable().getName());
+            .addJavadoc("PK class for the $L table", mapping.getTable().getName())
+            .addField(
+                FieldSpec.builder(
+                        long.class,
+                        "serialVersionUID",
+                        Modifier.PRIVATE,
+                        Modifier.STATIC,
+                        Modifier.FINAL)
+                    .initializer("$L", 1L)
+                    .build());
     for (FieldSpec fieldSpec : primaryKeyFieldSpecs) {
       pkClassBuilder.addField(fieldSpec);
     }
