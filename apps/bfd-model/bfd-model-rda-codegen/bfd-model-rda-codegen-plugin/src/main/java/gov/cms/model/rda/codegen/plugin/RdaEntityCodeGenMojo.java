@@ -110,6 +110,11 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
             .addAnnotation(NoArgsConstructor.class)
             .addAnnotation(createEqualsAndHashCodeAnnotation())
             .addAnnotation(FieldNameConstants.class);
+    if (mapping.hasEntityInterfaces()) {
+      for (String interfaceName : mapping.getEntityInterfaces()) {
+        classBuilder.addSuperinterface(PoetUtil.toClassName(interfaceName));
+      }
+    }
     if (mapping.getTable().hasComment()) {
       classBuilder.addJavadoc(mapping.getTable().getComment());
     }
@@ -565,7 +570,11 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
   }
 
   private String quoteName(String name) {
-    return "`" + name + "`";
+    if (name.matches(".*A-Z.*")) {
+      return "`" + name + "`";
+    } else {
+      return name;
+    }
   }
 
   private AnnotationSpec createTableAnnotation(TableBean table) {
@@ -581,9 +590,7 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
     AnnotationSpec.Builder builder =
         AnnotationSpec.builder(Column.class)
             .addMember("name", "$S", quoteName(column.getColumnName()));
-    if (!column.isNullable()) {
-      builder.addMember("nullable", "$L", false);
-    }
+    builder.addMember("nullable", "$L", column.isNullable());
     if (!column.isUpdatable()) {
       builder.addMember("updatable", "$L", false);
     }

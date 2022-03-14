@@ -1,5 +1,7 @@
 mappings:
 - entityClassName: gov.cms.bfd.model.rif.BeneficiaryPoc
+  entityInterfaces:
+  - gov.cms.bfd.model.rif.RifRecordBase
   id: Beneficiary
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -1608,6 +1610,8 @@ mappings:
     - parentBeneficiary
     - yearMonth
 - entityClassName: gov.cms.bfd.model.rif.BeneficiaryHistoryPoc
+  entityInterfaces:
+  - gov.cms.bfd.model.rif.RifRecordBase
   id: BeneficiaryHistory
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -1806,6 +1810,8 @@ mappings:
     to: mbiObsoleteDate
   transformerClassName: gov.cms.bfd.model.rif.BeneficiaryHistoryParserPoc
 - entityClassName: gov.cms.bfd.model.rif.MedicareBeneficiaryIdHistoryPoc
+  entityInterfaces:
+  - gov.cms.bfd.model.rif.RifRecordBase
   id: MedicareBeneficiaryIdHistory
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -1951,6 +1957,8 @@ mappings:
     to: mbiCrntRecIndId
   transformerClassName: gov.cms.bfd.model.rif.MedicareBeneficiaryIdHistoryParserPoc
 - entityClassName: gov.cms.bfd.model.rif.PartDEventPoc
+  entityInterfaces:
+  - gov.cms.bfd.model.rif.RifRecordBase
   id: PartDEvent
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -2294,6 +2302,8 @@ mappings:
     parentField: parentClaim
     to: lines
   entityClassName: gov.cms.bfd.model.rif.CarrierClaimPoc
+  entityInterfaces:
+  - gov.cms.bfd.model.rif.RifRecordBase
   id: CarrierClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -3105,6 +3115,8 @@ mappings:
     parentField: parentClaim
     to: lines
   entityClassName: gov.cms.bfd.model.rif.InpatientClaimPoc
+  entityInterfaces:
+  - gov.cms.bfd.model.rif.RifRecordBase
   id: InpatientClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -5311,6 +5323,8 @@ mappings:
     parentField: parentClaim
     to: lines
   entityClassName: gov.cms.bfd.model.rif.OutpatientClaimPoc
+  entityInterfaces:
+  - gov.cms.bfd.model.rif.RifRecordBase
   id: OutpatientClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -7158,6 +7172,8 @@ mappings:
     parentField: parentClaim
     to: lines
   entityClassName: gov.cms.bfd.model.rif.HHAClaimPoc
+  entityInterfaces:
+  - gov.cms.bfd.model.rif.RifRecordBase
   id: HHAClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -8215,6 +8231,8 @@ mappings:
     parentField: parentClaim
     to: lines
   entityClassName: gov.cms.bfd.model.rif.DMEClaimPoc
+  entityInterfaces:
+  - gov.cms.bfd.model.rif.RifRecordBase
   id: DMEClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -8993,6 +9011,8 @@ mappings:
     parentField: parentClaim
     to: lines
   entityClassName: gov.cms.bfd.model.rif.HospiceClaimPoc
+  entityInterfaces:
+  - gov.cms.bfd.model.rif.RifRecordBase
   id: HospiceClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional
@@ -10033,6 +10053,8 @@ mappings:
     parentField: parentClaim
     to: lines
   entityClassName: gov.cms.bfd.model.rif.SNFClaimPoc
+  entityInterfaces:
+  - gov.cms.bfd.model.rif.RifRecordBase
   id: SNFClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
   nullableFieldAccessorType: Optional

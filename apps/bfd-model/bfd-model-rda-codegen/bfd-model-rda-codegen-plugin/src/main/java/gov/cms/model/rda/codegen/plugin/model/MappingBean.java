@@ -26,6 +26,7 @@ public class MappingBean {
   @Singular private List<TransformationBean> transformations = new ArrayList<>();
   @Singular private List<ArrayElement> arrays = new ArrayList<>();
   @Singular private List<ExternalTransformationBean> externalTransformations = new ArrayList<>();
+  @Singular private List<String> entityInterfaces = new ArrayList<>();
 
   public EnumTypeBean findEnum(String enumName) {
     return enumTypes.stream()
@@ -64,6 +65,10 @@ public class MappingBean {
 
   public String transformerSimpleName() {
     return ModelUtil.className(transformerClassName);
+  }
+
+  public boolean hasEntityInterfaces() {
+    return entityInterfaces.size() > 0;
   }
 
   public Optional<TransformationBean> firstPrimaryKeyField() {

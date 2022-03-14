@@ -28,6 +28,9 @@ def create_mapping(summary):
         "nullableFieldAccessorType": "Optional",
         "table": table
     }
+    if is_rif_record_base_compatible(summary):
+        mapping["entityInterfaces"] = ["gov.cms.bfd.model.rif.RifRecordBase"]
+
     if mapping["id"] not in noTransformerMappings:
         mapping["transformerClassName"] = f'{summary["packageName"]}.{summary["headerEntity"]}Parser{classNameSuffix}'
         mapping["transformations"] = transformations
@@ -253,6 +256,13 @@ def create_join(summary, join_relationship):
     if join_relationship["orderBy"] is not None:
         join["orderBy"] = join_relationship["orderBy"]
     return join
+
+
+def is_rif_record_base_compatible(summary):
+    for rif_field in summary["headerEntityAdditionalDatabaseFields"]:
+        if rif_field["javaFieldName"] == "lastUpdated":
+            return True
+    return False
 
 
 def summary_with_name(all_summaries, name):
