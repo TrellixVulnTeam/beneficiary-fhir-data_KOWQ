@@ -197,7 +197,14 @@ def create_column(rif_field):
 
 
 def add_field_transform(rif_field, transforms):
-    if rif_field["javaFieldName"] == "lastUpdated":
+    if rif_field["rifColumnType"] == "TIMESTAMP":
+        transforms.append({
+            "from": rif_field["rifColumnName"],
+            "to": rif_field["javaFieldName"],
+            "optional": rif_field["rifColumnOptional"],
+            "transformer": "RifTimestamp"
+        })
+    elif rif_field["javaFieldName"] == "lastUpdated":
         transforms.append({
             "from": "NOW",
             "to": rif_field["javaFieldName"]

@@ -1981,12 +1981,14 @@ mappings:
   - from: CREAT_TS
     optional: true
     to: mbiAddDate
+    transformer: RifTimestamp
   - from: UPDT_USER_ID
     optional: true
     to: mbiUpdateUser
   - from: UPDT_TS
     optional: true
     to: mbiUpdateDate
+    transformer: RifTimestamp
   - from: BENE_CRNT_REC_IND_ID
     optional: true
     to: mbiCrntRecIndId

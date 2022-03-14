@@ -5,6 +5,8 @@ import com.google.protobuf.Timestamp;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
@@ -33,6 +35,12 @@ public class DataTransformer {
       new DateTimeFormatterBuilder()
           .parseCaseInsensitive()
           .appendPattern("dd-MMM-yyyy")
+          .toFormatter();
+
+  private static final DateTimeFormatter RifTimestamp =
+      new DateTimeFormatterBuilder()
+          .parseCaseInsensitive()
+          .appendPattern("dd-MMM-yyyy HH:mm:ss")
           .toFormatter();
 
   private final List<ErrorMessage> errors = new ArrayList<>();
@@ -339,6 +347,53 @@ public class DataTransformer {
       Consumer<LocalDate> copier) {
     if (exists.getAsBoolean()) {
       return copyDate(fieldName, false, value.get(), copier);
+    }
+    return this;
+  }
+
+  /**
+   * Parses the string into a LocalTimestamp and delivers it to the Consumer. The string value must
+   * be in ISO-8601 format (YYYY-MM-DD). Valid null values are silently accepted without calling the
+   * Consumer.
+   *
+   * @param fieldName name of the field from which the value originates
+   * @param nullable true if null is a valid value
+   * @param value timestamp string in ISO-8601 format
+   * @param copier Consumer to receive the timestamp
+   * @return this
+   */
+  public DataTransformer copyRifTimestamp(
+      String fieldName, boolean nullable, String value, Consumer<Instant> copier) {
+    if (nonNull(fieldName, value, nullable)) {
+      try {
+        Instant timestamp = LocalDateTime.parse(value, RifTimestamp).toInstant(ZoneOffset.UTC);
+        copier.accept(timestamp);
+      } catch (DateTimeParseException ex) {
+        addError(fieldName, "invalid timestamp");
+      }
+    }
+    return this;
+  }
+
+  /**
+   * Copies an optional field only if its value exists. Uses lambda expressions for the existence
+   * test as well as the value extraction. Optional fields must be nullable at the database level
+   * but must return non-null values when the supplier is called.
+   *
+   * <p>Parses the string into an Instant and delivers it to the Consumer. The string value must be
+   * in {@code dd-MMM-yyyy HH:mm:ss} format. Valid null values are silently accepted without calling
+   * the Consumer.
+   *
+   * @param fieldName name of the field from which the value originates
+   * @param exists returns true if the value exists
+   * @param value returns the value to copy
+   * @param copier Consumer to receive the timestamp
+   * @return this
+   */
+  public DataTransformer copyOptionalRifTimestamp(
+      String fieldName, BooleanSupplier exists, Supplier<String> value, Consumer<Instant> copier) {
+    if (exists.getAsBoolean()) {
+      return copyRifTimestamp(fieldName, false, value.get(), copier);
     }
     return this;
   }
