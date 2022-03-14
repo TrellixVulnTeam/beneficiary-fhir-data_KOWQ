@@ -125,6 +125,7 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
       }
     }
     classBuilder.addMethod(constructor.build());
+    classBuilder.addMethod(createPublicSimplifiedTransformMessageMethod(mapping));
     classBuilder.addMethod(createPublicTransformMessageMethod(mapping));
     for (MappingBean aMapping : allMappings) {
       classBuilder.addMethod(createTransformMessageMethodForMapping(aMapping));
@@ -221,6 +222,41 @@ public class RdaTransformerCodeGenMojo extends AbstractMojo {
                   .orElse(Collections.emptyList()).stream();
             })
         .collect(ImmutableList.toImmutableList());
+  }
+
+  private MethodSpec createPublicSimplifiedTransformMessageMethod(MappingBean mapping) {
+    final TypeName messageClassType = ModelUtil.classType(mapping.getMessageClassName());
+    final TypeName entityClassType = ModelUtil.classType(mapping.getEntityClassName());
+    final MethodSpec.Builder builder =
+        MethodSpec.methodBuilder(PUBLIC_TRANSFORM_METHOD_NAME)
+            .returns(entityClassType)
+            .addModifiers(Modifier.PUBLIC)
+            .addParameter(messageClassType, AbstractFieldTransformer.SOURCE_VAR);
+    builder.addStatement(
+        "final $T $L = new $T();",
+        DataTransformer.class,
+        AbstractFieldTransformer.TRANSFORMER_VAR,
+        DataTransformer.class);
+    builder.addStatement(
+        "final $T $L = $L($L, $L, Instant.now())",
+        entityClassType,
+        AbstractFieldTransformer.DEST_VAR,
+        PUBLIC_TRANSFORM_METHOD_NAME,
+        AbstractFieldTransformer.SOURCE_VAR,
+        AbstractFieldTransformer.TRANSFORMER_VAR);
+    CodeBlock.Builder errorCheck =
+        CodeBlock.builder()
+            .beginControlFlow(
+                "if ($L.getErrors().size() > 0)", AbstractFieldTransformer.TRANSFORMER_VAR)
+            .addStatement(
+                "throw new $T($S, $L.getErrors())",
+                DataTransformer.TransformationException.class,
+                "data transformation failed",
+                AbstractFieldTransformer.TRANSFORMER_VAR)
+            .endControlFlow();
+    builder.addCode(errorCheck.build());
+    builder.addStatement("return $L", AbstractFieldTransformer.DEST_VAR);
+    return builder.build();
   }
 
   private MethodSpec createPublicTransformMessageMethod(MappingBean mapping) {
