@@ -1614,8 +1614,9 @@ mappings:
   sourceType: RifCsv
   table:
     columns:
-    - javaType: long
-      name: bene_history_id
+    - dbName: bene_history_id
+      javaType: long
+      name: beneHistoryId
       nullable: false
       sequence:
         allocationSize: 50
@@ -1741,7 +1742,7 @@ mappings:
       sqlType: timestamp with time zone
     name: beneficiaries_history
     primaryKeyColumns:
-    - bene_history_id
+    - beneHistoryId
   transformations:
   - from: BENE_ID
     optional: false

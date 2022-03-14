@@ -33,9 +33,10 @@ def create_mapping(summary):
         mapping["transformations"] = transformations
 
     if summary["headerEntityGeneratedIdField"] is not None:
-        field_name = summary["headerEntityGeneratedIdField"]
+        column_name = summary["headerEntityGeneratedIdField"].lower()
+        field_name = convert_column_name_to_java_field_name(column_name)
         primary_key_columns.append(field_name)
-        columns.append(create_generated_id_column(summary, field_name))
+        columns.append(create_generated_id_column(summary, column_name, field_name))
 
     line_number_column_name = summary["lineEntityLineNumberField"]
     for rif_field in summary["rifLayout"]["fields"]:
@@ -150,10 +151,12 @@ def create_line_mapping(summary):
     return mapping
 
 
-def create_generated_id_column(summary, column_name):
+def create_generated_id_column(summary, column_name, field_name):
     sequence = {"name": summary["sequenceNumberGeneratorName"], "allocationSize": 50}
     column = dict()
-    column["name"] = column_name.lower()
+    column["name"] = field_name
+    if field_name != column_name:
+        column["dbName"] = column_name
     column["sqlType"] = "bigint"
     column["javaType"] = "long"
     column["nullable"] = False
@@ -230,6 +233,11 @@ def find_field_name(summary, column_name):
             return rif_field["javaFieldName"]
     sys.stderr.write(f'error: {summary["headerEntity"]} has no {column_name} column\n')
     raise
+
+
+def convert_column_name_to_java_field_name(column_name):
+    parts = column_name.split('_')
+    return parts[0] + ''.join(part.title() for part in parts[1:])
 
 
 def create_join(summary, join_relationship):
