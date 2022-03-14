@@ -103,7 +103,7 @@ def create_line_mapping(summary):
     parent_table = summary["headerTable"]
     parent_key = summary["headerEntityIdField"].lower()
     line_name = f'{parent_name}Line'
-    line_table = f'{parent_table}_lines'
+    line_table = f'{parent_table[0:-1]}_lines'
 
     columns = list()
     transformations = list()
