@@ -197,7 +197,7 @@
 				<version>${project.version}</version>
 				<configuration>
 					<mappingFile>${project.basedir}/mapping.yaml</mappingFile>
-					<outputDirectory>${project.build.directory}/generated-sources/annotations</outputDirectory>
+					<outputDirectory>${project.build.directory}/generated-sources/dsl</outputDirectory>
 				</configuration>
 				<executions>
 					<execution>

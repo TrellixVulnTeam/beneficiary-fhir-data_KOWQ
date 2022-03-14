@@ -105,11 +105,14 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
         TypeSpec.classBuilder(mapping.entityClassName())
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(Entity.class)
-            .addAnnotation(Builder.class)
-            .addAnnotation(AllArgsConstructor.class)
-            .addAnnotation(NoArgsConstructor.class)
             .addAnnotation(createEqualsAndHashCodeAnnotation())
             .addAnnotation(FieldNameConstants.class);
+    if (mapping.getTable().getColumns().size() < 100) {
+      classBuilder
+          .addAnnotation(NoArgsConstructor.class)
+          .addAnnotation(AllArgsConstructor.class)
+          .addAnnotation(Builder.class);
+    }
     if (mapping.hasEntityInterfaces()) {
       for (String interfaceName : mapping.getEntityInterfaces()) {
         classBuilder.addSuperinterface(PoetUtil.toClassName(interfaceName));
