@@ -1528,7 +1528,7 @@ mappings:
   - from: BENE_LINK_KEY
     optional: true
     to: beneLinkKey
-  transformerClassName: gov.cms.bfd.model.rif.BeneficiaryTransformerPoc
+  transformerClassName: gov.cms.bfd.model.rif.BeneficiaryParserPoc
 - entityClassName: gov.cms.bfd.model.rif.BeneficiaryMonthlyPoc
   id: BeneficiaryMonthly
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
@@ -1607,50 +1607,6 @@ mappings:
     primaryKeyColumns:
     - parentBeneficiary
     - yearMonth
-  transformations:
-  - from: YEAR_MONTH
-    optional: false
-    to: yearMonth
-  - from: FIPS_STATE_CNTY_CODE
-    optional: true
-    to: fipsStateCntyCode
-  - from: MEDICARE_STATUS_CODE
-    optional: true
-    to: medicareStatusCode
-  - from: ENTITLEMENT_BUY_IN_IND
-    optional: true
-    to: entitlementBuyInInd
-  - from: HMO_INDICATOR_IND
-    optional: true
-    to: hmoIndicatorInd
-  - from: PARTC_CONTRACT_NUMBER_ID
-    optional: true
-    to: partCContractNumberId
-  - from: PARTC_PBP_NUMBER_ID
-    optional: true
-    to: partCPbpNumberId
-  - from: PARTC_PLAN_TYPE_CODE
-    optional: true
-    to: partCPlanTypeCode
-  - from: PARTD_CONTRACT_NUMBER_ID
-    optional: true
-    to: partDContractNumberId
-  - from: PARTD_PBP_NUMBER_ID
-    optional: true
-    to: partDPbpNumberId
-  - from: PARTD_SEGMENT_NUMBER_ID
-    optional: true
-    to: partDSegmentNumberId
-  - from: PARTD_RETIREE_DRUG_SUBSIDY_IND
-    optional: true
-    to: partDRetireeDrugSubsidyInd
-  - from: MEDICAID_DUAL_ELIGIBILITY_CODE
-    optional: true
-    to: medicaidDualEligibilityCode
-  - from: PARTD_LOW_INCOME_COST_SHARE_GROUP_CODE
-    optional: true
-    to: partDLowIncomeCostShareGroupCode
-  transformerClassName: gov.cms.bfd.model.rif.BeneficiaryMonthlyTransformerPoc
 - entityClassName: gov.cms.bfd.model.rif.BeneficiaryHistoryPoc
   id: BeneficiaryHistory
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
@@ -1847,7 +1803,7 @@ mappings:
   - from: EFCTV_END_DT
     optional: true
     to: mbiObsoleteDate
-  transformerClassName: gov.cms.bfd.model.rif.BeneficiaryHistoryTransformerPoc
+  transformerClassName: gov.cms.bfd.model.rif.BeneficiaryHistoryParserPoc
 - entityClassName: gov.cms.bfd.model.rif.MedicareBeneficiaryIdHistoryPoc
   id: MedicareBeneficiaryIdHistory
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
@@ -1992,7 +1948,7 @@ mappings:
   - from: BENE_CRNT_REC_IND_ID
     optional: true
     to: mbiCrntRecIndId
-  transformerClassName: gov.cms.bfd.model.rif.MedicareBeneficiaryIdHistoryTransformerPoc
+  transformerClassName: gov.cms.bfd.model.rif.MedicareBeneficiaryIdHistoryParserPoc
 - entityClassName: gov.cms.bfd.model.rif.PartDEventPoc
   id: PartDEvent
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
@@ -2329,7 +2285,7 @@ mappings:
   - from: SUBMSN_CLR_CD
     optional: true
     to: submissionClarificationCode
-  transformerClassName: gov.cms.bfd.model.rif.PartDEventTransformerPoc
+  transformerClassName: gov.cms.bfd.model.rif.PartDEventParserPoc
 - arrays:
   - from: lines
     mapping: CarrierClaimLine
@@ -2775,7 +2731,7 @@ mappings:
   - from: CARR_CLM_CNTL_NUM
     optional: true
     to: claimCarrierControlNumber
-  transformerClassName: gov.cms.bfd.model.rif.CarrierClaimTransformerPoc
+  transformerClassName: gov.cms.bfd.model.rif.CarrierClaimParserPoc
 - entityClassName: gov.cms.bfd.model.rif.CarrierClaimLinePoc
   id: CarrierClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
@@ -5236,7 +5192,7 @@ mappings:
   - from: FI_ORIG_CLM_CNTL_NUM
     optional: true
     to: fiOriginalClaimControlNumber
-  transformerClassName: gov.cms.bfd.model.rif.InpatientClaimTransformerPoc
+  transformerClassName: gov.cms.bfd.model.rif.InpatientClaimParserPoc
 - entityClassName: gov.cms.bfd.model.rif.InpatientClaimLinePoc
   id: InpatientClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
@@ -6910,7 +6866,7 @@ mappings:
   - from: FI_ORIG_CLM_CNTL_NUM
     optional: true
     to: fiOriginalClaimControlNumber
-  transformerClassName: gov.cms.bfd.model.rif.OutpatientClaimTransformerPoc
+  transformerClassName: gov.cms.bfd.model.rif.OutpatientClaimParserPoc
 - entityClassName: gov.cms.bfd.model.rif.OutpatientClaimLinePoc
   id: OutpatientClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
@@ -8083,7 +8039,7 @@ mappings:
   - from: FI_ORIG_CLM_CNTL_NUM
     optional: true
     to: fiOriginalClaimControlNumber
-  transformerClassName: gov.cms.bfd.model.rif.HHAClaimTransformerPoc
+  transformerClassName: gov.cms.bfd.model.rif.HHAClaimParserPoc
 - entityClassName: gov.cms.bfd.model.rif.HHAClaimLinePoc
   id: HHAClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
@@ -8689,7 +8645,7 @@ mappings:
   - from: CARR_CLM_CNTL_NUM
     optional: true
     to: claimCarrierControlNumber
-  transformerClassName: gov.cms.bfd.model.rif.DMEClaimTransformerPoc
+  transformerClassName: gov.cms.bfd.model.rif.DMEClaimParserPoc
 - entityClassName: gov.cms.bfd.model.rif.DMEClaimLinePoc
   id: DMEClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
@@ -9914,7 +9870,7 @@ mappings:
   - from: FI_ORIG_CLM_CNTL_NUM
     optional: true
     to: fiOriginalClaimControlNumber
-  transformerClassName: gov.cms.bfd.model.rif.HospiceClaimTransformerPoc
+  transformerClassName: gov.cms.bfd.model.rif.HospiceClaimParserPoc
 - entityClassName: gov.cms.bfd.model.rif.HospiceClaimLinePoc
   id: HospiceClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
@@ -11771,7 +11727,7 @@ mappings:
   - from: FI_ORIG_CLM_CNTL_NUM
     optional: true
     to: fiOriginalClaimControlNumber
-  transformerClassName: gov.cms.bfd.model.rif.SNFClaimTransformerPoc
+  transformerClassName: gov.cms.bfd.model.rif.SNFClaimParserPoc
 - entityClassName: gov.cms.bfd.model.rif.SNFClaimLinePoc
   id: SNFClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper

@@ -6,6 +6,7 @@ from pathlib import Path
 import yaml
 
 classNameSuffix = "Poc"
+noTransformerMappings = {"BeneficiaryMonthly"}
 
 
 def create_mapping(summary):
@@ -23,12 +24,13 @@ def create_mapping(summary):
         "id": summary["headerEntity"],
         "entityClassName": f'{summary["packageName"]}.{summary["headerEntity"]}{classNameSuffix}',
         "messageClassName": "gov.cms.model.rda.codegen.library.RifObjectWrapper",
-        "transformerClassName": f'{summary["packageName"]}.{summary["headerEntity"]}Transformer{classNameSuffix}',
         "sourceType": "RifCsv",
         "nullableFieldAccessorType": "Optional",
-        "table": table,
-        "transformations": transformations
+        "table": table
     }
+    if mapping["id"] not in noTransformerMappings:
+        mapping["transformerClassName"] = f'{summary["packageName"]}.{summary["headerEntity"]}Parser{classNameSuffix}'
+        mapping["transformations"] = transformations
 
     if summary["headerEntityGeneratedIdField"] is not None:
         field_name = summary["headerEntityGeneratedIdField"]
