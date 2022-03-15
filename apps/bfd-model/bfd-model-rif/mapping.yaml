@@ -889,6 +889,7 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    equalsNeeded: false
     joins:
     - cascadeTypes:
       - ALL
@@ -1611,6 +1612,7 @@ mappings:
       dbName: partd_low_income_cost_share_group_code
       name: partDLowIncomeCostShareGroupCode
       sqlType: varchar(2)
+    equalsNeeded: false
     joins:
     - entityClass: gov.cms.bfd.model.rif.Beneficiary
       fetchType: EAGER
@@ -1759,6 +1761,7 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    equalsNeeded: false
     name: beneficiaries_history
     primaryKeyColumns:
     - beneHistoryId
@@ -1918,6 +1921,7 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    equalsNeeded: false
     name: medicare_beneficiaryid_history
     primaryKeyColumns:
     - medicareBeneficiaryIdKey
@@ -2193,6 +2197,7 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    equalsNeeded: false
     name: partd_events
     primaryKeyColumns:
     - eventId
@@ -2610,6 +2615,7 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    equalsNeeded: false
     joins:
     - cascadeTypes:
       - ALL
@@ -3013,6 +3019,7 @@ mappings:
       name: anesthesiaUnitCount
       nullable: false
       sqlType: numeric
+    equalsNeeded: false
     joins:
     - entityClass: gov.cms.bfd.model.rif.CarrierClaim
       fetchType: EAGER
@@ -4471,6 +4478,7 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    equalsNeeded: false
     joins:
     - cascadeTypes:
       - ALL
@@ -4480,7 +4488,7 @@ mappings:
       fieldName: lines
       joinType: OneToMany
       mappedBy: parentClaim
-      orderBy: LINE_NUM ASC
+      orderBy: CLM_LINE_NUM ASC
       orphanRemoval: true
     name: inpatient_claims
     primaryKeyColumns:
@@ -5365,6 +5373,7 @@ mappings:
       dbName: rndrng_physn_npi
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
+    equalsNeeded: false
     joins:
     - entityClass: gov.cms.bfd.model.rif.InpatientClaim
       fetchType: EAGER
@@ -6377,6 +6386,7 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    equalsNeeded: false
     joins:
     - cascadeTypes:
       - ALL
@@ -6386,7 +6396,7 @@ mappings:
       fieldName: lines
       joinType: OneToMany
       mappedBy: parentClaim
-      orderBy: LINE_NUM ASC
+      orderBy: CLM_LINE_NUM ASC
       orphanRemoval: true
     name: outpatient_claims
     primaryKeyColumns:
@@ -7165,6 +7175,7 @@ mappings:
       dbName: rndrng_physn_npi
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
+    equalsNeeded: false
     joins:
     - entityClass: gov.cms.bfd.model.rif.OutpatientClaim
       fetchType: EAGER
@@ -7846,6 +7857,7 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    equalsNeeded: false
     joins:
     - cascadeTypes:
       - ALL
@@ -7855,7 +7867,7 @@ mappings:
       fieldName: lines
       joinType: OneToMany
       mappedBy: parentClaim
-      orderBy: LINE_NUM ASC
+      orderBy: CLM_LINE_NUM ASC
       orphanRemoval: true
     name: hha_claims
     primaryKeyColumns:
@@ -8294,6 +8306,7 @@ mappings:
       dbName: rndrng_physn_npi
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
+    equalsNeeded: false
     joins:
     - entityClass: gov.cms.bfd.model.rif.HHAClaim
       fetchType: EAGER
@@ -8644,6 +8657,7 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    equalsNeeded: false
     joins:
     - cascadeTypes:
       - ALL
@@ -9027,6 +9041,7 @@ mappings:
       dbName: line_ndc_cd
       name: nationalDrugCode
       sqlType: varchar(11)
+    equalsNeeded: false
     joins:
     - entityClass: gov.cms.bfd.model.rif.DMEClaim
       fetchType: EAGER
@@ -9724,6 +9739,7 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    equalsNeeded: false
     joins:
     - cascadeTypes:
       - ALL
@@ -9733,7 +9749,7 @@ mappings:
       fieldName: lines
       joinType: OneToMany
       mappedBy: parentClaim
-      orderBy: LINE_NUM ASC
+      orderBy: CLM_LINE_NUM ASC
       orphanRemoval: true
     name: hospice_claims
     primaryKeyColumns:
@@ -10166,6 +10182,7 @@ mappings:
       dbName: rndrng_physn_npi
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
+    equalsNeeded: false
     joins:
     - entityClass: gov.cms.bfd.model.rif.HospiceClaim
       fetchType: EAGER
@@ -11281,6 +11298,7 @@ mappings:
       dbName: last_updated
       name: lastUpdated
       sqlType: timestamp with time zone
+    equalsNeeded: false
     joins:
     - cascadeTypes:
       - ALL
@@ -11290,7 +11308,7 @@ mappings:
       fieldName: lines
       joinType: OneToMany
       mappedBy: parentClaim
-      orderBy: LINE_NUM ASC
+      orderBy: CLM_LINE_NUM ASC
       orphanRemoval: true
     name: snf_claims
     primaryKeyColumns:
@@ -12032,6 +12050,7 @@ mappings:
       dbName: rndrng_physn_npi
       name: revenueCenterRenderingPhysicianNPI
       sqlType: varchar(12)
+    equalsNeeded: false
     joins:
     - entityClass: gov.cms.bfd.model.rif.SNFClaim
       fetchType: EAGER

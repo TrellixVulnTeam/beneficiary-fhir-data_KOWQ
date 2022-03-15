@@ -105,8 +105,10 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
         TypeSpec.classBuilder(mapping.entityClassName())
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(Entity.class)
-            .addAnnotation(createEqualsAndHashCodeAnnotation())
             .addAnnotation(FieldNameConstants.class);
+    if (mapping.getTable().isEqualsNeeded()) {
+      classBuilder.addAnnotation(createEqualsAndHashCodeAnnotation());
+    }
     if (mapping.getTable().getColumns().size() < 100) {
       classBuilder
           .addAnnotation(NoArgsConstructor.class)

@@ -18,7 +18,8 @@ def create_mapping(summary):
         "name": summary["headerTable"],
         "primaryKeyColumns": primary_key_columns,
         "columns": columns,
-        "quoteNames": False
+        "quoteNames": False,
+        "equalsNeeded": False
     }
 
     mapping = {
@@ -81,7 +82,7 @@ def create_mapping(summary):
             "orphanRemoval": True,
             "fetchType": "LAZY",
             "cascadeTypes": ["ALL"],
-            "orderBy": "LINE_NUM ASC",
+            "orderBy": f'{summary["lineEntityLineNumberField"]} ASC',
             "collectionType": "List",
             "fieldName": "lines",
             "entityClass": f'{summary["packageName"]}.{line_name}{classNameSuffix}',
@@ -116,6 +117,7 @@ def create_line_mapping(summary):
         "primaryKeyColumns": primary_key_columns,
         "columns": columns,
         "quoteNames": False,
+        "equalsNeeded": False
     }
 
     mapping = {

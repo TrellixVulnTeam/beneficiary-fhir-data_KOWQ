@@ -1,6 +1,6 @@
 package gov.cms.model.rda.codegen.plugin.model;
 
-import static javax.persistence.FetchType.*;
+import static javax.persistence.FetchType.LAZY;
 
 import com.google.common.base.Strings;
 import com.squareup.javapoet.ClassName;
@@ -93,7 +93,7 @@ public class JoinBean {
   }
 
   public boolean isFetchTypeRequired() {
-    return fetchType != null && fetchType != EAGER;
+    return fetchType != null;
   }
 
   @AllArgsConstructor

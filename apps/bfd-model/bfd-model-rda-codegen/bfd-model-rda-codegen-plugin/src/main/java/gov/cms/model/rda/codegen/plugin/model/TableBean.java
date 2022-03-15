@@ -19,6 +19,7 @@ public class TableBean {
   private String schema;
   private String comment;
   @Builder.Default private boolean quoteNames = true;
+  @Builder.Default private boolean equalsNeeded = true;
   @Singular private List<String> primaryKeyColumns = new ArrayList<>();
   @Singular private List<String> equalsColumns = new ArrayList<>();
   @Singular private List<ColumnBean> columns = new ArrayList<>();
@@ -67,7 +68,11 @@ public class TableBean {
   }
 
   public Set<String> getColumnsForEqualsMethod() {
-    var columnList = equalsColumns.isEmpty() ? primaryKeyColumns : equalsColumns;
-    return Set.copyOf(columnList);
+    if (equalsNeeded) {
+      var columnList = equalsColumns.isEmpty() ? primaryKeyColumns : equalsColumns;
+      return Set.copyOf(columnList);
+    } else {
+      return Set.of();
+    }
   }
 }
