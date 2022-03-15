@@ -57,7 +57,7 @@ public class CharFieldTransformerTest {
             GrpcFromCodeGenerator.Instance,
             StandardToCodeGenerator.Instance);
     assertEquals(
-        "transformer.copyCharacter(namePrefix + gov.cms.bfd.model.rda.PreAdjFissClaim.Fields.curr1Status, from::hasCurr1Status, from::getCurr1Status, to::setCurr1Status);\n",
+        "transformer.copyOptionalCharacter(namePrefix + gov.cms.bfd.model.rda.PreAdjFissClaim.Fields.idrDtlCnt, from::hasIdrDtlCnt, from::getIdrDtlCnt, to::setIdrDtlCnt);\n",
         block.toString());
   }
 }

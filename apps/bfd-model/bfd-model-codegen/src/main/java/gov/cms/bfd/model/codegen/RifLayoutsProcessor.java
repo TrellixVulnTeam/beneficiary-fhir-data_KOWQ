@@ -619,7 +619,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
     TypeSpec lineEntityFinal = lineEntity.build();
     JavaFile lineEntityClassFile =
         JavaFile.builder(mappingSpec.getPackageName(), lineEntityFinal).build();
-    lineEntityClassFile.writeTo(processingEnv.getFiler());
+    //    lineEntityClassFile.writeTo(processingEnv.getFiler());
 
     return lineEntityFinal;
   }
@@ -930,7 +930,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
     TypeSpec beneficiaryMonthlyEntityFinal = beneficiaryMonthlyEntity.build();
     JavaFile beneficiaryMonthlyClassFile =
         JavaFile.builder("gov.cms.bfd.model.rif", beneficiaryMonthlyEntityFinal).build();
-    beneficiaryMonthlyClassFile.writeTo(processingEnv.getFiler());
+    //    beneficiaryMonthlyClassFile.writeTo(processingEnv.getFiler());
 
     return beneficiaryMonthlyEntityFinal;
   }
@@ -1224,7 +1224,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
     TypeSpec headerEntityFinal = headerEntityClass.build();
     JavaFile headerEntityFile =
         JavaFile.builder(mappingSpec.getPackageName(), headerEntityFinal).build();
-    headerEntityFile.writeTo(processingEnv.getFiler());
+    //    headerEntityFile.writeTo(processingEnv.getFiler());
 
     return headerEntityFinal;
   }
@@ -1397,7 +1397,7 @@ public final class RifLayoutsProcessor extends AbstractProcessor {
     logNote("parsingClass: %s", parsingClassFinal.name);
     JavaFile parsingClassFile =
         JavaFile.builder(mappingSpec.getPackageName(), parsingClassFinal).build();
-    parsingClassFile.writeTo(processingEnv.getFiler());
+    //    parsingClassFile.writeTo(processingEnv.getFiler());
 
     return parsingClassFinal;
   }

@@ -170,10 +170,16 @@ public class ColumnBean {
         return ClassName.get(Character.class);
       case "int":
         return TypeName.INT;
+      case "Integer":
+        return ClassName.get(Integer.class);
       case "short":
         return TypeName.SHORT;
+      case "Short":
+        return ClassName.get(Short.class);
       case "long":
         return TypeName.LONG;
+      case "Long":
+        return ClassName.get(Long.class);
       default:
         return ClassName.get(Class.forName(javaType));
     }

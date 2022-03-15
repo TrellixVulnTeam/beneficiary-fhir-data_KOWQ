@@ -174,6 +174,11 @@ public class DataTransformer {
     return this;
   }
 
+  public DataTransformer copyInt(IntSupplier value, IntConsumer copier) {
+    copier.accept(value.getAsInt());
+    return this;
+  }
+
   public DataTransformer copyOptionalInt(
       BooleanSupplier exists, IntSupplier value, IntConsumer copier) {
     if (exists.getAsBoolean()) {
@@ -347,6 +352,51 @@ public class DataTransformer {
       Consumer<LocalDate> copier) {
     if (exists.getAsBoolean()) {
       return copyDate(fieldName, false, value.get(), copier);
+    }
+    return this;
+  }
+
+  /**
+   * Parses the string into an Integer and delivers it to the Consumer. The string value must be a
+   * valid integer. Valid null values are silently accepted without calling the Consumer.
+   *
+   * @param fieldName name of the field from which the value originates
+   * @param nullable true if null is a valid value
+   * @param value integer string
+   * @param copier Consumer to receive the date
+   * @return this
+   */
+  public DataTransformer copyIntString(
+      String fieldName, boolean nullable, String value, Consumer<Integer> copier) {
+    if (nonNull(fieldName, value, nullable)) {
+      try {
+        int intValue = Integer.parseInt(value);
+        copier.accept(intValue);
+      } catch (NumberFormatException ex) {
+        addError(fieldName, "invalid integer");
+      }
+    }
+    return this;
+  }
+
+  /**
+   * Copies an optional field only if its value exists. Uses lambda expressions for the existence
+   * test as well as the value extraction. Optional fields must be nullable at the database level
+   * but must return non-null values when the supplier is called.
+   *
+   * <p>Parses the string into a Integer. Valid null values are silently accepted without calling
+   * the Consumer.
+   *
+   * @param fieldName name of the field from which the value originates
+   * @param exists returns true if the value exists
+   * @param value returns the value to copy
+   * @param copier Consumer to receive the date
+   * @return this
+   */
+  public DataTransformer copyOptionalIntString(
+      String fieldName, BooleanSupplier exists, Supplier<String> value, Consumer<Integer> copier) {
+    if (exists.getAsBoolean()) {
+      return copyIntString(fieldName, false, value.get(), copier);
     }
     return this;
   }

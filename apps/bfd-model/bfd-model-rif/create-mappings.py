@@ -5,7 +5,7 @@ from pathlib import Path
 
 import yaml
 
-classNameSuffix = "Poc"
+classNameSuffix = ""
 noTransformerMappings = {"BeneficiaryMonthly"}
 
 
@@ -195,34 +195,48 @@ def create_column(rif_field):
     elif column_type == "NUM":
         length = rif_field["rifColumnLength"]
         scale = rif_field["rifColumnScale"]
+        optional = rif_field["rifColumnOptional"]
         if length == 0 or length is None:
-            column["sqlType"] = f'numeric'
+            column["sqlType"] = "numeric"
         elif scale == 0 or scale is None:
             column["sqlType"] = f'numeric({length})'
         else:
             column["sqlType"] = f'decimal({length},{scale})'
+        if scale == 0:
+            if optional:
+                column["javaType"] = "Integer"
+            else:
+                column["javaType"] = "int"
     return column
 
 
 def add_field_transform(rif_field, transforms):
-    if rif_field["rifColumnType"] == "TIMESTAMP":
-        transforms.append({
+    column_type = rif_field["rifColumnType"]
+    if column_type == "TIMESTAMP":
+        transform = {
             "from": rif_field["rifColumnName"],
             "to": rif_field["javaFieldName"],
             "optional": rif_field["rifColumnOptional"],
             "transformer": "RifTimestamp"
-        })
+        }
     elif rif_field["javaFieldName"] == "lastUpdated":
-        transforms.append({
+        transform = {
             "from": "NOW",
             "to": rif_field["javaFieldName"]
-        })
+        }
     else:
-        transforms.append({
+        transform = {
             "from": rif_field["rifColumnName"],
             "to": rif_field["javaFieldName"],
             "optional": rif_field["rifColumnOptional"]
-        })
+        }
+
+    if column_type == "NUM":
+        scale = rif_field["rifColumnScale"]
+        if scale == 0:
+            transform["transformer"] = "IntString"
+
+    transforms.append(transform)
 
 
 def add_transient_to_column(summary, column):

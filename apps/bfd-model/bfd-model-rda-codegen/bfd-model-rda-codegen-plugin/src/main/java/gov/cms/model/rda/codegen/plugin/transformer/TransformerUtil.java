@@ -21,17 +21,26 @@ public class TransformerUtil {
   private static final IdHashFieldTransformer IdHashInstance = new IdHashFieldTransformer();
   private static final RifTimestampFieldTransformer RifTimestampInstance =
       new RifTimestampFieldTransformer();
+  private static final IntStringFieldTransformer IntStringInstance =
+      new IntStringFieldTransformer();
   private static final MessageEnumFieldTransformer MessageEnumInstance =
       new MessageEnumFieldTransformer();
   private static final TimestampFieldTransformer TimestampInstance =
       new TimestampFieldTransformer();
   private static final Map<String, AbstractFieldTransformer> transformersByName =
       ImmutableMap.of(
-          "IdHash", IdHashInstance,
-          "Now", TimestampInstance,
-          "MessageEnum", MessageEnumInstance,
-          "EnumValueIfPresent", new EnumValueIfPresentTransformer(),
-          "RifTimestamp", RifTimestampInstance);
+          "IdHash",
+          IdHashInstance,
+          "Now",
+          TimestampInstance,
+          "MessageEnum",
+          MessageEnumInstance,
+          "EnumValueIfPresent",
+          new EnumValueIfPresentTransformer(),
+          "RifTimestamp",
+          RifTimestampInstance,
+          "IntString",
+          IntStringInstance);
   private static final Map<String, AbstractFieldTransformer> transformersByFrom =
       ImmutableMap.of(TimestampFromName, TimestampInstance);
 
