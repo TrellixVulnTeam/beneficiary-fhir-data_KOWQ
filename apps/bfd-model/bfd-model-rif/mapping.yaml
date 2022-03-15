@@ -4,6 +4,7 @@ mappings:
   - gov.cms.bfd.model.rif.RifRecordBase
   id: Beneficiary
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -920,6 +921,7 @@ mappings:
     name: beneficiaries
     primaryKeyColumns:
     - beneficiaryId
+    quoteNames: false
   transformations:
   - from: BENE_ID
     optional: false
@@ -978,22 +980,28 @@ mappings:
   - from: DEATH_DT
     optional: true
     to: beneficiaryDateOfDeath
-  - from: RFRNC_YR
+  - defaultValue: '0'
+    from: RFRNC_YR
     optional: true
     to: beneEnrollmentReferenceYear
-  - from: A_MO_CNT
+  - defaultValue: '0'
+    from: A_MO_CNT
     optional: true
     to: partAMonthsCount
-  - from: B_MO_CNT
+  - defaultValue: '0'
+    from: B_MO_CNT
     optional: true
     to: partBMonthsCount
-  - from: BUYIN_MO_CNT
+  - defaultValue: '0'
+    from: BUYIN_MO_CNT
     optional: true
     to: stateBuyInCoverageCount
-  - from: HMO_MO_CNT
+  - defaultValue: '0'
+    from: HMO_MO_CNT
     optional: true
     to: hmoCoverageCount
-  - from: RDS_MO_CNT
+  - defaultValue: '0'
+    from: RDS_MO_CNT
     optional: true
     to: monthsRetireeDrugSubsidyCoverage
   - from: ENRL_SRC
@@ -1008,13 +1016,15 @@ mappings:
   - from: CRNT_BIC
     optional: true
     to: currentBeneficiaryIdCode
-  - from: AGE
+  - defaultValue: '0'
+    from: AGE
     optional: true
     to: ageOfBeneficiary
   - from: COVSTART
     optional: true
     to: medicareCoverageStartDate
-  - from: DUAL_MO_CNT
+  - defaultValue: '0'
+    from: DUAL_MO_CNT
     optional: true
     to: monthsOfDualEligibility
   - from: FIPS_STATE_CNTY_JAN_CD
@@ -1095,7 +1105,8 @@ mappings:
   - from: MDCR_STUS_DEC_CD
     optional: true
     to: medicareStatusDecCode
-  - from: PLAN_CVRG_MO_CNT
+  - defaultValue: '0'
+    from: PLAN_CVRG_MO_CNT
     optional: true
     to: partDMonthsCount
   - from: MDCR_ENTLMT_BUYIN_1_IND
@@ -1527,13 +1538,15 @@ mappings:
   - from: EFCTV_END_DT
     optional: true
     to: mbiObsoleteDate
-  - from: BENE_LINK_KEY
+  - defaultValue: '0'
+    from: BENE_LINK_KEY
     optional: true
     to: beneLinkKey
   transformerClassName: gov.cms.bfd.model.rif.BeneficiaryParser
 - entityClassName: gov.cms.bfd.model.rif.BeneficiaryMonthly
   id: BeneficiaryMonthly
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -1609,11 +1622,13 @@ mappings:
     primaryKeyColumns:
     - parentBeneficiary
     - yearMonth
+    quoteNames: false
 - entityClassName: gov.cms.bfd.model.rif.BeneficiaryHistory
   entityInterfaces:
   - gov.cms.bfd.model.rif.RifRecordBase
   id: BeneficiaryHistory
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -1747,6 +1762,7 @@ mappings:
     name: beneficiaries_history
     primaryKeyColumns:
     - beneHistoryId
+    quoteNames: false
   transformations:
   - from: BENE_ID
     optional: false
@@ -1814,6 +1830,7 @@ mappings:
   - gov.cms.bfd.model.rif.RifRecordBase
   id: MedicareBeneficiaryIdHistory
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -1904,8 +1921,10 @@ mappings:
     name: medicare_beneficiaryid_history
     primaryKeyColumns:
     - medicareBeneficiaryIdKey
+    quoteNames: false
   transformations:
-  - from: BENE_MBI_ID
+  - defaultValue: '0'
+    from: BENE_MBI_ID
     optional: false
     to: medicareBeneficiaryIdKey
   - from: BENE_ID
@@ -1917,7 +1936,8 @@ mappings:
   - from: BENE_IDENT_CD
     optional: true
     to: beneficiaryIdCode
-  - from: MBI_SQNC_NUM
+  - defaultValue: '0'
+    from: MBI_SQNC_NUM
     optional: true
     to: mbiSequenceNumber
   - from: MBI_NUM
@@ -1952,7 +1972,8 @@ mappings:
     optional: true
     to: mbiUpdateDate
     transformer: RifTimestamp
-  - from: BENE_CRNT_REC_IND_ID
+  - defaultValue: '0'
+    from: BENE_CRNT_REC_IND_ID
     optional: true
     to: mbiCrntRecIndId
   transformerClassName: gov.cms.bfd.model.rif.MedicareBeneficiaryIdHistoryParser
@@ -1961,6 +1982,7 @@ mappings:
   - gov.cms.bfd.model.rif.RifRecordBase
   id: PartDEvent
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -2174,11 +2196,13 @@ mappings:
     name: partd_events
     primaryKeyColumns:
     - eventId
+    quoteNames: false
   transformations:
   - from: PDE_ID
     optional: false
     to: eventId
-  - from: CLM_GRP_ID
+  - defaultValue: '0'
+    from: CLM_GRP_ID
     optional: false
     to: claimGroupId
   - from: FINAL_ACTION
@@ -2205,7 +2229,8 @@ mappings:
   - from: PRSCRBR_ID
     optional: false
     to: prescriberId
-  - from: RX_SRVC_RFRNC_NUM
+  - defaultValue: '0'
+    from: RX_SRVC_RFRNC_NUM
     optional: false
     to: prescriptionReferenceNumber
   - from: PROD_SRVC_ID
@@ -2217,20 +2242,24 @@ mappings:
   - from: PLAN_PBP_REC_NUM
     optional: false
     to: planBenefitPackageId
-  - from: CMPND_CD
+  - defaultValue: '0'
+    from: CMPND_CD
     optional: false
     to: compoundCode
     transformer: IntString
   - from: DAW_PROD_SLCTN_CD
     optional: false
     to: dispenseAsWrittenProductSelectionCode
-  - from: QTY_DSPNSD_NUM
+  - defaultValue: '0'
+    from: QTY_DSPNSD_NUM
     optional: false
     to: quantityDispensed
-  - from: DAYS_SUPLY_NUM
+  - defaultValue: '0'
+    from: DAYS_SUPLY_NUM
     optional: false
     to: daysSupply
-  - from: FILL_NUM
+  - defaultValue: '0'
+    from: FILL_NUM
     optional: false
     to: fillNumber
   - from: DSPNSNG_STUS_CD
@@ -2251,37 +2280,47 @@ mappings:
   - from: CTSTRPHC_CVRG_CD
     optional: true
     to: catastrophicCoverageCode
-  - from: GDC_BLW_OOPT_AMT
+  - defaultValue: '0'
+    from: GDC_BLW_OOPT_AMT
     optional: false
     to: grossCostBelowOutOfPocketThreshold
-  - from: GDC_ABV_OOPT_AMT
+  - defaultValue: '0'
+    from: GDC_ABV_OOPT_AMT
     optional: false
     to: grossCostAboveOutOfPocketThreshold
-  - from: PTNT_PAY_AMT
+  - defaultValue: '0'
+    from: PTNT_PAY_AMT
     optional: false
     to: patientPaidAmount
-  - from: OTHR_TROOP_AMT
+  - defaultValue: '0'
+    from: OTHR_TROOP_AMT
     optional: false
     to: otherTrueOutOfPocketPaidAmount
-  - from: LICS_AMT
+  - defaultValue: '0'
+    from: LICS_AMT
     optional: false
     to: lowIncomeSubsidyPaidAmount
-  - from: PLRO_AMT
+  - defaultValue: '0'
+    from: PLRO_AMT
     optional: false
     to: patientLiabilityReductionOtherPaidAmount
-  - from: CVRD_D_PLAN_PD_AMT
+  - defaultValue: '0'
+    from: CVRD_D_PLAN_PD_AMT
     optional: false
     to: partDPlanCoveredPaidAmount
-  - from: NCVRD_PLAN_PD_AMT
+  - defaultValue: '0'
+    from: NCVRD_PLAN_PD_AMT
     optional: false
     to: partDPlanNonCoveredPaidAmount
-  - from: TOT_RX_CST_AMT
+  - defaultValue: '0'
+    from: TOT_RX_CST_AMT
     optional: false
     to: totalPrescriptionCost
   - from: RX_ORGN_CD
     optional: true
     to: prescriptionOriginationCode
-  - from: RPTD_GAP_DSCNT_NUM
+  - defaultValue: '0'
+    from: RPTD_GAP_DSCNT_NUM
     optional: false
     to: gapDiscountAmount
   - from: BRND_GNRC_CD
@@ -2308,6 +2347,7 @@ mappings:
   - gov.cms.bfd.model.rif.RifRecordBase
   id: CarrierClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -2584,6 +2624,7 @@ mappings:
     name: carrier_claims
     primaryKeyColumns:
     - claimId
+    quoteNames: false
   transformations:
   - from: BENE_ID
     optional: false
@@ -2591,7 +2632,8 @@ mappings:
   - from: CLM_ID
     optional: false
     to: claimId
-  - from: CLM_GRP_ID
+  - defaultValue: '0'
+    from: CLM_GRP_ID
     optional: false
     to: claimGroupId
   - from: FINAL_ACTION
@@ -2624,10 +2666,12 @@ mappings:
   - from: CARR_CLM_PMT_DNL_CD
     optional: false
     to: paymentDenialCode
-  - from: CLM_PMT_AMT
+  - defaultValue: '0'
+    from: CLM_PMT_AMT
     optional: false
     to: paymentAmount
-  - from: CARR_CLM_PRMRY_PYR_PD_AMT
+  - defaultValue: '0'
+    from: CARR_CLM_PRMRY_PYR_PD_AMT
     optional: false
     to: primaryPayerPaidAmount
   - from: RFR_PHYSN_UPIN
@@ -2639,19 +2683,24 @@ mappings:
   - from: CARR_CLM_PRVDR_ASGNMT_IND_SW
     optional: true
     to: providerAssignmentIndicator
-  - from: NCH_CLM_PRVDR_PMT_AMT
+  - defaultValue: '0'
+    from: NCH_CLM_PRVDR_PMT_AMT
     optional: false
     to: providerPaymentAmount
-  - from: NCH_CLM_BENE_PMT_AMT
+  - defaultValue: '0'
+    from: NCH_CLM_BENE_PMT_AMT
     optional: false
     to: beneficiaryPaymentAmount
-  - from: NCH_CARR_CLM_SBMTD_CHRG_AMT
+  - defaultValue: '0'
+    from: NCH_CARR_CLM_SBMTD_CHRG_AMT
     optional: false
     to: submittedChargeAmount
-  - from: NCH_CARR_CLM_ALOWD_AMT
+  - defaultValue: '0'
+    from: NCH_CARR_CLM_ALOWD_AMT
     optional: false
     to: allowedChargeAmount
-  - from: CARR_CLM_CASH_DDCTBL_APLD_AMT
+  - defaultValue: '0'
+    from: CARR_CLM_CASH_DDCTBL_APLD_AMT
     optional: false
     to: beneficiaryPartBDeductAmount
   - from: CARR_CLM_HCPCS_YR_CD
@@ -2748,6 +2797,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.CarrierClaimLine
   id: CarrierClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -2974,8 +3024,10 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
+    quoteNames: false
   transformations:
-  - from: LINE_NUM
+  - defaultValue: '0'
+    from: LINE_NUM
     optional: false
     to: lineNumber
   - from: CARR_PRFRNG_PIN_NUM
@@ -3011,7 +3063,8 @@ mappings:
   - from: CARR_LINE_RDCD_PMT_PHYS_ASTN_C
     optional: false
     to: reducedPaymentPhysicianAsstCode
-  - from: LINE_SRVC_CNT
+  - defaultValue: '0'
+    from: LINE_SRVC_CNT
     optional: false
     to: serviceCount
   - from: LINE_CMS_TYPE_SRVC_CD
@@ -3041,31 +3094,39 @@ mappings:
   - from: BETOS_CD
     optional: true
     to: betosCode
-  - from: LINE_NCH_PMT_AMT
+  - defaultValue: '0'
+    from: LINE_NCH_PMT_AMT
     optional: false
     to: paymentAmount
-  - from: LINE_BENE_PMT_AMT
+  - defaultValue: '0'
+    from: LINE_BENE_PMT_AMT
     optional: false
     to: beneficiaryPaymentAmount
-  - from: LINE_PRVDR_PMT_AMT
+  - defaultValue: '0'
+    from: LINE_PRVDR_PMT_AMT
     optional: false
     to: providerPaymentAmount
-  - from: LINE_BENE_PTB_DDCTBL_AMT
+  - defaultValue: '0'
+    from: LINE_BENE_PTB_DDCTBL_AMT
     optional: false
     to: beneficiaryPartBDeductAmount
   - from: LINE_BENE_PRMRY_PYR_CD
     optional: true
     to: primaryPayerCode
-  - from: LINE_BENE_PRMRY_PYR_PD_AMT
+  - defaultValue: '0'
+    from: LINE_BENE_PRMRY_PYR_PD_AMT
     optional: false
     to: primaryPayerPaidAmount
-  - from: LINE_COINSRNC_AMT
+  - defaultValue: '0'
+    from: LINE_COINSRNC_AMT
     optional: false
     to: coinsuranceAmount
-  - from: LINE_SBMTD_CHRG_AMT
+  - defaultValue: '0'
+    from: LINE_SBMTD_CHRG_AMT
     optional: false
     to: submittedChargeAmount
-  - from: LINE_ALOWD_CHRG_AMT
+  - defaultValue: '0'
+    from: LINE_ALOWD_CHRG_AMT
     optional: false
     to: allowedChargeAmount
   - from: LINE_PRCSG_IND_CD
@@ -3077,7 +3138,8 @@ mappings:
   - from: LINE_SERVICE_DEDUCTIBLE
     optional: true
     to: serviceDeductibleCode
-  - from: CARR_LINE_MTUS_CNT
+  - defaultValue: '0'
+    from: CARR_LINE_MTUS_CNT
     optional: false
     to: mtusCount
   - from: CARR_LINE_MTUS_CD
@@ -3095,7 +3157,8 @@ mappings:
   - from: CARR_LINE_RX_NUM
     optional: true
     to: rxNumber
-  - from: LINE_HCT_HGB_RSLT_NUM
+  - defaultValue: '0'
+    from: LINE_HCT_HGB_RSLT_NUM
     optional: false
     to: hctHgbTestResult
   - from: LINE_HCT_HGB_TYPE_CD
@@ -3107,7 +3170,8 @@ mappings:
   - from: CARR_LINE_CLIA_LAB_NUM
     optional: true
     to: cliaLabNumber
-  - from: CARR_LINE_ANSTHSA_UNIT_CNT
+  - defaultValue: '0'
+    from: CARR_LINE_ANSTHSA_UNIT_CNT
     optional: false
     to: anesthesiaUnitCount
 - arrays:
@@ -3121,6 +3185,7 @@ mappings:
   - gov.cms.bfd.model.rif.RifRecordBase
   id: InpatientClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -4420,6 +4485,7 @@ mappings:
     name: inpatient_claims
     primaryKeyColumns:
     - claimId
+    quoteNames: false
   transformations:
   - from: BENE_ID
     optional: false
@@ -4427,7 +4493,8 @@ mappings:
   - from: CLM_ID
     optional: false
     to: claimId
-  - from: CLM_GRP_ID
+  - defaultValue: '0'
+    from: CLM_GRP_ID
     optional: false
     to: claimGroupId
   - from: FINAL_ACTION
@@ -4472,10 +4539,12 @@ mappings:
   - from: CLM_MDCR_NON_PMT_RSN_CD
     optional: true
     to: claimNonPaymentReasonCode
-  - from: CLM_PMT_AMT
+  - defaultValue: '0'
+    from: CLM_PMT_AMT
     optional: false
     to: paymentAmount
-  - from: NCH_PRMRY_PYR_CLM_PD_AMT
+  - defaultValue: '0'
+    from: NCH_PRMRY_PYR_CLM_PD_AMT
     optional: false
     to: primaryPayerPaidAmount
   - from: NCH_PRMRY_PYR_CD
@@ -4517,7 +4586,8 @@ mappings:
   - from: CLM_PPS_IND_CD
     optional: true
     to: prospectivePaymentCode
-  - from: CLM_TOT_CHRG_AMT
+  - defaultValue: '0'
+    from: CLM_TOT_CHRG_AMT
     optional: false
     to: totalChargeAmount
   - from: CLM_ADMSN_DT
@@ -4532,64 +4602,84 @@ mappings:
   - from: NCH_PTNT_STATUS_IND_CD
     optional: true
     to: patientStatusCd
-  - from: CLM_PASS_THRU_PER_DIEM_AMT
+  - defaultValue: '0'
+    from: CLM_PASS_THRU_PER_DIEM_AMT
     optional: false
     to: passThruPerDiemAmount
-  - from: NCH_BENE_IP_DDCTBL_AMT
+  - defaultValue: '0'
+    from: NCH_BENE_IP_DDCTBL_AMT
     optional: false
     to: deductibleAmount
-  - from: NCH_BENE_PTA_COINSRNC_LBLTY_AM
+  - defaultValue: '0'
+    from: NCH_BENE_PTA_COINSRNC_LBLTY_AM
     optional: false
     to: partACoinsuranceLiabilityAmount
-  - from: NCH_BENE_BLOOD_DDCTBL_LBLTY_AM
+  - defaultValue: '0'
+    from: NCH_BENE_BLOOD_DDCTBL_LBLTY_AM
     optional: false
     to: bloodDeductibleLiabilityAmount
-  - from: NCH_PROFNL_CMPNT_CHRG_AMT
+  - defaultValue: '0'
+    from: NCH_PROFNL_CMPNT_CHRG_AMT
     optional: false
     to: professionalComponentCharge
-  - from: NCH_IP_NCVRD_CHRG_AMT
+  - defaultValue: '0'
+    from: NCH_IP_NCVRD_CHRG_AMT
     optional: false
     to: noncoveredCharge
-  - from: NCH_IP_TOT_DDCTN_AMT
+  - defaultValue: '0'
+    from: NCH_IP_TOT_DDCTN_AMT
     optional: false
     to: totalDeductionAmount
-  - from: CLM_TOT_PPS_CPTL_AMT
+  - defaultValue: '0'
+    from: CLM_TOT_PPS_CPTL_AMT
     optional: true
     to: claimTotalPPSCapitalAmount
-  - from: CLM_PPS_CPTL_FSP_AMT
+  - defaultValue: '0'
+    from: CLM_PPS_CPTL_FSP_AMT
     optional: true
     to: claimPPSCapitalFSPAmount
-  - from: CLM_PPS_CPTL_OUTLIER_AMT
+  - defaultValue: '0'
+    from: CLM_PPS_CPTL_OUTLIER_AMT
     optional: true
     to: claimPPSCapitalOutlierAmount
-  - from: CLM_PPS_CPTL_DSPRPRTNT_SHR_AMT
+  - defaultValue: '0'
+    from: CLM_PPS_CPTL_DSPRPRTNT_SHR_AMT
     optional: true
     to: claimPPSCapitalDisproportionateShareAmt
-  - from: CLM_PPS_CPTL_IME_AMT
+  - defaultValue: '0'
+    from: CLM_PPS_CPTL_IME_AMT
     optional: true
     to: claimPPSCapitalIMEAmount
-  - from: CLM_PPS_CPTL_EXCPTN_AMT
+  - defaultValue: '0'
+    from: CLM_PPS_CPTL_EXCPTN_AMT
     optional: true
     to: claimPPSCapitalExceptionAmount
-  - from: CLM_PPS_OLD_CPTL_HLD_HRMLS_AMT
+  - defaultValue: '0'
+    from: CLM_PPS_OLD_CPTL_HLD_HRMLS_AMT
     optional: true
     to: claimPPSOldCapitalHoldHarmlessAmount
-  - from: CLM_PPS_CPTL_DRG_WT_NUM
+  - defaultValue: '0'
+    from: CLM_PPS_CPTL_DRG_WT_NUM
     optional: true
     to: claimPPSCapitalDrgWeightNumber
-  - from: CLM_UTLZTN_DAY_CNT
+  - defaultValue: '0'
+    from: CLM_UTLZTN_DAY_CNT
     optional: false
     to: utilizationDayCount
-  - from: BENE_TOT_COINSRNC_DAYS_CNT
+  - defaultValue: '0'
+    from: BENE_TOT_COINSRNC_DAYS_CNT
     optional: false
     to: coinsuranceDayCount
-  - from: BENE_LRD_USED_CNT
+  - defaultValue: '0'
+    from: BENE_LRD_USED_CNT
     optional: true
     to: lifetimeReservedDaysUsedCount
-  - from: CLM_NON_UTLZTN_DAYS_CNT
+  - defaultValue: '0'
+    from: CLM_NON_UTLZTN_DAYS_CNT
     optional: false
     to: nonUtilizationDayCount
-  - from: NCH_BLOOD_PNTS_FRNSHD_QTY
+  - defaultValue: '0'
+    from: NCH_BLOOD_PNTS_FRNSHD_QTY
     optional: false
     to: bloodPintsFurnishedQty
   - from: NCH_VRFD_NCVRD_STAY_FROM_DT
@@ -4613,7 +4703,8 @@ mappings:
   - from: CLM_DRG_OUTLIER_STAY_CD
     optional: false
     to: diagnosisRelatedGroupOutlierStayCd
-  - from: NCH_DRG_OUTLIER_APRVD_PMT_AMT
+  - defaultValue: '0'
+    from: NCH_DRG_OUTLIER_APRVD_PMT_AMT
     optional: true
     to: drgOutlierApprovedPaymentAmount
   - from: ADMTG_DGNS_CD
@@ -5192,13 +5283,16 @@ mappings:
   - from: PRCDR_DT25
     optional: true
     to: procedure25Date
-  - from: IME_OP_CLM_VAL_AMT
+  - defaultValue: '0'
+    from: IME_OP_CLM_VAL_AMT
     optional: true
     to: indirectMedicalEducationAmount
-  - from: DSH_OP_CLM_VAL_AMT
+  - defaultValue: '0'
+    from: DSH_OP_CLM_VAL_AMT
     optional: true
     to: disproportionateShareAmount
-  - from: CLM_UNCOMPD_CARE_PMT_AMT
+  - defaultValue: '0'
+    from: CLM_UNCOMPD_CARE_PMT_AMT
     optional: true
     to: claimUncompensatedCareAmount
   - from: FI_DOC_CLM_CNTL_NUM
@@ -5211,6 +5305,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.InpatientClaimLine
   id: InpatientClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -5281,8 +5376,10 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
+    quoteNames: false
   transformations:
-  - from: CLM_LINE_NUM
+  - defaultValue: '0'
+    from: CLM_LINE_NUM
     optional: false
     to: lineNumber
   - from: REV_CNTR
@@ -5291,22 +5388,27 @@ mappings:
   - from: HCPCS_CD
     optional: true
     to: hcpcsCode
-  - from: REV_CNTR_UNIT_CNT
+  - defaultValue: '0'
+    from: REV_CNTR_UNIT_CNT
     optional: false
     to: unitCount
-  - from: REV_CNTR_RATE_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_RATE_AMT
     optional: false
     to: rateAmount
-  - from: REV_CNTR_TOT_CHRG_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_TOT_CHRG_AMT
     optional: false
     to: totalChargeAmount
-  - from: REV_CNTR_NCVRD_CHRG_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_NCVRD_CHRG_AMT
     optional: false
     to: nonCoveredChargeAmount
   - from: REV_CNTR_DDCTBL_COINSRNC_CD
     optional: true
     to: deductibleCoinsuranceCd
-  - from: REV_CNTR_NDC_QTY
+  - defaultValue: '0'
+    from: REV_CNTR_NDC_QTY
     optional: true
     to: nationalDrugCodeQuantity
   - from: REV_CNTR_NDC_QTY_QLFR_CD
@@ -5329,6 +5431,7 @@ mappings:
   - gov.cms.bfd.model.rif.RifRecordBase
   id: OutpatientClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -6288,6 +6391,7 @@ mappings:
     name: outpatient_claims
     primaryKeyColumns:
     - claimId
+    quoteNames: false
   transformations:
   - from: BENE_ID
     optional: false
@@ -6295,7 +6399,8 @@ mappings:
   - from: CLM_ID
     optional: false
     to: claimId
-  - from: CLM_GRP_ID
+  - defaultValue: '0'
+    from: CLM_GRP_ID
     optional: false
     to: claimGroupId
   - from: FINAL_ACTION
@@ -6340,10 +6445,12 @@ mappings:
   - from: CLM_MDCR_NON_PMT_RSN_CD
     optional: true
     to: claimNonPaymentReasonCode
-  - from: CLM_PMT_AMT
+  - defaultValue: '0'
+    from: CLM_PMT_AMT
     optional: false
     to: paymentAmount
-  - from: NCH_PRMRY_PYR_CLM_PD_AMT
+  - defaultValue: '0'
+    from: NCH_PRMRY_PYR_CLM_PD_AMT
     optional: false
     to: primaryPayerPaidAmount
   - from: NCH_PRMRY_PYR_CD
@@ -6379,13 +6486,16 @@ mappings:
   - from: PTNT_DSCHRG_STUS_CD
     optional: true
     to: patientDischargeStatusCode
-  - from: CLM_TOT_CHRG_AMT
+  - defaultValue: '0'
+    from: CLM_TOT_CHRG_AMT
     optional: false
     to: totalChargeAmount
-  - from: NCH_BENE_BLOOD_DDCTBL_LBLTY_AM
+  - defaultValue: '0'
+    from: NCH_BENE_BLOOD_DDCTBL_LBLTY_AM
     optional: false
     to: bloodDeductibleLiabilityAmount
-  - from: NCH_PROFNL_CMPNT_CHRG_AMT
+  - defaultValue: '0'
+    from: NCH_PROFNL_CMPNT_CHRG_AMT
     optional: false
     to: professionalComponentCharge
   - from: PRNCPAL_DGNS_CD
@@ -6865,16 +6975,20 @@ mappings:
   - from: RSN_VISIT_VRSN_CD3
     optional: true
     to: diagnosisAdmission3CodeVersion
-  - from: NCH_BENE_PTB_DDCTBL_AMT
+  - defaultValue: '0'
+    from: NCH_BENE_PTB_DDCTBL_AMT
     optional: false
     to: deductibleAmount
-  - from: NCH_BENE_PTB_COINSRNC_AMT
+  - defaultValue: '0'
+    from: NCH_BENE_PTB_COINSRNC_AMT
     optional: false
     to: coinsuranceAmount
-  - from: CLM_OP_PRVDR_PMT_AMT
+  - defaultValue: '0'
+    from: CLM_OP_PRVDR_PMT_AMT
     optional: false
     to: providerPaymentAmount
-  - from: CLM_OP_BENE_PMT_AMT
+  - defaultValue: '0'
+    from: CLM_OP_BENE_PMT_AMT
     optional: false
     to: beneficiaryPaymentAmount
   - from: FI_DOC_CLM_CNTL_NUM
@@ -6887,6 +7001,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.OutpatientClaimLine
   id: OutpatientClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -7061,8 +7176,10 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
+    quoteNames: false
   transformations:
-  - from: CLM_LINE_NUM
+  - defaultValue: '0'
+    from: CLM_LINE_NUM
     optional: false
     to: lineNumber
   - from: REV_CNTR
@@ -7110,52 +7227,67 @@ mappings:
   - from: REV_CNTR_IDE_NDC_UPC_NUM
     optional: true
     to: nationalDrugCode
-  - from: REV_CNTR_UNIT_CNT
+  - defaultValue: '0'
+    from: REV_CNTR_UNIT_CNT
     optional: false
     to: unitCount
-  - from: REV_CNTR_RATE_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_RATE_AMT
     optional: false
     to: rateAmount
-  - from: REV_CNTR_BLOOD_DDCTBL_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_BLOOD_DDCTBL_AMT
     optional: false
     to: bloodDeductibleAmount
-  - from: REV_CNTR_CASH_DDCTBL_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_CASH_DDCTBL_AMT
     optional: false
     to: cashDeductibleAmount
-  - from: REV_CNTR_COINSRNC_WGE_ADJSTD_C
+  - defaultValue: '0'
+    from: REV_CNTR_COINSRNC_WGE_ADJSTD_C
     optional: false
     to: wageAdjustedCoinsuranceAmount
-  - from: REV_CNTR_RDCD_COINSRNC_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_RDCD_COINSRNC_AMT
     optional: false
     to: reducedCoinsuranceAmount
-  - from: REV_CNTR_1ST_MSP_PD_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_1ST_MSP_PD_AMT
     optional: false
     to: firstMspPaidAmount
-  - from: REV_CNTR_2ND_MSP_PD_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_2ND_MSP_PD_AMT
     optional: false
     to: secondMspPaidAmount
-  - from: REV_CNTR_PRVDR_PMT_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_PRVDR_PMT_AMT
     optional: false
     to: providerPaymentAmount
-  - from: REV_CNTR_BENE_PMT_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_BENE_PMT_AMT
     optional: false
     to: benficiaryPaymentAmount
-  - from: REV_CNTR_PTNT_RSPNSBLTY_PMT
+  - defaultValue: '0'
+    from: REV_CNTR_PTNT_RSPNSBLTY_PMT
     optional: false
     to: patientResponsibilityAmount
-  - from: REV_CNTR_PMT_AMT_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_PMT_AMT_AMT
     optional: false
     to: paymentAmount
-  - from: REV_CNTR_TOT_CHRG_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_TOT_CHRG_AMT
     optional: false
     to: totalChargeAmount
-  - from: REV_CNTR_NCVRD_CHRG_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_NCVRD_CHRG_AMT
     optional: false
     to: nonCoveredChargeAmount
   - from: REV_CNTR_STUS_IND_CD
     optional: true
     to: statusCode
-  - from: REV_CNTR_NDC_QTY
+  - defaultValue: '0'
+    from: REV_CNTR_NDC_QTY
     optional: true
     to: nationalDrugCodeQuantity
   - from: REV_CNTR_NDC_QTY_QLFR_CD
@@ -7178,6 +7310,7 @@ mappings:
   - gov.cms.bfd.model.rif.RifRecordBase
   id: HHAClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -7727,6 +7860,7 @@ mappings:
     name: hha_claims
     primaryKeyColumns:
     - claimId
+    quoteNames: false
   transformations:
   - from: BENE_ID
     optional: false
@@ -7734,7 +7868,8 @@ mappings:
   - from: CLM_ID
     optional: false
     to: claimId
-  - from: CLM_GRP_ID
+  - defaultValue: '0'
+    from: CLM_GRP_ID
     optional: false
     to: claimGroupId
   - from: FINAL_ACTION
@@ -7776,10 +7911,12 @@ mappings:
   - from: CLM_MDCR_NON_PMT_RSN_CD
     optional: true
     to: claimNonPaymentReasonCode
-  - from: CLM_PMT_AMT
+  - defaultValue: '0'
+    from: CLM_PMT_AMT
     optional: false
     to: paymentAmount
-  - from: NCH_PRMRY_PYR_CLM_PD_AMT
+  - defaultValue: '0'
+    from: NCH_PRMRY_PYR_CLM_PD_AMT
     optional: false
     to: primaryPayerPaidAmount
   - from: NCH_PRMRY_PYR_CD
@@ -7803,7 +7940,8 @@ mappings:
   - from: CLM_PPS_IND_CD
     optional: false
     to: prospectivePaymentCode
-  - from: CLM_TOT_CHRG_AMT
+  - defaultValue: '0'
+    from: CLM_TOT_CHRG_AMT
     optional: false
     to: totalChargeAmount
   - from: PRNCPAL_DGNS_CD
@@ -8046,7 +8184,8 @@ mappings:
   - from: CLM_HHA_RFRL_CD
     optional: true
     to: claimReferralCode
-  - from: CLM_HHA_TOT_VISIT_CNT
+  - defaultValue: '0'
+    from: CLM_HHA_TOT_VISIT_CNT
     optional: false
     to: totalVisitCount
   - from: CLM_ADMSN_DT
@@ -8062,6 +8201,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.HHAClaimLine
   id: HHAClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -8165,8 +8305,10 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
+    quoteNames: false
   transformations:
-  - from: CLM_LINE_NUM
+  - defaultValue: '0'
+    from: CLM_LINE_NUM
     optional: false
     to: lineNumber
   - from: REV_CNTR
@@ -8193,19 +8335,24 @@ mappings:
   - from: REV_CNTR_PMT_MTHD_IND_CD
     optional: true
     to: paymentMethodCode
-  - from: REV_CNTR_UNIT_CNT
+  - defaultValue: '0'
+    from: REV_CNTR_UNIT_CNT
     optional: false
     to: unitCount
-  - from: REV_CNTR_RATE_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_RATE_AMT
     optional: false
     to: rateAmount
-  - from: REV_CNTR_PMT_AMT_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_PMT_AMT_AMT
     optional: false
     to: paymentAmount
-  - from: REV_CNTR_TOT_CHRG_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_TOT_CHRG_AMT
     optional: false
     to: totalChargeAmount
-  - from: REV_CNTR_NCVRD_CHRG_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_NCVRD_CHRG_AMT
     optional: false
     to: nonCoveredChargeAmount
   - from: REV_CNTR_DDCTBL_COINSRNC_CD
@@ -8214,7 +8361,8 @@ mappings:
   - from: REV_CNTR_STUS_IND_CD
     optional: true
     to: statusCode
-  - from: REV_CNTR_NDC_QTY
+  - defaultValue: '0'
+    from: REV_CNTR_NDC_QTY
     optional: true
     to: nationalDrugCodeQuantity
   - from: REV_CNTR_NDC_QTY_QLFR_CD
@@ -8237,6 +8385,7 @@ mappings:
   - gov.cms.bfd.model.rif.RifRecordBase
   id: DMEClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -8509,6 +8658,7 @@ mappings:
     name: dme_claims
     primaryKeyColumns:
     - claimId
+    quoteNames: false
   transformations:
   - from: BENE_ID
     optional: false
@@ -8516,7 +8666,8 @@ mappings:
   - from: CLM_ID
     optional: false
     to: claimId
-  - from: CLM_GRP_ID
+  - defaultValue: '0'
+    from: CLM_GRP_ID
     optional: false
     to: claimGroupId
   - from: FINAL_ACTION
@@ -8549,28 +8700,35 @@ mappings:
   - from: CARR_CLM_PMT_DNL_CD
     optional: false
     to: paymentDenialCode
-  - from: CLM_PMT_AMT
+  - defaultValue: '0'
+    from: CLM_PMT_AMT
     optional: false
     to: paymentAmount
-  - from: CARR_CLM_PRMRY_PYR_PD_AMT
+  - defaultValue: '0'
+    from: CARR_CLM_PRMRY_PYR_PD_AMT
     optional: false
     to: primaryPayerPaidAmount
   - from: CARR_CLM_PRVDR_ASGNMT_IND_SW
     optional: false
     to: providerAssignmentIndicator
-  - from: NCH_CLM_PRVDR_PMT_AMT
+  - defaultValue: '0'
+    from: NCH_CLM_PRVDR_PMT_AMT
     optional: false
     to: providerPaymentAmount
-  - from: NCH_CLM_BENE_PMT_AMT
+  - defaultValue: '0'
+    from: NCH_CLM_BENE_PMT_AMT
     optional: false
     to: beneficiaryPaymentAmount
-  - from: NCH_CARR_CLM_SBMTD_CHRG_AMT
+  - defaultValue: '0'
+    from: NCH_CARR_CLM_SBMTD_CHRG_AMT
     optional: false
     to: submittedChargeAmount
-  - from: NCH_CARR_CLM_ALOWD_AMT
+  - defaultValue: '0'
+    from: NCH_CARR_CLM_ALOWD_AMT
     optional: false
     to: allowedChargeAmount
-  - from: CARR_CLM_CASH_DDCTBL_APLD_AMT
+  - defaultValue: '0'
+    from: CARR_CLM_CASH_DDCTBL_APLD_AMT
     optional: false
     to: beneficiaryPartBDeductAmount
   - from: CARR_CLM_HCPCS_YR_CD
@@ -8670,6 +8828,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.DMEClaimLine
   id: DMEClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -8879,8 +9038,10 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
+    quoteNames: false
   transformations:
-  - from: LINE_NUM
+  - defaultValue: '0'
+    from: LINE_NUM
     optional: false
     to: lineNumber
   - from: TAX_NUM
@@ -8892,7 +9053,8 @@ mappings:
   - from: PRTCPTNG_IND_CD
     optional: true
     to: providerParticipatingIndCode
-  - from: LINE_SRVC_CNT
+  - defaultValue: '0'
+    from: LINE_SRVC_CNT
     optional: false
     to: serviceCount
   - from: LINE_CMS_TYPE_SRVC_CD
@@ -8919,34 +9081,43 @@ mappings:
   - from: BETOS_CD
     optional: true
     to: betosCode
-  - from: LINE_NCH_PMT_AMT
+  - defaultValue: '0'
+    from: LINE_NCH_PMT_AMT
     optional: false
     to: paymentAmount
-  - from: LINE_BENE_PMT_AMT
+  - defaultValue: '0'
+    from: LINE_BENE_PMT_AMT
     optional: false
     to: beneficiaryPaymentAmount
-  - from: LINE_PRVDR_PMT_AMT
+  - defaultValue: '0'
+    from: LINE_PRVDR_PMT_AMT
     optional: false
     to: providerPaymentAmount
-  - from: LINE_BENE_PTB_DDCTBL_AMT
+  - defaultValue: '0'
+    from: LINE_BENE_PTB_DDCTBL_AMT
     optional: false
     to: beneficiaryPartBDeductAmount
   - from: LINE_BENE_PRMRY_PYR_CD
     optional: true
     to: primaryPayerCode
-  - from: LINE_BENE_PRMRY_PYR_PD_AMT
+  - defaultValue: '0'
+    from: LINE_BENE_PRMRY_PYR_PD_AMT
     optional: false
     to: primaryPayerPaidAmount
-  - from: LINE_COINSRNC_AMT
+  - defaultValue: '0'
+    from: LINE_COINSRNC_AMT
     optional: false
     to: coinsuranceAmount
-  - from: LINE_PRMRY_ALOWD_CHRG_AMT
+  - defaultValue: '0'
+    from: LINE_PRMRY_ALOWD_CHRG_AMT
     optional: false
     to: primaryPayerAllowedChargeAmount
-  - from: LINE_SBMTD_CHRG_AMT
+  - defaultValue: '0'
+    from: LINE_SBMTD_CHRG_AMT
     optional: false
     to: submittedChargeAmount
-  - from: LINE_ALOWD_CHRG_AMT
+  - defaultValue: '0'
+    from: LINE_ALOWD_CHRG_AMT
     optional: false
     to: allowedChargeAmount
   - from: LINE_PRCSG_IND_CD
@@ -8964,7 +9135,8 @@ mappings:
   - from: LINE_ICD_DGNS_VRSN_CD
     optional: true
     to: diagnosisCodeVersion
-  - from: LINE_DME_PRCHS_PRICE_AMT
+  - defaultValue: '0'
+    from: LINE_DME_PRCHS_PRICE_AMT
     optional: false
     to: purchasePriceAmount
   - from: PRVDR_NUM
@@ -8988,16 +9160,19 @@ mappings:
   - from: HCPCS_4TH_MDFR_CD
     optional: true
     to: hcpcsFourthModifierCode
-  - from: DMERC_LINE_SCRN_SVGS_AMT
+  - defaultValue: '0'
+    from: DMERC_LINE_SCRN_SVGS_AMT
     optional: true
     to: screenSavingsAmount
-  - from: DMERC_LINE_MTUS_CNT
+  - defaultValue: '0'
+    from: DMERC_LINE_MTUS_CNT
     optional: false
     to: mtusCount
   - from: DMERC_LINE_MTUS_CD
     optional: true
     to: mtusCode
-  - from: LINE_HCT_HGB_RSLT_NUM
+  - defaultValue: '0'
+    from: LINE_HCT_HGB_RSLT_NUM
     optional: false
     to: hctHgbTestResult
   - from: LINE_HCT_HGB_TYPE_CD
@@ -9017,6 +9192,7 @@ mappings:
   - gov.cms.bfd.model.rif.RifRecordBase
   id: HospiceClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -9562,6 +9738,7 @@ mappings:
     name: hospice_claims
     primaryKeyColumns:
     - claimId
+    quoteNames: false
   transformations:
   - from: BENE_ID
     optional: false
@@ -9569,7 +9746,8 @@ mappings:
   - from: CLM_ID
     optional: false
     to: claimId
-  - from: CLM_GRP_ID
+  - defaultValue: '0'
+    from: CLM_GRP_ID
     optional: false
     to: claimGroupId
   - from: FINAL_ACTION
@@ -9611,10 +9789,12 @@ mappings:
   - from: CLM_MDCR_NON_PMT_RSN_CD
     optional: true
     to: claimNonPaymentReasonCode
-  - from: CLM_PMT_AMT
+  - defaultValue: '0'
+    from: CLM_PMT_AMT
     optional: false
     to: paymentAmount
-  - from: NCH_PRMRY_PYR_CLM_PD_AMT
+  - defaultValue: '0'
+    from: NCH_PRMRY_PYR_CLM_PD_AMT
     optional: false
     to: primaryPayerPaidAmount
   - from: NCH_PRMRY_PYR_CD
@@ -9635,13 +9815,15 @@ mappings:
   - from: PTNT_DSCHRG_STUS_CD
     optional: false
     to: patientDischargeStatusCode
-  - from: CLM_TOT_CHRG_AMT
+  - defaultValue: '0'
+    from: CLM_TOT_CHRG_AMT
     optional: false
     to: totalChargeAmount
   - from: NCH_PTNT_STATUS_IND_CD
     optional: true
     to: patientStatusCd
-  - from: CLM_UTLZTN_DAY_CNT
+  - defaultValue: '0'
+    from: CLM_UTLZTN_DAY_CNT
     optional: false
     to: utilizationDayCount
   - from: NCH_BENE_DSCHRG_DT
@@ -9884,7 +10066,8 @@ mappings:
   - from: CLM_HOSPC_START_DT_ID
     optional: true
     to: claimHospiceStartDate
-  - from: BENE_HOSPC_PRD_CNT
+  - defaultValue: '0'
+    from: BENE_HOSPC_PRD_CNT
     optional: true
     to: hospicePeriodCount
   - from: FI_DOC_CLM_CNTL_NUM
@@ -9897,6 +10080,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.HospiceClaimLine
   id: HospiceClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -9993,8 +10177,10 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
+    quoteNames: false
   transformations:
-  - from: CLM_LINE_NUM
+  - defaultValue: '0'
+    from: CLM_LINE_NUM
     optional: false
     to: lineNumber
   - from: REV_CNTR
@@ -10012,31 +10198,39 @@ mappings:
   - from: HCPCS_2ND_MDFR_CD
     optional: true
     to: hcpcsSecondModifierCode
-  - from: REV_CNTR_UNIT_CNT
+  - defaultValue: '0'
+    from: REV_CNTR_UNIT_CNT
     optional: false
     to: unitCount
-  - from: REV_CNTR_RATE_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_RATE_AMT
     optional: false
     to: rateAmount
-  - from: REV_CNTR_PRVDR_PMT_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_PRVDR_PMT_AMT
     optional: false
     to: providerPaymentAmount
-  - from: REV_CNTR_BENE_PMT_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_BENE_PMT_AMT
     optional: false
     to: benficiaryPaymentAmount
-  - from: REV_CNTR_PMT_AMT_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_PMT_AMT_AMT
     optional: false
     to: paymentAmount
-  - from: REV_CNTR_TOT_CHRG_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_TOT_CHRG_AMT
     optional: false
     to: totalChargeAmount
-  - from: REV_CNTR_NCVRD_CHRG_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_NCVRD_CHRG_AMT
     optional: true
     to: nonCoveredChargeAmount
   - from: REV_CNTR_DDCTBL_COINSRNC_CD
     optional: true
     to: deductibleCoinsuranceCd
-  - from: REV_CNTR_NDC_QTY
+  - defaultValue: '0'
+    from: REV_CNTR_NDC_QTY
     optional: true
     to: nationalDrugCodeQuantity
   - from: REV_CNTR_NDC_QTY_QLFR_CD
@@ -10059,6 +10253,7 @@ mappings:
   - gov.cms.bfd.model.rif.RifRecordBase
   id: SNFClaim
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -11100,6 +11295,7 @@ mappings:
     name: snf_claims
     primaryKeyColumns:
     - claimId
+    quoteNames: false
   transformations:
   - from: BENE_ID
     optional: false
@@ -11107,7 +11303,8 @@ mappings:
   - from: CLM_ID
     optional: false
     to: claimId
-  - from: CLM_GRP_ID
+  - defaultValue: '0'
+    from: CLM_GRP_ID
     optional: false
     to: claimGroupId
   - from: FINAL_ACTION
@@ -11152,10 +11349,12 @@ mappings:
   - from: CLM_MDCR_NON_PMT_RSN_CD
     optional: true
     to: claimNonPaymentReasonCode
-  - from: CLM_PMT_AMT
+  - defaultValue: '0'
+    from: CLM_PMT_AMT
     optional: false
     to: paymentAmount
-  - from: NCH_PRMRY_PYR_CLM_PD_AMT
+  - defaultValue: '0'
+    from: NCH_PRMRY_PYR_CLM_PD_AMT
     optional: false
     to: primaryPayerPaidAmount
   - from: NCH_PRMRY_PYR_CD
@@ -11197,7 +11396,8 @@ mappings:
   - from: CLM_PPS_IND_CD
     optional: true
     to: prospectivePaymentCode
-  - from: CLM_TOT_CHRG_AMT
+  - defaultValue: '0'
+    from: CLM_TOT_CHRG_AMT
     optional: false
     to: totalChargeAmount
   - from: CLM_ADMSN_DT
@@ -11212,49 +11412,64 @@ mappings:
   - from: NCH_PTNT_STATUS_IND_CD
     optional: true
     to: patientStatusCd
-  - from: NCH_BENE_IP_DDCTBL_AMT
+  - defaultValue: '0'
+    from: NCH_BENE_IP_DDCTBL_AMT
     optional: false
     to: deductibleAmount
-  - from: NCH_BENE_PTA_COINSRNC_LBLTY_AM
+  - defaultValue: '0'
+    from: NCH_BENE_PTA_COINSRNC_LBLTY_AM
     optional: false
     to: partACoinsuranceLiabilityAmount
-  - from: NCH_BENE_BLOOD_DDCTBL_LBLTY_AM
+  - defaultValue: '0'
+    from: NCH_BENE_BLOOD_DDCTBL_LBLTY_AM
     optional: false
     to: bloodDeductibleLiabilityAmount
-  - from: NCH_IP_NCVRD_CHRG_AMT
+  - defaultValue: '0'
+    from: NCH_IP_NCVRD_CHRG_AMT
     optional: false
     to: noncoveredCharge
-  - from: NCH_IP_TOT_DDCTN_AMT
+  - defaultValue: '0'
+    from: NCH_IP_TOT_DDCTN_AMT
     optional: false
     to: totalDeductionAmount
-  - from: CLM_PPS_CPTL_FSP_AMT
+  - defaultValue: '0'
+    from: CLM_PPS_CPTL_FSP_AMT
     optional: true
     to: claimPPSCapitalFSPAmount
-  - from: CLM_PPS_CPTL_OUTLIER_AMT
+  - defaultValue: '0'
+    from: CLM_PPS_CPTL_OUTLIER_AMT
     optional: true
     to: claimPPSCapitalOutlierAmount
-  - from: CLM_PPS_CPTL_DSPRPRTNT_SHR_AMT
+  - defaultValue: '0'
+    from: CLM_PPS_CPTL_DSPRPRTNT_SHR_AMT
     optional: true
     to: claimPPSCapitalDisproportionateShareAmt
-  - from: CLM_PPS_CPTL_IME_AMT
+  - defaultValue: '0'
+    from: CLM_PPS_CPTL_IME_AMT
     optional: true
     to: claimPPSCapitalIMEAmount
-  - from: CLM_PPS_CPTL_EXCPTN_AMT
+  - defaultValue: '0'
+    from: CLM_PPS_CPTL_EXCPTN_AMT
     optional: true
     to: claimPPSCapitalExceptionAmount
-  - from: CLM_PPS_OLD_CPTL_HLD_HRMLS_AMT
+  - defaultValue: '0'
+    from: CLM_PPS_OLD_CPTL_HLD_HRMLS_AMT
     optional: true
     to: claimPPSOldCapitalHoldHarmlessAmount
-  - from: CLM_UTLZTN_DAY_CNT
+  - defaultValue: '0'
+    from: CLM_UTLZTN_DAY_CNT
     optional: false
     to: utilizationDayCount
-  - from: BENE_TOT_COINSRNC_DAYS_CNT
+  - defaultValue: '0'
+    from: BENE_TOT_COINSRNC_DAYS_CNT
     optional: false
     to: coinsuranceDayCount
-  - from: CLM_NON_UTLZTN_DAYS_CNT
+  - defaultValue: '0'
+    from: CLM_NON_UTLZTN_DAYS_CNT
     optional: false
     to: nonUtilizationDayCount
-  - from: NCH_BLOOD_PNTS_FRNSHD_QTY
+  - defaultValue: '0'
+    from: NCH_BLOOD_PNTS_FRNSHD_QTY
     optional: false
     to: bloodPintsFurnishedQty
   - from: NCH_QLFYD_STAY_FROM_DT
@@ -11756,6 +11971,7 @@ mappings:
 - entityClassName: gov.cms.bfd.model.rif.SNFClaimLine
   id: SNFClaimLine
   messageClassName: gov.cms.model.rda.codegen.library.RifObjectWrapper
+  minStringLength: 0
   nullableFieldAccessorType: Optional
   sourceType: RifCsv
   table:
@@ -11827,8 +12043,10 @@ mappings:
     primaryKeyColumns:
     - parentClaim
     - lineNumber
+    quoteNames: false
   transformations:
-  - from: CLM_LINE_NUM
+  - defaultValue: '0'
+    from: CLM_LINE_NUM
     optional: false
     to: lineNumber
   - from: REV_CNTR
@@ -11837,23 +12055,28 @@ mappings:
   - from: HCPCS_CD
     optional: true
     to: hcpcsCode
-  - from: REV_CNTR_UNIT_CNT
+  - defaultValue: '0'
+    from: REV_CNTR_UNIT_CNT
     optional: false
     to: unitCount
     transformer: IntString
-  - from: REV_CNTR_RATE_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_RATE_AMT
     optional: false
     to: rateAmount
-  - from: REV_CNTR_TOT_CHRG_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_TOT_CHRG_AMT
     optional: false
     to: totalChargeAmount
-  - from: REV_CNTR_NCVRD_CHRG_AMT
+  - defaultValue: '0'
+    from: REV_CNTR_NCVRD_CHRG_AMT
     optional: false
     to: nonCoveredChargeAmount
   - from: REV_CNTR_DDCTBL_COINSRNC_CD
     optional: true
     to: deductibleCoinsuranceCd
-  - from: REV_CNTR_NDC_QTY
+  - defaultValue: '0'
+    from: REV_CNTR_NDC_QTY
     optional: true
     to: nationalDrugCodeQuantity
   - from: REV_CNTR_NDC_QTY_QLFR_CD

@@ -632,6 +632,11 @@ public class DataTransformer {
       this.errors = errors;
     }
 
+    @Override
+    public String toString() {
+      return getMessage() + getErrors();
+    }
+
     public List<ErrorMessage> getErrors() {
       return errors;
     }

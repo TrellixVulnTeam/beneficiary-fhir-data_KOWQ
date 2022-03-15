@@ -332,7 +332,7 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
       if (mapping.getTable().isPrimaryKey(column.getName())) {
         builder.addAnnotation(Id.class);
       }
-      builder.addAnnotation(createColumnAnnotation(column));
+      builder.addAnnotation(createColumnAnnotation(mapping.getTable(), column));
       if (column.isIdentity()) {
         builder.addAnnotation(
             AnnotationSpec.builder(GeneratedValue.class)
@@ -479,7 +479,7 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
     }
     AnnotationSpec.Builder builder =
         AnnotationSpec.builder(JoinColumn.class)
-            .addMember("name", "$S", quoteName(join.getJoinColumnName()));
+            .addMember("name", "$S", quoteName(mapping.getTable(), join.getJoinColumnName()));
     if (join.hasForeignKey()) {
       builder.addMember(
           "foreignKey",
@@ -572,27 +572,24 @@ public class RdaEntityCodeGenMojo extends AbstractMojo {
         .build();
   }
 
-  private String quoteName(String name) {
-    if (name.matches(".*A-Z.*")) {
-      return "`" + name + "`";
-    } else {
-      return name;
-    }
+  private String quoteName(TableBean table, String name) {
+    return table.isQuoteNames() ? "`" + name + "`" : name;
   }
 
   private AnnotationSpec createTableAnnotation(TableBean table) {
     AnnotationSpec.Builder builder =
-        AnnotationSpec.builder(Table.class).addMember("name", "$S", quoteName(table.getName()));
+        AnnotationSpec.builder(Table.class)
+            .addMember("name", "$S", quoteName(table, table.getName()));
     if (table.hasSchema()) {
-      builder.addMember("schema", "$S", quoteName(table.getSchema()));
+      builder.addMember("schema", "$S", quoteName(table, table.getSchema()));
     }
     return builder.build();
   }
 
-  private AnnotationSpec createColumnAnnotation(ColumnBean column) {
+  private AnnotationSpec createColumnAnnotation(TableBean table, ColumnBean column) {
     AnnotationSpec.Builder builder =
         AnnotationSpec.builder(Column.class)
-            .addMember("name", "$S", quoteName(column.getColumnName()));
+            .addMember("name", "$S", quoteName(table, column.getColumnName()));
     builder.addMember("nullable", "$L", column.isNullable());
     if (!column.isUpdatable()) {
       builder.addMember("updatable", "$L", false);

@@ -18,6 +18,7 @@ def create_mapping(summary):
         "name": summary["headerTable"],
         "primaryKeyColumns": primary_key_columns,
         "columns": columns,
+        "quoteNames": False
     }
 
     mapping = {
@@ -26,6 +27,7 @@ def create_mapping(summary):
         "messageClassName": "gov.cms.model.rda.codegen.library.RifObjectWrapper",
         "sourceType": "RifCsv",
         "nullableFieldAccessorType": "Optional",
+        "minStringLength": 0,
         "table": table
     }
     if is_rif_record_base_compatible(summary):
@@ -113,6 +115,7 @@ def create_line_mapping(summary):
         "name": line_table,
         "primaryKeyColumns": primary_key_columns,
         "columns": columns,
+        "quoteNames": False,
     }
 
     mapping = {
@@ -121,6 +124,7 @@ def create_line_mapping(summary):
         "messageClassName": "gov.cms.model.rda.codegen.library.RifObjectWrapper",
         "sourceType": "RifCsv",
         "nullableFieldAccessorType": "Optional",
+        "minStringLength": 0,
         "table": table,
         "transformations": transformations
     }
@@ -235,6 +239,7 @@ def add_field_transform(rif_field, transforms):
         scale = rif_field["rifColumnScale"]
         if scale == 0:
             transform["transformer"] = "IntString"
+        transform["defaultValue"] = "0"
 
     transforms.append(transform)
 

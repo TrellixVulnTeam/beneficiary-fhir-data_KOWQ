@@ -29,13 +29,22 @@ public class RifFromCodeGenerator implements FromCodeGenerator {
   @Override
   public CodeBlock createGetRef(TransformationBean transformation) {
     return transformationPropertyCodeBlock(
-        transformation, fieldName -> CodeBlock.of("() -> $L.getValue($S)", SOURCE_VAR, fieldName));
+        transformation,
+        fieldName ->
+            CodeBlock.of(
+                "() -> $L.getValue($S, $S)",
+                SOURCE_VAR,
+                fieldName,
+                transformation.getDefaultValue()));
   }
 
   @Override
   public CodeBlock createGetCall(TransformationBean transformation) {
     return transformationPropertyCodeBlock(
-        transformation, fieldName -> CodeBlock.of("$L.getValue($S)", SOURCE_VAR, fieldName));
+        transformation,
+        fieldName ->
+            CodeBlock.of(
+                "$L.getValue($S, $S)", SOURCE_VAR, fieldName, transformation.getDefaultValue()));
   }
 
   /**

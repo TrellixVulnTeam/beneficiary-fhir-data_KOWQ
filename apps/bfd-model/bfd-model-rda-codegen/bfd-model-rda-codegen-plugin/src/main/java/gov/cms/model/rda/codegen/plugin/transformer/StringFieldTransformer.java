@@ -28,10 +28,11 @@ public class StringFieldTransformer extends AbstractFieldTransformer {
       ToCodeGenerator toCodeGenerator) {
     return CodeBlock.builder()
         .addStatement(
-            "$L.copyString($L, $L, 1, $L, $L, $L)",
+            "$L.copyString($L, $L, $L, $L, $L, $L)",
             TRANSFORMER_VAR,
             fieldNameReference(mapping, column),
             column.isNullable(),
+            mapping.getMinStringLength(),
             column.computeLength(),
             fromCodeGenerator.createGetCall(transformation),
             toCodeGenerator.createSetRef(column))
@@ -46,9 +47,10 @@ public class StringFieldTransformer extends AbstractFieldTransformer {
       ToCodeGenerator toCodeGenerator) {
     return CodeBlock.builder()
         .addStatement(
-            "$L.copyOptionalString($L, 1, $L, $L, $L, $L)",
+            "$L.copyOptionalString($L, $L, $L, $L, $L, $L)",
             TRANSFORMER_VAR,
             fieldNameReference(mapping, column),
+            mapping.getMinStringLength(),
             column.computeLength(),
             fromCodeGenerator.createHasRef(transformation),
             fromCodeGenerator.createGetRef(transformation),

@@ -49,7 +49,11 @@ public class RifObjectWrapper {
    * @param label the column label for the field to be checked
    * @return the String at the given enum String
    */
-  public String getValue(final String label) {
-    return header.get(label);
+  public String getValue(final String label, String defaultValue) {
+    var value = header.get(label);
+    if (value != null && value.isEmpty() && defaultValue != null) {
+      value = defaultValue;
+    }
+    return value;
   }
 }

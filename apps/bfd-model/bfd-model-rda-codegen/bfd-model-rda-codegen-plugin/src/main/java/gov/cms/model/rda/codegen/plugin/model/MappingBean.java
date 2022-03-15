@@ -22,6 +22,7 @@ public class MappingBean {
   private SourceType sourceType = SourceType.Grpc;
   private NullableFieldAccessorType nullableFieldAccessorType = NullableFieldAccessorType.Standard;
   private TableBean table;
+  @Builder.Default private int minStringLength = 1;
   @Singular private List<EnumTypeBean> enumTypes = new ArrayList<>();
   @Singular private List<TransformationBean> transformations = new ArrayList<>();
   @Singular private List<ArrayElement> arrays = new ArrayList<>();
