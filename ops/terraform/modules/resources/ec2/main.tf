@@ -68,6 +68,13 @@ resource "aws_instance" "main" {
     kms_key_id            = data.aws_kms_key.master_key.key_id
   }
 
+  # TODO - This is a temporary fix. Please correct me.
+  lifecycle {
+    ignore_changes = [
+      root_block_device
+    ]
+  }
+
   user_data = templatefile("${path.module}/../templates/${var.launch_config.user_data_tpl}", {
     env           = var.env_config.env,
     accountId     = data.aws_caller_identity.current.account_id
