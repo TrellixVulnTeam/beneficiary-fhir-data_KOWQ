@@ -1,0 +1,65 @@
+pipeline {
+    agent {
+        kubernetes {
+        yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  serviceAccountName: bfd
+  restartPolicy: Never
+  containers:
+  - name: bfd-db-migrator-deployment
+    image: public.ecr.aws/c2o1d8s9/bfd-cbc-build:jdk11-mvn3-an29-tf12
+    command: ['cat']
+    tty: true
+"""
+        }
+    }
+    parameters {
+        text(name: 'migratorAMI', defaultValue: 'ami-1234', description: 'bfd-db-migrator AMI')
+        text(name: 'branchName', defaultValue: 'bfd-1550', description: 'branch to build')
+        text(name: 'environmentId', defaultValue: 'test', description: 'deployment target environment')
+    }
+    stages {
+        stage('Prepare bfd-db-migrator deployment'){
+            steps {
+                script {
+                    container('bfd-db-migrator-deployment') {
+                        sh '''
+                        git clone --depth 1 --branch ${branchName} --single-branch https://github.com/CMSgov/beneficiary-fhir-data.git bfd
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Deploy bfd-db-migrator') {
+            steps {
+                script {
+                    container('bfd-db-migrator-deployment') {
+                    dir("${workspace}/ops/terraform/env/${environmentId}/stateless") {
+                            sh "pwd"
+                            //// Debug output terraform version
+                            sh "echo terraform --version"
+
+                            //// Initilize terraform
+                            sh "echo terraform init -no-color"
+
+                            // Gathering terraform plan
+                            echo "Timestamp: ${java.time.LocalDateTime.now().toString()}"
+                            // TODO: BFD-1600 ensure the amiIds.bfdDbMigrator is leveraged for the the forthcoming terraform definition
+                            sh "echo terraform plan \
+                            -target todo.todo.todo.todo \
+                            -var='migrator_ami=${migratorAMI}' \
+                            -no-color -out=tfplan"
+
+                            echo "Timestamp: ${java.time.LocalDateTime.now().toString()}"
+                            sh "echo terraform apply \
+                            -no-color -input=false tfplan"
+                            echo "Timestamp: ${java.time.LocalDateTime.now().toString()}"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
