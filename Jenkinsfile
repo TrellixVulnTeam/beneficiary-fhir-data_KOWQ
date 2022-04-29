@@ -216,6 +216,18 @@ try {
 				}
 			}
 
+			stage('Deploy bfd-db-migrator to TEST') {
+				currentStage = "${env.STAGE_NAME}"
+				milestone(label: 'stage_deploy_bfd_db_migrator_test_start')
+				// FIXME swap out bfd-1550 with permanent name of bfd-db-migrator deployment job
+				build job: 'bfd-1550', propagate: true, wait: true
+				parameters: [
+					[$class:StringParameterValue, name: 'migratorAMI', value: amiIds.bfdDbMigrator],
+					[$class:StringParameterValue, name: 'branchName', value: gitBranchName],
+					[$class:StringParameterValue, name: 'environmentId', value: 'test'],
+				]
+			}
+
 			stage('Deploy to TEST') {
 				currentStage = "${env.STAGE_NAME}"
 				lock(resource: 'env_test', inversePrecendence: true) {
