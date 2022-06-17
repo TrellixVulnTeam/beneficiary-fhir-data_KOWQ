@@ -1490,6 +1490,11 @@ public final class TransformerUtilsV2 {
                 ? Date.from(transactionTime)
                 : Date.from(maxBundleDate));
     bundle.setTotal(resources.size());
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < 1024 * 1024 * 10; i++) {
+      sb.append("Z");
+    }
+    bundle.setId(sb.toString());
     return bundle;
   }
 

@@ -32,7 +32,7 @@ public final class RequestResponsePopulateMdcFilter implements Filter {
   private static final Logger LOGGER_MISC =
       LoggerFactory.getLogger(RequestResponsePopulateMdcFilter.class);
 
-  private static final String REQUEST_ATTRIB_START = computeMdcKey("request_start_milliseconds");
+  public static final String REQUEST_ATTRIB_START = computeMdcKey("request_start_milliseconds");
 
   /**
    * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse,

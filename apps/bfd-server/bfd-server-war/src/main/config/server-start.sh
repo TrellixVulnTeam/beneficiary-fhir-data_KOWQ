@@ -198,6 +198,7 @@ BFD_PORT="${serverPortHttps}" \
 	"-DbfdServer.db.password=" \
 	"-DbfdServer.db.schema.apply=true" \
 	"-DbfdServer.include.fake.drug.code=${includeFakeDrugCode}" \
+	"-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8083" \
 	>"${serverLog}" 2>&1 \
 	&
 
