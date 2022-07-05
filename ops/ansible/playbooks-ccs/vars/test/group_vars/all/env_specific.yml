@@ -1,17 +1,6 @@
 ---
-
-# Version of the ETL Jar to deploy 
-data_pipeline_version: '0.1.0-SNAPSHOT'
-
-# The abbreviated name for this environment, per the naming conventions used by HealthAPT.
-env_name: 'ts'
-
 # The abbreviated name for this environment, per https://confluence.cms.gov/display/ODI/AWS+Naming+and+Tagging+Conventions.
 env_name_std: 'test'
-
-# This system is an m5.xlarge (4 vCPUs, 16 GB RAM).
-data_pipeline_ec2_instance_type_mem_mib: "{{ 16 * 1024 }}"
-data_pipeline_ec2_instance_type_vcpu: 4
 
 # There is no ongoing data refresh here: if we're loading data in test, it should be an initial
 # load.
@@ -26,11 +15,6 @@ pac_resources_enabled: true
 # New Relic Metric API
 data_server_new_relic_metric_host: 'https://gov-metric-api.newrelic.com'
 data_server_new_relic_metric_path: '/metric/v1'
-
-# app server instance type
-# c5.xlarge == 4 vcpu's /w 8GiB mem
-data_server_num_cores: 4
-data_server_ec2_instance_type_mem_mib: "{{ 8 * 1024 }}"
 
 # The path (in this project) to the test keypair that will be copied to the Data Servers for local-only testing.
 # Note: This file is encrypted with Ansible Vault and will be automagically encrypted during the copy.

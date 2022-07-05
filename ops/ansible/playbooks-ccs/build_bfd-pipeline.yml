@@ -37,9 +37,9 @@
       vars:
         data_pipeline_dir: "{{ bfd_pipeline_dir }}"
         # Note: The `data_pipeline_zip` variable should have been provided by `--extra-vars` on the command line.
-        data_pipeline_jvm_args: "-Xmx{{ ((data_pipeline_ec2_instance_type_mem_mib | int) * 0.80) | int }}m -XX:+PreserveFramePointer"
+        data_pipeline_jvm_args: "-Xmx{{ (ansible_memtotal_mb * 0.80) | int }}m -XX:+PreserveFramePointer"
         data_pipeline_tmp_dir: "{{ bfd_pipeline_dir }}/tmp"
-        data_pipeline_loader_threads: "{{ data_pipeline_ec2_instance_type_vcpu * 25 }}"
+        data_pipeline_loader_threads: "{{ ansible_processor_vcpu * 25 }}"
         data_pipeline_hicn_hash_iterations: "{{ vault_data_pipeline_hicn_hash_iterations }}"
         data_pipeline_hicn_hash_pepper: "{{ vault_data_pipeline_hicn_hash_pepper }}"
         data_pipeline_s3_bucket: "{{ vault_data_pipeline_s3_bucket }}"

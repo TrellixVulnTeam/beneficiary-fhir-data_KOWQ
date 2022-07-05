@@ -1,8 +1,4 @@
 ---
-  
-# Version of the ETL Jar to deploy 
-data_pipeline_version: '0.1.0-SNAPSHOT'
-
 # The abbreviated name for this environment, per https://confluence.cms.gov/display/ODI/AWS+Naming+and+Tagging+Conventions.
 env_name_std: 'prod-sbx'
 
@@ -16,18 +12,9 @@ pac_resources_enabled: true
 data_server_new_relic_metric_host: 'https://gov-metric-api.newrelic.com'
 data_server_new_relic_metric_path: '/metric/v1'
 
-# This system is an m5.xlarge (4 vCPUs, 16 GB RAM).
-data_pipeline_ec2_instance_type_mem_mib: "{{ 16 * 1024 }}"
-data_pipeline_ec2_instance_type_vcpu: 4
-
 # There is no ongoing data refresh here: if we're loading data in the developer preview environment, it should be an initial
 # load.
 data_pipeline_idempotency_required: false
-
-# app server instance type
-# c5.4xlarge == 16 vcpu's /w 32GiB mem
-data_server_num_cores: 16
-data_server_ec2_instance_type_mem_mib: "{{ 32 * 1024 }}"
 
 # The path (in this project) to the test keypair that will be copied to the Data Servers for local-only testing.
 # Note: This file is encrypted with Ansible Vault and will be automagically encrypted during the copy.
@@ -85,4 +72,3 @@ data_pipeline_ccw_rif_job_enabled: true
 # Enable RDA API data ETL pipeline jobs.
 data_pipeline_rda_job_enabled: true
 data_pipeline_rda_job_interval_seconds: 3600
-
