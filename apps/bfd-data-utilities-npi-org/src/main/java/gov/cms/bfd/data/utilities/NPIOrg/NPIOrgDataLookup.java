@@ -1,6 +1,5 @@
-package gov.cms.bfd.data.utilities.NPIApp;
+package gov.cms.bfd.data.utilities.NPIOrg;
 
-import gov.cms.bfd.data.utilities.NPIApp.App;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

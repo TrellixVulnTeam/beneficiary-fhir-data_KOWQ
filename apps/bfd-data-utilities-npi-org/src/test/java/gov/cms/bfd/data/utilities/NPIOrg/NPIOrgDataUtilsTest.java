@@ -1,4 +1,4 @@
-package gov.cms.bfd.data.utilities.NPIApp;
+package gov.cms.bfd.data.utilities.NPIOrg;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
