@@ -169,11 +169,11 @@ public class MbiCache {
           return readOrInsertIfMissing(mbi);
         } catch (PersistenceException ex) {
           final Throwable rootCause = Throwables.getRootCause(ex);
-          LOGGER.debug(
-              "caught exception while caching MBI: retry={} class={} causeClass={}",
-              retryNumber,
-              ex.getClass().getSimpleName(),
-              rootCause.getClass().getSimpleName());
+          //          LOGGER.debug(
+          //              "caught exception while caching MBI: retry={} class={} causeClass={}",
+          //              retryNumber,
+          //              ex.getClass().getSimpleName(),
+          //              rootCause.getClass().getSimpleName());
           retryNumber += 1;
         }
       }
@@ -221,11 +221,11 @@ public class MbiCache {
     private void waitForRetry(int retryNumber) {
       var delay = retryNumber * (50L + random.nextInt(50));
       try {
-        LOGGER.warn("waiting for retry: retryNumber={} delay={}", retryNumber, delay);
+        //        LOGGER.warn("waiting for retry: retryNumber={} delay={}", retryNumber, delay);
         Thread.sleep(delay);
       } catch (InterruptedException ex) {
         // allow the Interrupted exception to flow through to terminate processing
-        throw new RuntimeException(ex);
+        throw new RuntimeException("interrupted");
       }
     }
   }
