@@ -11,7 +11,7 @@ locals {
   project              = "bfd"
   region               = "us-east-1"
   account_id           = data.aws_caller_identity.current.account_id
-  glue_workflow_name   = "${local.full_name}-api-requests-workflow"
+  glue_workflow_name   = "${local.full_name}-update-insights-workflow"
 
   tags = {
     business    = "OEDA",

@@ -78,7 +78,7 @@ resource "aws_glue_crawler" "glue-crawler-api-requests" {
   }
 
   recrawl_policy {
-    recrawl_behavior = "CRAWL_NEW_FOLDERS_ONLY"
+    recrawl_behavior = "CRAWL_EVERYTHING"
   }
 
   schema_change_policy {
@@ -100,6 +100,7 @@ module "glue-table-api-history" {
   database       = module.database.name
   bucket         = data.aws_s3_bucket.bfd-insights-bucket.bucket
   bucket_cmk     = data.aws_kms_key.kms_key.arn
+  s3_prefix      = "temp" # Has an expiration policy, so data will automatically self-delete
   storage_format = "json"
   serde_format   = "grok"
   serde_parameters = {
@@ -149,7 +150,7 @@ resource "aws_glue_crawler" "glue-crawler-api-history" {
   }
 
   schema_change_policy {
-    delete_behavior = "LOG" # "DEPRECATE_IN_DATABASE"
+    delete_behavior = "LOG"
     update_behavior = "UPDATE_IN_DATABASE"
   }
 
@@ -271,21 +272,21 @@ resource "aws_glue_trigger" "glue-trigger-history-ingest-job" {
   }
 }
 
+# Glue Workflow Object
+resource "aws_glue_workflow" "glue-workflow-update-insights" {
+  name = "${local.full_name}-update-insights-workflow"
+  max_concurrent_runs = "1"
+}
+
 # Trigger for API Requests Crawler
 resource "aws_glue_trigger" "glue-crawler-api-requests-crawler" {
   name          = "${local.full_name}-api-requests-crawler-trigger"
   description   = "Trigger to start the API Requests Crawler whenever the History Ingest Job completes successfully"
-  workflow_name = aws_glue_workflow.glue-workflow-api-requests.name
-  type          = "CONDITIONAL"
+  workflow_name = aws_glue_workflow.glue-workflow-update-insights.name
+  type          = "SCHEDULED"
+  schedule      = "cron(0 4 * * ? *)" # Every day at 4AM UTC
 
   actions {
     crawler_name = aws_glue_crawler.glue-crawler-api-requests.name
-  }
-
-  predicate {
-    conditions {
-      job_name = aws_glue_job.glue-job-history-ingest.name
-      state  = "SUCCEEDED"
-    }
   }
 }

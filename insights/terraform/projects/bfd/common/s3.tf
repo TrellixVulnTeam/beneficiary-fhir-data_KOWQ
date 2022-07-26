@@ -80,7 +80,7 @@ rule {
     id = "log"
 
     expiration {
-      days = 1
+      days = 1 # TODO: Set to 3 days
     }
 
     filter {

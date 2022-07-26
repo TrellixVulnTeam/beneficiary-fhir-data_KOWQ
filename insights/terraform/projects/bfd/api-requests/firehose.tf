@@ -7,9 +7,9 @@ resource "aws_kinesis_firehose_delivery_stream" "firehose-ingester" {
     bucket_arn          = data.aws_s3_bucket.bfd-insights-bucket.arn
     buffer_interval     = 60
     buffer_size         = 128
-    error_output_prefix = "databases/${module.database.name}/${module.glue-table-api-history.name}_errors/!{firehose:error-output-type}/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/"
+    error_output_prefix = "temp/${module.database.name}/${module.glue-table-api-history.name}_errors/!{firehose:error-output-type}/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/"
     kms_key_arn         = data.aws_kms_key.kms_key.arn
-    prefix              = "databases/${module.database.name}/${module.glue-table-api-history.name}/firehose:year=!{timestamp:yyyy};month=!{timestamp:MM}/day:!{timestamp:dd}/"
+    prefix              = "temp/${module.database.name}/${module.glue-table-api-history.name}/firehose:year=!{timestamp:yyyy};month=!{timestamp:MM}/day:!{timestamp:dd}/"
     role_arn            = aws_iam_role.iam-role-firehose.arn
     s3_backup_mode      = "Disabled"
     compression_format  = "GZIP"
