@@ -13,21 +13,39 @@ from pyspark.sql import functions as SqlFuncs
 def format_field_names(record):
     ''' Format field names within a record to remove "." characters and lowercase. '''
 
+    # Make a new record, because we can't iterate over the old one AND change the keys
+    record_copy = {}
+
+    for field_id in record.keys():
+        record_copy[field_id.lower().replace('.', '_')] = record[field_id]
+
+    return record_copy
+
+
+def add_time_columns(record):
+    """ Modify a record to add columns for year, month, day. """
+
+    if 'timestamp' not in record:
+        return record
+
+    record['year'] = record['timestamp'][0:4]
+    record['month'] = record['timestamp'][5:7]
+    record['day'] = record['timestamp'][8:10]
+
+    return record
+
+
+def transform_record(record):
+    """ Modify a record to fit BFD Insights' requirements. """
+
     try:
-        # Make a new record, because we can't iterate over the old one AND change the keys
-        record_copy = {}
-
-        for field_id in record.keys():
-            record_copy[field_id.lower().replace('.', '_')] = record[field_id]
-
-        return record_copy
+        return add_time_columns(format_field_names(record))
 
     except Exception as e:
         # AWS Glue jobs are not good at providing error output from these
         # Mapping functions, which get outsourced to separate threads
         print('BFD_ERROR: {0}'.format(e))
         raise e
-
 
 # Main
 
@@ -55,9 +73,15 @@ SourceDf = glueContext.create_dynamic_frame.from_catalog(
     database=args['sourceDatabase'],
     table_name=args['sourceTable'],
     transformation_ctx="SourceDf",
+    additional_options={
+        # Restrict the execution to a certain amount of data to prevent memory overflows.
+        "boundedSize" : "250000000", # 0.25 GB in size
+    }
 )
 
 record_count = SourceDf.count()
+
+print("Starting run of {count} records.".format(count=record_count))
 
 # With bookmarks enabled, we have to make sure that there is data to be processed
 if record_count > 0:
@@ -73,26 +97,18 @@ if record_count > 0:
         args['tempLocation']
         ).select('root')
 
-    relationalized = DynamicFrame.fromDF(
-        RelationalizeBeneNode.toDF()
-        .withColumn('year', SqlFuncs.substring('timestamp', 1,4))
-        .withColumn('month', SqlFuncs.substring('timestamp', 6,2))
-        .withColumn('day', SqlFuncs.substring('timestamp', 9,2)),
-        glueContext,
-        "Relationalize"
-        )
-
-    OutputDy = Map.apply(frame = relationalized,
-            f = format_field_names, transformation_ctx = 'Reformat_Field_Names')
+    OutputDy = Map.apply(frame = RelationalizeBeneNode,
+            f = transform_record, transformation_ctx = 'Reformat_Field_Names')
 
     print("Here is the output schema:")
     OutputDy.toDF().printSchema()
 
     # Script generated for node Data Catalog table
-    DataCatalogtable_node3 = glueContext.write_dynamic_frame.from_catalog(
+    glueContext.write_dynamic_frame.from_catalog(
         frame=OutputDy,
         database=args['targetDatabase'],
         table_name=args['targetTable'],
+        format="glueparquet",
         additional_options={
             "enableUpdateCatalog": True,
             "updateBehavior": "UPDATE_IN_DATABASE",
