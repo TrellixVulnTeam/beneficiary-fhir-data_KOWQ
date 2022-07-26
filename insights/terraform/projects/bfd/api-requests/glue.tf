@@ -78,7 +78,7 @@ resource "aws_glue_crawler" "glue-crawler-api-requests" {
   }
 
   recrawl_policy {
-    recrawl_behavior = "CRAWL_EVERYTHING"
+    recrawl_behavior = "CRAWL_NEW_FOLDERS_ONLY"
   }
 
   schema_change_policy {
@@ -214,6 +214,7 @@ resource "aws_glue_job" "glue-job-history-ingest" {
     "--sourceTable"                      = module.glue-table-api-history.name
     "--targetDatabase"                   = module.database.name
     "--targetTable"                      = module.glue-table-api-requests.name
+    "--executionSize"                    = "250000000" # 250 MB. Unit is bytes, must be string.
   }
 
   command {
@@ -244,7 +245,7 @@ resource "aws_glue_trigger" "glue-trigger-api-history-crawler" {
   name          = "${local.full_name}-history-ingest-crawler-trigger"
   workflow_name = aws_glue_workflow.glue-workflow-api-requests.name
   type          = "SCHEDULED"
-  schedule      = "cron(0 4 * * ? *)" # Every day at 4am UTC
+  schedule      = "cron(*/15 * * * ? *)" # Every 15 minutes
 
   actions {
     crawler_name = aws_glue_crawler.glue-crawler-api-history.name

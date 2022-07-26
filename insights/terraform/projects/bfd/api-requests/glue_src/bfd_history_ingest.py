@@ -62,12 +62,14 @@ args = getResolvedOptions(sys.argv,
                            'sourceDatabase',
                            'sourceTable',
                            'targetDatabase',
-                           'targetTable'])
+                           'targetTable',
+                           'executionSize'])
 
 print("sourceDatabase is set to: ", args['sourceDatabase'])
 print("   sourceTable is set to: ", args['sourceTable'])
 print("targetDatabase is set to: ", args['targetDatabase'])
 print("   targetTable is set to: ", args['targetTable'])
+print(" executionSize is set to: ", args['executionSize'])
 
 SourceDf = glueContext.create_dynamic_frame.from_catalog(
     database=args['sourceDatabase'],
@@ -75,7 +77,8 @@ SourceDf = glueContext.create_dynamic_frame.from_catalog(
     transformation_ctx="SourceDf",
     additional_options={
         # Restrict the execution to a certain amount of data to prevent memory overflows.
-        "boundedSize" : "250000000", # 0.25 GB in size
+        # "boundedSize" : "250000000", # 0.25 GB in size. Must be a string.
+        "boundedSize" : args['executionSize'], # Unit is bytes. Must be a string.
     }
 )
 
@@ -86,7 +89,7 @@ print("Starting run of {count} records.".format(count=record_count))
 # With bookmarks enabled, we have to make sure that there is data to be processed
 if record_count > 0:
     print("Here is the schema from the source")
-    SourceDf.toDF().printSchema()
+    SourceDf.printSchema()
 
     NextNode = DynamicFrame.fromDF(
         Unbox.apply(frame = SourceDf, path = "message", format="json").toDF()
@@ -101,7 +104,7 @@ if record_count > 0:
             f = transform_record, transformation_ctx = 'Reformat_Field_Names')
 
     print("Here is the output schema:")
-    OutputDy.toDF().printSchema()
+    OutputDy.printSchema()
 
     # Script generated for node Data Catalog table
     glueContext.write_dynamic_frame.from_catalog(

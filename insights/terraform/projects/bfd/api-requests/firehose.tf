@@ -1,6 +1,6 @@
 # Firehose Data Stream
 resource "aws_kinesis_firehose_delivery_stream" "firehose-ingester" {
-  name           = "${local.full_name}-firehose-ingester"
+  name           = "${local.full_name}-firehose"
   destination    = "extended_s3"
 
   extended_s3_configuration {
