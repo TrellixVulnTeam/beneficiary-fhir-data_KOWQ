@@ -246,7 +246,7 @@ resource "aws_glue_trigger" "glue-trigger-api-history-crawler" {
   name          = "${local.full_name}-history-ingest-crawler-trigger"
   workflow_name = aws_glue_workflow.glue-workflow-api-requests.name
   type          = "SCHEDULED"
-  schedule      = "cron(*/15 * * * ? *)" # Every 15 minutes
+  schedule      = "cron(*/20 * * * ? *)" # Every 20 minutes
 
   actions {
     crawler_name = aws_glue_crawler.glue-crawler-api-history.name
