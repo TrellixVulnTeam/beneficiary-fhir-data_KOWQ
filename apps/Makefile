@@ -73,12 +73,11 @@ killall: ## Kills all running bfd-server processes
 	@pkill -f ".*bfd-server.*" >/dev/null 2>&1 || true
 .PHONY: killall
 
-_:## 
+_:##
+
 ###
-# Load sample data and TODO: run migrations
+# Load sample data
 ###
-migrate: ./target docker-db
-	@cd bfd-pipeline/
 load-sample-rif: ./target docker-db ## Loads a single sample rif record into the local dev database
 	@cd bfd-pipeline/bfd-pipeline-ccw-rif && \
 	time mvn -Dits.db.url="jdbc:postgresql://localhost:5432/fhirdb" -Dits.db.username=bfd -Dits.db.password=InsecureLocalDev \
@@ -265,13 +264,31 @@ pipeline-prod: build-pipeline
 	@cp -Rf "$(PWD)/bfd-pipeline/bfd-pipeline-app/target/pipeline-app/bfd-pipeline-app-1.0.0-SNAPSHOT" "$(PWD)/bluebutton-data-pipeline-prod/"
 
 .PHONY: build-migrator
-build-migrator:
+build-migrator: ./target
 	@mvn --threads 1C --projects :bfd-db-migrator,:bfd-model-rif --also-make -DskipITs -DskipTests -Dmaven.javadoc.skip=true clean verify
 
-.PHONY: migrate-local
-migrate-local: build-migrator
+# .PHONY: migrate-local
+# migrate-local: build-migrator
+# 	@mkdir -p "$(PWD)/bluebutton-local-migrator"
+# 	@cp -Rf "$(PWD)/bluebutton-local-migrator/bfd-db-migrator-1.0.0-SNAPSHOT" "$(PWD)/bluebutton-local-migrator/bfd-db-migrator-1.0.0-SNAPSHOT-last" || true
+# 	@cp -Rf "$(PWD)/bfd-db-migrator/target/db-migrator/bfd-db-migrator-1.0.0-SNAPSHOT" "$(PWD)/bluebutton-local-migrator/" && \
+# 	cd bluebutton-local-migrator && \
+# 	./bfd-db-migrator-service.sh; exec tail -f bluebutton-db-migrator.log
+
+.PHONY: migrate-prod-sbx
+migrate-prod-sbx: build-migrator
 	@mkdir -p "$(PWD)/bluebutton-local-migrator"
 	@cp -Rf "$(PWD)/bluebutton-local-migrator/bfd-db-migrator-1.0.0-SNAPSHOT" "$(PWD)/bluebutton-local-migrator/bfd-db-migrator-1.0.0-SNAPSHOT-last" || true
 	@cp -Rf "$(PWD)/bfd-db-migrator/target/db-migrator/bfd-db-migrator-1.0.0-SNAPSHOT" "$(PWD)/bluebutton-local-migrator/" && \
 	cd bluebutton-local-migrator && \
 	./bfd-db-migrator-service.sh; exec tail -f bluebutton-db-migrator.log
+
+migrate: build-migrator ## Run the migrator
+	@mkdir -p "$(PWD)/bluebutton-local-migrator"
+	@cp -Rf "$(PWD)/bluebutton-local-migrator/bfd-db-migrator-1.0.0-SNAPSHOT" "$(PWD)/bluebutton-local-migrator/bfd-db-migrator-1.0.0-SNAPSHOT-last" || true
+	@cp -Rf "$(PWD)/bfd-db-migrator/target/db-migrator/bfd-db-migrator-1.0.0-SNAPSHOT" "$(PWD)/bluebutton-local-migrator/" && \
+	cd bluebutton-local-migrator && ./bfd-db-migrator-service.sh; tail -f bluebutton-db-migrator.log
+.PHONY: migrate
+
+migrate-local: docker-db
+	@unset DATABASE_USERNAME DATABASE_PASSWORD DATABASE_URL && exec make migrate
