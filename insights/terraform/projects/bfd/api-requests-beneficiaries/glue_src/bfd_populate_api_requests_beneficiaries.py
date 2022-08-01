@@ -31,15 +31,23 @@ print("   targetTable is set to: ", args['targetTable'])
 SourceDyf = glueContext.create_dynamic_frame.from_catalog(database=args['sourceDatabase'],
     table_name=args['sourceTable'], transformation_ctx="SourceDyf",)
 
+record_count = SourceDyf.count()
+
+print("Starting run of {count} records.".format(count=record_count))
+
 # With bookmarks enabled, we have to make sure that there is data to be processed
-if SourceDyf.count() > 0:
+if record_count > 0:
+    SourceDf = SourceDyf.toDF()
+
     TransformedDf = (
-        SourceDyf.toDF()
+        SourceDf
         .filter(SqlFuncs.col("`mdc_http_access_response_status`") == "200")
         .withColumn("bene_id", SqlFuncs.expr("""explode(transform(split(`mdc_bene_id`,","), x -> bigint(x)))"""))
+        .withColumn("bene_id_hash", SourceDf.mdc_bene_id.substr(-2,2))
         .withColumn("timestamp", SqlFuncs.to_timestamp(SqlFuncs.col("timestamp")))
         .select(
             SqlFuncs.col("bene_id"),
+            SqlFuncs.col("bene_id_hash"),
             SqlFuncs.col("timestamp"),
             SqlFuncs.col("`mdc_http_access_request_clientssl_dn`").alias("clientssl_dn"),
             SqlFuncs.col("`mdc_http_access_request_operation`").alias("operation"),
@@ -59,7 +67,7 @@ if SourceDyf.count() > 0:
         table_name=args['targetTable'],
         additional_options={
             "updateBehavior": "UPDATE_IN_DATABASE",
-            "partitionKeys": ["year", "month", "day"],
+            "partitionKeys": ["bene_id_hash", "year", "month", "day"],
             "enableUpdateCatalog": True,
         },
         transformation_ctx="WriteNode",

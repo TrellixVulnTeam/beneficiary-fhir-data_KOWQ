@@ -16,6 +16,11 @@ module "glue-table-beneficiaries" {
 
   partitions = [
     {
+      name    = "bene_id_hash"
+      type    = "string"
+      comment = "Hash of bene IDs to keep all requests from the same bene in the same partition"
+    },
+    {
       name    = "year"
       type    = "string"
       comment = "Year of request"
@@ -179,14 +184,9 @@ module "glue-table-beneficiaries-unique" {
 
   partitions = [
     {
-      name    = "year"
+      name    = "bene_id_hash"
       type    = "string"
-      comment = "Year of request"
-    },
-    {
-      name    = "month"
-      type    = "string"
-      comment = "Month of request"
+      comment = "Hash of bene IDs to keep all requests from the same bene in the same partition"
     },
   ]
 
@@ -212,6 +212,7 @@ resource "aws_s3_object" "s3-script-populate-beneficiary-unique" {
   key                = "scripts/${local.environment}/bfd_populate_api_requests_beneficiary_unique.py"
   metadata           = {}
   storage_class      = "STANDARD"
+  source_hash        = filemd5("glue_src/bfd_populate_api_requests_beneficiary_unique.py")
   source             = "glue_src/bfd_populate_api_requests_beneficiary_unique.py"
 }
 
@@ -301,22 +302,23 @@ resource "aws_glue_crawler" "glue-crawler-beneficiaries-unique" {
 #
 # Organizes the Glue jobs / crawlers and runs them in sequence
 
+# Glue Workflow Object for updating the BFD Insights tables. This runs on a schedule every day at
+# 5am UTC but can be run manually from the console.
+resource "aws_glue_workflow" "glue-workflow-update-insights" {
+  name = "${local.full_name}-update-insights-workflow"
+  max_concurrent_runs = "1"
+}
+
 # Trigger for Populate Beneficiaries Job
 resource "aws_glue_trigger" "glue-trigger-populate-beneficiaries-job" {
   name          = "${local.full_name}-populate-beneficiaries-job-trigger"
   description   = "Trigger to start the Populate Beneficiaries Glue Job whenever the Crawler completes successfully"
-  workflow_name = local.glue_workflow_name
-  type          = "CONDITIONAL"
+  workflow_name = aws_glue_workflow.glue-workflow-update-insights.name
+  type          = "SCHEDULED"
+  schedule      = "cron(0 5 * * ? *)" # Every day at 5am UTC
 
   actions {
     job_name = aws_glue_job.glue-job-populate-beneficiaries.name
-  }
-
-  predicate {
-    conditions {
-      crawler_name = "${local.full_name}-api-requests-crawler" # From api-requests
-      crawl_state  = "SUCCEEDED"
-    }
   }
 }
 
@@ -324,7 +326,7 @@ resource "aws_glue_trigger" "glue-trigger-populate-beneficiaries-job" {
 resource "aws_glue_trigger" "glue-trigger-beneficiaries-crawler" {
   name          = "${local.full_name}-beneficiaries-crawler-trigger"
   description   = "Trigger to start the Beneficiaries Crawler whenever the Populate Beneficiaries Job completes successfully"
-  workflow_name = local.glue_workflow_name
+  workflow_name = aws_glue_workflow.glue-workflow-update-insights.name
   type          = "CONDITIONAL"
 
   actions {
@@ -343,7 +345,7 @@ resource "aws_glue_trigger" "glue-trigger-beneficiaries-crawler" {
 resource "aws_glue_trigger" "glue-trigger-populate-beneficiaries-unique-job" {
   name          = "${local.full_name}-populate-beneficiaries-unique-job-trigger"
   description   = "Trigger to start the Populate Beneficiaries Unique Job whenever the Beneficiaries Crawler completes successfully"
-  workflow_name = local.glue_workflow_name
+  workflow_name = aws_glue_workflow.glue-workflow-update-insights.name
   type          = "CONDITIONAL"
 
   actions {
@@ -362,7 +364,7 @@ resource "aws_glue_trigger" "glue-trigger-populate-beneficiaries-unique-job" {
 resource "aws_glue_trigger" "glue-trigger-beneficiaries-unique-crawler" {
   name          = "${local.full_name}-beneficiaries-unique-crawler-trigger"
   description   = "Trigger to start the Beneficiaries Unique Crawler whenever the Populate Beneficiaries Unique Job completes successfully"
-  workflow_name = local.glue_workflow_name
+  workflow_name = aws_glue_workflow.glue-workflow-update-insights.name
   type          = "CONDITIONAL"
 
   actions {

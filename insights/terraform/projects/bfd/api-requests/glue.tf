@@ -100,7 +100,7 @@ module "glue-table-api-history" {
   database       = module.database.name
   bucket         = data.aws_s3_bucket.bfd-insights-bucket.bucket
   bucket_cmk     = data.aws_kms_key.kms_key.arn
-  s3_prefix      = "temp" # Has an expiration policy, so data will automatically self-delete
+  s3_prefix      = "temp-database" # Has an expiration policy, so data will automatically self-delete
   storage_format = "json"
   serde_format   = "grok"
   serde_parameters = {
@@ -235,34 +235,32 @@ resource "aws_glue_job" "glue-job-history-ingest" {
 # Organizes the Glue jobs / crawlers and runs them in sequence
 
 # Glue Workflow Object
-resource "aws_glue_workflow" "glue-workflow-api-requests" {
-  name = "${local.full_name}-api-requests-workflow"
+resource "aws_glue_workflow" "glue-workflow-api-requests-crawlers" {
+  name = "${local.full_name}-api-requests-crawlers"
   max_concurrent_runs = "1"
 }
 
-# Trigger for History Ingest Crawler. This will run every night at 4am UTC, but it can also be run
-# manually through the Console
+# Trigger for History Ingest Crawler. This will run every night at 4 AM UTC, but it can also be run
+# manually through the Console. The only reason this would *need* to be run would be to update the
+# partitions and schema, which shouldn't need to happen very often. Once a day seems fine.
 resource "aws_glue_trigger" "glue-trigger-api-history-crawler" {
   name          = "${local.full_name}-history-ingest-crawler-trigger"
-  workflow_name = aws_glue_workflow.glue-workflow-api-requests.name
+  description   = "Trigger to start the API History Crawler every day at 4am UTC"
+  workflow_name = aws_glue_workflow.glue-workflow-api-requests-crawlers.name
   type          = "SCHEDULED"
-  schedule      = "cron(*/20 * * * ? *)" # Every 20 minutes
+  schedule      = "cron(0 4 * * ? *)" # Every night at 4am UTC
 
   actions {
     crawler_name = aws_glue_crawler.glue-crawler-api-history.name
   }
 }
 
-# Trigger for History Ingest Job
-resource "aws_glue_trigger" "glue-trigger-history-ingest-job" {
-  name          = "${local.full_name}-history-ingest-trigger"
-  description   = "Trigger to start the History Ingest Glue Job whenever the Crawler completes successfully"
-  workflow_name = aws_glue_workflow.glue-workflow-api-requests.name
+# Trigger for API Requests Crawler
+resource "aws_glue_trigger" "glue-crawler-api-requests-crawler" {
+  name          = "${local.full_name}-api-requests-crawler-trigger"
+  description   = "Trigger to start the API Requests Crawler after the History Crawler finishes"
+  workflow_name = aws_glue_workflow.glue-workflow-api-requests-crawlers.name
   type          = "CONDITIONAL"
-
-  actions {
-    job_name = aws_glue_job.glue-job-history-ingest.name
-  }
 
   predicate {
     conditions {
@@ -270,23 +268,27 @@ resource "aws_glue_trigger" "glue-trigger-history-ingest-job" {
       crawl_state  = "SUCCEEDED"
     }
   }
-}
-
-# Glue Workflow Object
-resource "aws_glue_workflow" "glue-workflow-update-insights" {
-  name = "${local.full_name}-update-insights-workflow"
-  max_concurrent_runs = "1"
-}
-
-# Trigger for API Requests Crawler
-resource "aws_glue_trigger" "glue-crawler-api-requests-crawler" {
-  name          = "${local.full_name}-api-requests-crawler-trigger"
-  description   = "Trigger to start the API Requests Crawler whenever the History Ingest Job completes successfully"
-  workflow_name = aws_glue_workflow.glue-workflow-update-insights.name
-  type          = "SCHEDULED"
-  schedule      = "cron(0 4 * * ? *)" # Every day at 4AM UTC
 
   actions {
     crawler_name = aws_glue_crawler.glue-crawler-api-requests.name
+  }
+}
+
+# Glue Workflow Object for Continuous Loading of History
+resource "aws_glue_workflow" "glue-workflow-load-history" {
+  name = "${local.full_name}-load-history"
+  max_concurrent_runs = "1"
+}
+
+# Trigger for History Ingest Job
+resource "aws_glue_trigger" "glue-trigger-history-ingest-job" {
+  name          = "${local.full_name}-history-ingest-trigger"
+  description   = "Trigger to start the History Ingest Glue Job every 20 minutes"
+  workflow_name = aws_glue_workflow.glue-workflow-load-history.name
+  type          = "SCHEDULED"
+  schedule      = "cron(*/20 * * * ? *)" # Every 20 minutes
+
+  actions {
+    job_name = aws_glue_job.glue-job-history-ingest.name
   }
 }

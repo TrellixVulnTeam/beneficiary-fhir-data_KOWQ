@@ -80,11 +80,11 @@ rule {
     id = "log"
 
     expiration {
-      days = 1 # TODO: Set to 3 days
+      days = 7
     }
 
     filter {
-      prefix = "temp/"
+      prefix = "temp-database/"
     }
 
     status = "Enabled"
