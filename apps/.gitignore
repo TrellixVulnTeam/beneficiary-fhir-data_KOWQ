@@ -9,6 +9,13 @@
 **/nb-configuration.xml
 **/nbactions.xml
 
+# Ignore dependency-check 'dependencies' directory
+dependencies
+
+# Ignore migration-shortcut symlink if present
+migrations-shortcut
+
+# keiths errata
 bluebutton-data-pipeline-*
 bluebutton-local-*
-dependencies
+

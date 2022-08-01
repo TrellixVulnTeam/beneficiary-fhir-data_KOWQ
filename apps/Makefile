@@ -38,6 +38,9 @@ init: ## Initialize the project (only needs to be done once)
 	@cd .. && time mvn -f apps initialize
 .PHONY: init
 
+migrations-shortcut: ## Create a shortcut (symlink) to the flyway migrations directory
+	@ln -sf $(PWD)/bfd-model/bfd-model-rif/src/main/resources/db/migration $(PWD)/migrations-shortcut
+
 _:## 
 ###
 # Run services
