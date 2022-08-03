@@ -72,21 +72,3 @@ resource "aws_s3_bucket" "bfd-insights-bfd-app-logs" {
     mfa_delete = false
   }
 }
-
-resource "aws_s3_bucket_lifecycle_configuration" "main-bucket-lifecycle" {
-  bucket = module.bucket.id
-
-rule {
-    id = "log"
-
-    expiration {
-      days = 7
-    }
-
-    filter {
-      prefix = "temp-database/"
-    }
-
-    status = "Enabled"
-  }
-}

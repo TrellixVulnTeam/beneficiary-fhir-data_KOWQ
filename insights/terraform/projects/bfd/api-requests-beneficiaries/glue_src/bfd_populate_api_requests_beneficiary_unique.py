@@ -5,12 +5,9 @@ import sys
 from awsglue.context import GlueContext
 from awsglue.dynamicframe import DynamicFrame
 from awsglue.job import Job
-from awsglue.transforms import RenameField, SelectFields
 from awsglue.utils import getResolvedOptions
 from pyspark.context import SparkContext
 from pyspark.sql import functions as SqlFuncs
-from pyspark import sql
-from pyspark.sql.window import Window
 
 args = getResolvedOptions(sys.argv, ["JOB_NAME"])
 sc = SparkContext()

@@ -79,7 +79,7 @@ resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
   }
 
   storage_descriptor {
-    location      = "s3://${data.aws_s3_bucket.main.id}/${var.s3_prefix}/${var.database}/${var.table}"
+    location      = "s3://${data.aws_s3_bucket.main.id}/databases/${var.database}/${var.table}"
     input_format  = local.storage_options[var.storage_format].input_format
     output_format = local.storage_options[var.storage_format].output_format
     compressed    = true

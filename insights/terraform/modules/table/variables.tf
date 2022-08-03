@@ -24,12 +24,6 @@ variable "bucket_cmk" {
   type        = string
 }
 
-variable "s3_prefix" {
-  description = "Where, in relation to the bucket root, to place the table's storage"
-  type        = string
-  default     = "databases"
-}
-
 variable "tags" {
   description = "tags"
   type        = map(string)

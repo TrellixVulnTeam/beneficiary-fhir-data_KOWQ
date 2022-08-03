@@ -100,7 +100,6 @@ module "glue-table-api-history" {
   database       = module.database.name
   bucket         = data.aws_s3_bucket.bfd-insights-bucket.bucket
   bucket_cmk     = data.aws_kms_key.kms_key.arn
-  s3_prefix      = "temp-database" # Has an expiration policy, so data will automatically self-delete
   storage_format = "json"
   serde_format   = "grok"
   serde_parameters = {
@@ -194,10 +193,10 @@ resource "aws_glue_job" "glue-job-history-ingest" {
   glue_version              = "3.0"
   max_retries               = 0
   non_overridable_arguments = {}
-  number_of_workers         = 10
+  number_of_workers         = 200
   role_arn                  = data.aws_iam_role.iam-role-glue.arn
   timeout                   = 2880
-  worker_type               = "G.1X"
+  worker_type               = "G.2X"
 
   default_arguments = {
     "--TempDir"                          = "s3://${data.aws_s3_bucket.bfd-insights-bucket.id}/temporary/${local.environment}/"
@@ -215,7 +214,7 @@ resource "aws_glue_job" "glue-job-history-ingest" {
     "--sourceTable"                      = module.glue-table-api-history.name
     "--targetDatabase"                   = module.database.name
     "--targetTable"                      = module.glue-table-api-requests.name
-    "--executionSize"                    = "250000000" # 250 MB. Unit is bytes, must be string.
+    "--executionSize"                    = "2000000000" # 2 GB. Unit is bytes, must be string.
   }
 
   command {

@@ -90,7 +90,7 @@ resource "aws_glue_job" "glue-job-populate-beneficiaries" {
   glue_version              = "3.0"
   max_retries               = 0
   non_overridable_arguments = {}
-  number_of_workers         = 10
+  number_of_workers         = 100
   role_arn                  = data.aws_iam_role.iam-role-glue.arn
   timeout                   = 2880
   worker_type               = "G.1X"
@@ -240,7 +240,7 @@ resource "aws_glue_job" "glue-job-populate-beneficiary-unique" {
   max_retries               = 0
   name                      = "${local.full_name}-populate-beneficiary-unique"
   non_overridable_arguments = {}
-  number_of_workers         = 10
+  number_of_workers         = 100
   role_arn                  = data.aws_iam_role.iam-role-glue.arn
   timeout                   = 2880
   worker_type               = "G.1X"
