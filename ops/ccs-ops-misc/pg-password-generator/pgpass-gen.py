@@ -9,7 +9,7 @@ import random
 import re
 
 # allowed password special characters (before encrypting)
-allowed_specials = '~!@#^&()_+=.;?|'
+allowed_specials = "~!$%#^&{}_><+=.;?|"
 
 # hash settings
 salt_size = 16
@@ -22,12 +22,12 @@ iterations = 4096
 # - at least 2 lowercase letters
 # - at least 2 numbers
 # - at least 2 special characters
-min_length = 12
+min_length = 15
 uppers = list(string.ascii_uppercase)
 lowers = list(string.ascii_lowercase)
 digits = list(string.digits)
 specials = list(allowed_specials)
-characters = list(string.ascii_letters + string.digits + "".join(specials))
+characters = list(string.ascii_letters + string.digits)
 
 # regex pattern to match a valid password
 # at least two uppers: (?=.*?[A-Z]+.*?[A-Z]+)
@@ -133,9 +133,9 @@ def main():
 
     # print instructions
     print('Instructions:')
-    print("  1. Save your newly generated password to your favorite password manager)")
+    print("  1. Save this newly generated password to your favorite password manager. You will use this to log into the database.")
     print(f"   YOUR PASSWORD: {passwd}", end='\n\n')
-    print("  2. And send the following ENCRYPTED string to your database admin so they can update your account (admins will not be able to determine your real password!)")
+    print("  2. Send the following ENCRYPTED string to your database admin so they can update your account (admins will not be able to determine your real password from this)")
     print(f"   '{encrypted_password}'")
 
 
