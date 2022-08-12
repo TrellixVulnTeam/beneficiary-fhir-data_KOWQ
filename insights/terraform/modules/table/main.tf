@@ -16,9 +16,10 @@ locals {
       EXTERNAL = "TRUE"
     },
     parquet = {
-      classification        = "parquet"
-      EXTERNAL              = "TRUE"
-      "parquet.compression" = "SNAPPY"
+      classification         = "parquet"
+      EXTERNAL               = "TRUE"
+      "parquet.compression"  = "SNAPPY"
+      "useGlueParquetWriter" = "true"
     }
   }
 

@@ -46,47 +46,6 @@ module "glue-table-api-requests" {
   columns = [] 
 }
 
-# Crawler for the API Requests table
-resource "aws_glue_crawler" "glue-crawler-api-requests" {
-  classifiers   = []
-  database_name = module.database.name
-  configuration = jsonencode(
-    {
-      CrawlerOutput = {
-        Partitions = {
-          AddOrUpdateBehavior = "InheritFromTable"
-        }
-      }
-      Grouping = {
-        TableGroupingPolicy = "CombineCompatibleSchemas"
-      }
-      Version = 1
-    }
-  )
-  name     = "${local.full_name}-api-requests-crawler"
-  role     = data.aws_iam_role.iam-role-glue.arn
-
-  catalog_target {
-    database_name = module.database.name
-    tables = [
-      module.glue-table-api-requests.name,
-    ]
-  }
-
-  lineage_configuration {
-    crawler_lineage_settings = "DISABLE"
-  }
-
-  recrawl_policy {
-    recrawl_behavior = "CRAWL_EVERYTHING"
-  }
-
-  schema_change_policy {
-    delete_behavior = "LOG"
-    update_behavior = "UPDATE_IN_DATABASE"
-  }
-}
-
 
 # BFD History
 #
@@ -193,7 +152,7 @@ resource "aws_glue_job" "glue-job-history-ingest" {
   glue_version              = "3.0"
   max_retries               = 0
   non_overridable_arguments = {}
-  number_of_workers         = 200
+  number_of_workers         = local.glue_worker_count
   role_arn                  = data.aws_iam_role.iam-role-glue.arn
   timeout                   = 2880
   worker_type               = "G.2X"
@@ -214,7 +173,7 @@ resource "aws_glue_job" "glue-job-history-ingest" {
     "--sourceTable"                      = module.glue-table-api-history.name
     "--targetDatabase"                   = module.database.name
     "--targetTable"                      = module.glue-table-api-requests.name
-    "--executionSize"                    = "2000000000" # 2 GB. Unit is bytes, must be string.
+    "--executionSize"                    = local.history_ingest_size
   }
 
   command {
@@ -234,8 +193,8 @@ resource "aws_glue_job" "glue-job-history-ingest" {
 # Organizes the Glue jobs / crawlers and runs them in sequence
 
 # Glue Workflow Object
-resource "aws_glue_workflow" "glue-workflow-api-requests-crawlers" {
-  name = "${local.full_name}-api-requests-crawlers"
+resource "aws_glue_workflow" "glue-workflow-history-crawler" {
+  name = "${local.full_name}-history-crawler"
   max_concurrent_runs = "1"
 }
 
@@ -245,31 +204,12 @@ resource "aws_glue_workflow" "glue-workflow-api-requests-crawlers" {
 resource "aws_glue_trigger" "glue-trigger-api-history-crawler" {
   name          = "${local.full_name}-history-ingest-crawler-trigger"
   description   = "Trigger to start the API History Crawler every day at 4am UTC"
-  workflow_name = aws_glue_workflow.glue-workflow-api-requests-crawlers.name
+  workflow_name = aws_glue_workflow.glue-workflow-history-crawler.name
   type          = "SCHEDULED"
   schedule      = "cron(0 4 * * ? *)" # Every night at 4am UTC
 
   actions {
     crawler_name = aws_glue_crawler.glue-crawler-api-history.name
-  }
-}
-
-# Trigger for API Requests Crawler
-resource "aws_glue_trigger" "glue-crawler-api-requests-crawler" {
-  name          = "${local.full_name}-api-requests-crawler-trigger"
-  description   = "Trigger to start the API Requests Crawler after the History Crawler finishes"
-  workflow_name = aws_glue_workflow.glue-workflow-api-requests-crawlers.name
-  type          = "CONDITIONAL"
-
-  predicate {
-    conditions {
-      crawler_name = aws_glue_crawler.glue-crawler-api-history.name
-      crawl_state  = "SUCCEEDED"
-    }
-  }
-
-  actions {
-    crawler_name = aws_glue_crawler.glue-crawler-api-requests.name
   }
 }
 
@@ -284,8 +224,8 @@ resource "aws_glue_trigger" "glue-trigger-history-ingest-job" {
   name          = "${local.full_name}-history-ingest-trigger"
   description   = "Trigger to start the History Ingest Glue Job every 20 minutes"
   workflow_name = aws_glue_workflow.glue-workflow-load-history.name
-  type          = "SCHEDULED"
-  schedule      = "cron(*/20 * * * ? *)" # Every 20 minutes
+  type          = (local.schedule_glue_jobs ? "SCHEDULED" : "ON_DEMAND")
+  schedule      = (local.schedule_glue_jobs ? "cron(*/30 * * * ? *)" : null) # Every 30 minutes
 
   actions {
     job_name = aws_glue_job.glue-job-history-ingest.name

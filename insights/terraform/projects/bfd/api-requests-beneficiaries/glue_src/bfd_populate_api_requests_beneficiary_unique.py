@@ -43,6 +43,14 @@ if record_count > 0:
 
     OutputDyf = DynamicFrame.fromDF(TransformedDf, glueContext, "OutputDyf")
 
+    # Truncate the destination table so that we don't get duplicates
+    glueContext.purge_table(
+        database=args['targetDatabase'],
+        table_name=args['targetTable'],
+        options={"retentionPeriod": 0},
+        transformation_ctx="PurgeTable"
+    )
+
     # Script generated for node AWS Glue Data Catalog
     WriteBeneUniqueNode = glueContext.write_dynamic_frame.from_catalog(
         frame=OutputDyf,
