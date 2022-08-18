@@ -15,7 +15,6 @@ module "database" {
 module "glue-table-api-requests" {
   source         = "../../../modules/table"
   table          = "${local.full_name_underscore}_api_requests"
-  description    = "Target Glue Table where ingested logs are eventually stored"
   database       = module.database.name
   bucket         = data.aws_s3_bucket.bfd-insights-bucket.bucket
   bucket_cmk     = data.aws_kms_key.kms_key.arn
@@ -27,17 +26,17 @@ module "glue-table-api-requests" {
     {
       name    = "year"
       type    = "string"
-      comment = "Year of request"
+      comment = ""
     },
     {
       name    = "month"
       type    = "string"
-      comment = "Month of request"
+      comment = ""
     },
     {
       name    = "day"
       type    = "string"
-      comment = "Day of request"
+      comment = ""
     }
   ]
 
@@ -45,6 +44,50 @@ module "glue-table-api-requests" {
   # allow the crawler to define the columns
   columns = [] 
 }
+
+
+# Crawler for the API Requests table
+resource "aws_glue_crawler" "glue-crawler-api-requests" {
+  classifiers   = []
+  database_name = module.database.name
+  description   = "Crawler to update the schema for logs ingested into the API Requests Glue Table"
+  configuration = jsonencode(
+    {
+      CrawlerOutput = {
+        Partitions = {
+          AddOrUpdateBehavior = "InheritFromTable"
+        }
+      }
+      Grouping = {
+        TableGroupingPolicy = "CombineCompatibleSchemas"
+      }
+      Version = 1
+    }
+  )
+  name     = "${local.full_name}-api-requests-crawler"
+  role     = data.aws_iam_role.iam-role-glue.arn
+
+  catalog_target {
+    database_name = module.database.name
+    tables = [
+      module.glue-table-api-requests.name,
+    ]
+  }
+
+  lineage_configuration {
+    crawler_lineage_settings = "DISABLE"
+  }
+
+  recrawl_policy {
+    recrawl_behavior = "CRAWL_EVERYTHING"
+  }
+
+  schema_change_policy {
+    delete_behavior = "LOG"
+    update_behavior = "UPDATE_IN_DATABASE"
+  }
+}
+
 
 
 # BFD History
@@ -192,42 +235,60 @@ resource "aws_glue_job" "glue-job-history-ingest" {
 #
 # Organizes the Glue jobs / crawlers and runs them in sequence
 
-# Glue Workflow Object
-resource "aws_glue_workflow" "glue-workflow-history-crawler" {
-  name = "${local.full_name}-history-crawler"
-  max_concurrent_runs = "1"
-}
-
-# Trigger for History Ingest Crawler. This will run every night at 4 AM UTC, but it can also be run
-# manually through the Console. The only reason this would *need* to be run would be to update the
-# partitions and schema, which shouldn't need to happen very often. Once a day seems fine.
-resource "aws_glue_trigger" "glue-trigger-api-history-crawler" {
-  name          = "${local.full_name}-history-ingest-crawler-trigger"
-  description   = "Trigger to start the API History Crawler every day at 4am UTC"
-  workflow_name = aws_glue_workflow.glue-workflow-history-crawler.name
-  type          = "SCHEDULED"
-  schedule      = "cron(0 4 * * ? *)" # Every night at 4am UTC
-
-  actions {
-    crawler_name = aws_glue_crawler.glue-crawler-api-history.name
-  }
-}
-
 # Glue Workflow Object for Continuous Loading of History
 resource "aws_glue_workflow" "glue-workflow-load-history" {
   name = "${local.full_name}-load-history"
   max_concurrent_runs = "1"
 }
 
-# Trigger for History Ingest Job
-resource "aws_glue_trigger" "glue-trigger-history-ingest-job" {
-  name          = "${local.full_name}-history-ingest-trigger"
-  description   = "Trigger to start the History Ingest Glue Job every 20 minutes"
+# Trigger for History Ingest Crawler. This will run every 30 minutes and is the starting point
+# for the workflow.
+resource "aws_glue_trigger" "glue-trigger-api-history-crawler" {
+  name          = "${local.full_name}-history-ingest-crawler-trigger"
+  description   = "Trigger to start the API History Crawler"
   workflow_name = aws_glue_workflow.glue-workflow-load-history.name
   type          = (local.schedule_glue_jobs ? "SCHEDULED" : "ON_DEMAND")
   schedule      = (local.schedule_glue_jobs ? "cron(*/30 * * * ? *)" : null) # Every 30 minutes
 
   actions {
+    crawler_name = aws_glue_crawler.glue-crawler-api-history.name
+  }
+}
+
+# Trigger for History Ingest Job
+resource "aws_glue_trigger" "glue-trigger-history-ingest-job" {
+  name          = "${local.full_name}-history-ingest-trigger"
+  description   = "Trigger to start the History Ingest Glue Job"
+  workflow_name = aws_glue_workflow.glue-workflow-load-history.name
+  type          = "CONDITIONAL"
+
+  actions {
     job_name = aws_glue_job.glue-job-history-ingest.name
+  }
+
+  predicate {
+    conditions {
+      crawler_name = aws_glue_crawler.glue-crawler-api-history.name
+      crawl_state  = "SUCCEEDED"
+    }
+  }
+}
+
+# Trigger for API Requests Crawler
+resource "aws_glue_trigger" "glue-trigger-api-requests-crawler" {
+  name          = "${local.full_name}-api-requests-crawler-trigger"
+  description   = "Trigger to start the API Requests Crawler"
+  workflow_name = aws_glue_workflow.glue-workflow-load-history.name
+  type          = "CONDITIONAL"
+
+  actions {
+    crawler_name = aws_glue_crawler.glue-crawler-api-requests.name
+  }
+
+  predicate {
+    conditions {
+      job_name = aws_glue_job.glue-job-history-ingest.name
+      state  = "SUCCEEDED"
+    }
   }
 }

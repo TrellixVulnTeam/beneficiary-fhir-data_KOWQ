@@ -72,11 +72,6 @@ if record_count > 0:
         frame=OutputDyf,
         database=args['targetDatabase'],
         table_name=args['targetTable'],
-        additional_options={
-            "updateBehavior": "LOG",
-            "partitionKeys": ["bene_id_hash"],
-            "enableUpdateCatalog": True,
-        },
         transformation_ctx="WriteNode",
     )
 

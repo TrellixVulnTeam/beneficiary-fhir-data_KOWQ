@@ -96,8 +96,7 @@ resource "aws_glue_job" "glue-job-populate-beneficiaries" {
     "--sourceTable"                      = "${local.full_name_underscore}_api_requests"
     "--targetDatabase"                   = local.database
     "--targetTable"                      = module.glue-table-beneficiaries.name
-    # 200 GB (prod) or 5 GB (everything else). Unit is bytes, must be string.
-    "--executionSize"                    = (local.environment == "prod" ? "200000000000" : "5000000000")
+    "--executionSize"                    = local.glue_file_size
   }
 
   command {
@@ -108,6 +107,47 @@ resource "aws_glue_job" "glue-job-populate-beneficiaries" {
 
   execution_property {
     max_concurrent_runs = 1
+  }
+}
+
+# Crawler for the Beneficiaries table
+resource "aws_glue_crawler" "glue-crawler-beneficiaries" {
+  classifiers   = []
+  database_name = local.database
+  configuration = jsonencode(
+    {
+      CrawlerOutput = {
+        Partitions = {
+          AddOrUpdateBehavior = "InheritFromTable"
+        }
+      }
+      Grouping = {
+        TableGroupingPolicy = "CombineCompatibleSchemas"
+      }
+      Version = 1
+    }
+  )
+  name     = "${local.full_name}-beneficiaries-crawler"
+  role     = data.aws_iam_role.iam-role-glue.arn
+
+  catalog_target {
+    database_name = local.database
+    tables = [
+      module.glue-table-beneficiaries.name,
+    ]
+  }
+
+  lineage_configuration {
+    crawler_lineage_settings = "DISABLE"
+  }
+
+  recrawl_policy {
+    recrawl_behavior = "CRAWL_EVERYTHING"
+  }
+
+  schema_change_policy {
+    delete_behavior = "LOG"
+    update_behavior = "UPDATE_IN_DATABASE"
   }
 }
 
@@ -202,6 +242,47 @@ resource "aws_glue_job" "glue-job-populate-beneficiary-unique" {
   }
 }
 
+# Crawler for the Unique Beneficiaries table
+resource "aws_glue_crawler" "glue-crawler-beneficiaries-unique" {
+  classifiers   = []
+  database_name = local.database
+  configuration = jsonencode(
+    {
+      CrawlerOutput = {
+        Partitions = {
+          AddOrUpdateBehavior = "InheritFromTable"
+        }
+      }
+      Grouping = {
+        TableGroupingPolicy = "CombineCompatibleSchemas"
+      }
+      Version = 1
+    }
+  )
+  name     = "${local.full_name}-beneficiaries-unique-crawler"
+  role     = data.aws_iam_role.iam-role-glue.arn
+
+  catalog_target {
+    database_name = local.database
+    tables = [
+      module.glue-table-beneficiaries-unique.name
+    ]
+  }
+
+  lineage_configuration {
+    crawler_lineage_settings = "DISABLE"
+  }
+
+  recrawl_policy {
+    recrawl_behavior = "CRAWL_EVERYTHING"
+  }
+
+  schema_change_policy {
+    delete_behavior = "LOG"
+    update_behavior = "UPDATE_IN_DATABASE"
+  }
+}
+
 
 # Glue Workflow
 #
@@ -219,13 +300,30 @@ resource "aws_glue_trigger" "glue-trigger-populate-beneficiaries-job" {
   name          = "${local.full_name}-populate-beneficiaries-job-trigger"
   description   = "Trigger to start the Populate Beneficiaries Glue Job whenever the Crawler completes successfully"
   workflow_name = aws_glue_workflow.glue-workflow-update-insights.name
-  type = "ON_DEMAND"
-  # type          = (local.schedule_glue_jobs ? "SCHEDULED" : "ON_DEMAND")
-  # # schedule      = (local.schedule_glue_jobs ? "cron(0 4 * * ? *)" : null) # Every day at 4am UTC
-  # schedule      = (local.schedule_glue_jobs ? "cron(0 */2 * * ? *)" : null) # Every two hours
+  type          = (local.schedule_glue_jobs ? "SCHEDULED" : "ON_DEMAND")
+  schedule      = (local.schedule_glue_jobs ? "cron(0 */2 * * ? *)" : null) # Every two hours
 
   actions {
     job_name = aws_glue_job.glue-job-populate-beneficiaries.name
+  }
+}
+
+# Trigger for API Requests Beneficiaries Crawler
+resource "aws_glue_trigger" "glue-trigger-beneficiaries-crawler" {
+  name          = "${local.full_name}-beneficiaries-crawler-trigger"
+  description   = "Trigger to start the Beneficiaries Crawler whenever the Populate Beneficiaries Job completes successfully"
+  workflow_name = aws_glue_workflow.glue-workflow-update-insights.name
+  type          = "CONDITIONAL"
+
+  actions {
+    crawler_name = aws_glue_crawler.glue-crawler-beneficiaries.name
+  }
+
+  predicate {
+    conditions {
+      job_name = aws_glue_job.glue-job-populate-beneficiaries.name
+      state  = "SUCCEEDED"
+    }
   }
 }
 
@@ -242,7 +340,26 @@ resource "aws_glue_trigger" "glue-trigger-populate-beneficiaries-unique-job" {
 
   predicate {
     conditions {
-      job_name = aws_glue_job.glue-job-populate-beneficiaries.name
+      crawler_name = aws_glue_crawler.glue-crawler-beneficiaries.name
+      crawl_state  = "SUCCEEDED"
+    }
+  }
+}
+
+# Trigger for Populate Beneficiaries Unique Crawler
+resource "aws_glue_trigger" "glue-trigger-beneficiaries-unique-crawler" {
+  name          = "${local.full_name}-beneficiaries-unique-crawler-trigger"
+  description   = "Trigger to start the Beneficiaries Unique Crawler whenever the Populate Beneficiaries Unique Job completes successfully"
+  workflow_name = aws_glue_workflow.glue-workflow-update-insights.name
+  type          = "CONDITIONAL"
+
+  actions {
+    crawler_name = aws_glue_crawler.glue-crawler-beneficiaries-unique.name
+  }
+
+  predicate {
+    conditions {
+      job_name = aws_glue_job.glue-job-populate-beneficiary-unique.name
       state  = "SUCCEEDED"
     }
   }

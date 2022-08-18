@@ -99,24 +99,8 @@ if record_count > 0:
         args['tempLocation']
         ).select('root')
 
-    RenamedDy = Map.apply(frame = RelationalizeBeneNode,
+    OutputDy = Map.apply(frame = RelationalizeBeneNode,
             f = transform_record, transformation_ctx = 'Reformat_Field_Names')
-
-
-    TargetFrame = glueContext.create_sample_dynamic_frame_from_catalog(
-        database=args['targetDatabase'],
-        table_name=args['targetTable'],
-        num=1,
-        transformation_ctx="GetTargetDyF"
-    ).toDF()
-
-    # Add any missing columns to our schema (default value is None)
-    OutputDf = RenamedDy.toDF()
-    for column in TargetFrame.columns:
-        if column not in OutputDf.columns:
-            OutputDf = OutputDf.withColumn(column, SqlFuncs.lit(None))
-
-    OutputDy = DynamicFrame.fromDF(OutputDf, glueContext, "GetOutputDy")
 
     print("Here is the output schema:")
     OutputDy.printSchema()
@@ -127,11 +111,6 @@ if record_count > 0:
         database=args['targetDatabase'],
         table_name=args['targetTable'],
         format="glueparquet",
-        additional_options={
-            "enableUpdateCatalog": True,
-            "updateBehavior": "UPDATE_IN_DATABASE",
-            "partitionKeys": ["year", "month", "day"],
-        },
         transformation_ctx="DataCatalogtable_node3",
     )
 
