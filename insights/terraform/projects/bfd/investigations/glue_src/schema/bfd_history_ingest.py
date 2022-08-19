@@ -62,8 +62,11 @@ args = getResolvedOptions(sys.argv,
                            'sourceDatabase',
                            'sourceTable',
                            'targetDatabase',
-                           'targetTable',
-                           'executionSize'])
+                           # INVESTIGATION: Remove executionSize argument
+                           # 'targetTable',
+                           # 'executionSize'])
+                           'targetTable'])
+                           # INVESTIGATION: End modification
 
 print("sourceDatabase is set to: ", args['sourceDatabase'])
 print("   sourceTable is set to: ", args['sourceTable'])
