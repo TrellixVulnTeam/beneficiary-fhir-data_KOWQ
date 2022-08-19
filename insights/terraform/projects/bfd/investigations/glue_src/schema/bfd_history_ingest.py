@@ -69,7 +69,9 @@ print("sourceDatabase is set to: ", args['sourceDatabase'])
 print("   sourceTable is set to: ", args['sourceTable'])
 print("targetDatabase is set to: ", args['targetDatabase'])
 print("   targetTable is set to: ", args['targetTable'])
-print(" executionSize is set to: ", args['executionSize'])
+# INVESTIGATION: Removed print statement
+# print(" executionSize is set to: ", args['executionSize'])
+# INVESTIGATION: End modification
 
 SourceDf = glueContext.create_dynamic_frame.from_catalog(
     database=args['sourceDatabase'],
