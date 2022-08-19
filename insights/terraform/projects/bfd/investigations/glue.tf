@@ -160,7 +160,7 @@ resource "aws_glue_job" "glue-job-history-ingest" {
   non_overridable_arguments = {}
   number_of_workers         = local.test_params[each.key].workers
   role_arn                  = data.aws_iam_role.iam-role-glue.arn
-  timeout                   = 240
+  timeout                   = 240 # Timeout in minutes. Set to 4 hours.
   worker_type               = local.test_params[each.key].instance
 
   tags = {
