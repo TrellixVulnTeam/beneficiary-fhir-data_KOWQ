@@ -19,6 +19,8 @@ locals {
       classification        = "parquet"
       EXTERNAL              = "TRUE"
       "parquet.compression" = "SNAPPY"
+      # This is required for schema writing but was bugged in the master branch
+      "useGlueParquetWriter" = "true"
     }
   }
 
