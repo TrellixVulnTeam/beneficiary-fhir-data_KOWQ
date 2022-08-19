@@ -116,17 +116,17 @@ module "glue-table-api-requests" {
     {
       name    = "year"
       type    = "string"
-      comment = "Year of request"
+      comment = ""
     },
     {
       name    = "month"
       type    = "string"
-      comment = "Month of request"
+      comment = ""
     },
     {
       name    = "day"
       type    = "string"
-      comment = "Day of request"
+      comment = ""
     }
   ]
 

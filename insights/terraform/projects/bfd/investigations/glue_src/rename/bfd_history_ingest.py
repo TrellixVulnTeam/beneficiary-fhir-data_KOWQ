@@ -18,6 +18,9 @@ job.init(args["JOB_NAME"], args)
 
 args = getResolvedOptions(sys.argv,
                           ['JOB_NAME',
+                           # INVESTIGATION: Added tempLocation argument 
+                           'tempLocation',
+                           # INVESTIGATION: End modification
                            'sourceDatabase',
                            'sourceTable',
                            'targetDatabase',
