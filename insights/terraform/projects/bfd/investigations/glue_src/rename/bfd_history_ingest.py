@@ -79,10 +79,7 @@ if record_count > 0:
         database=args['targetDatabase'],
         table_name=args['targetTable'],
         additional_options={
-            # INVESTIGATION: Update Schema should be off for better comparisons
-            # "enableUpdateCatalog": True,
-            "enableUpdateCatalog": False,
-            # INVESTIGATION: End modification
+            "enableUpdateCatalog": True,
             "updateBehavior": "UPDATE_IN_DATABASE",
             "partitionKeys": ["year", "month", "day"],
         },
