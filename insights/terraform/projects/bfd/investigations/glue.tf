@@ -175,7 +175,8 @@ resource "aws_glue_job" "glue-job-history-ingest" {
     "--enable-job-insights"              = "true"
     "--enable-metrics"                   = "true"
     "--enable-spark-ui"                  = "true"
-    "--job-bookmark-option"              = "job-bookmark-enable"
+    # Job bookmarks were generally set to "enabled" during actual runs, but is set to disable now for simplicity
+    "--job-bookmark-option"              = "job-bookmark-disable"
     "--job-language"                     = "python"
     "--spark-event-logs-path"            = "s3://${data.aws_s3_bucket.bfd-insights-bucket.id}/sparkHistoryLogs/${each.key}/"
     "--tempLocation"                     = "s3://${data.aws_s3_bucket.bfd-insights-bucket.id}/temp/${each.key}/history-ingest/"
@@ -203,6 +204,10 @@ resource "aws_glue_crawler" "glue-crawler-api-requests" {
   database_name = module.database.name
   name          = "${local.full_name}-${each.key}-api-requests-crawler"
   role          = data.aws_iam_role.iam-role-glue.arn
+
+  tags = {
+    "test-id" = each.key
+  }
 
   configuration = jsonencode(
     {
