@@ -118,6 +118,14 @@ if record_count > 0:
         database=args['targetDatabase'],
         table_name=args['targetTable'],
         format="glueparquet",
+        # INVESTIGATION: The version of this script copied from source control did not have this
+        # bit, but the version actually run did (and it was only added to version control later).
+        additional_options={
+            "enableUpdateCatalog": True,
+            "updateBehavior": "UPDATE_IN_DATABASE",
+            "partitionKeys": ["year", "month", "day"],
+        },
+        # INVESTIGATION: End modification
         transformation_ctx="DataCatalogtable_node3",
     )
 
