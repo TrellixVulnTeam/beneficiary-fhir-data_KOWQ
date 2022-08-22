@@ -184,6 +184,7 @@ resource "aws_glue_job" "glue-job-history-ingest" {
     "--sourceTable"                      = module.glue-table-api-history.name
     "--targetDatabase"                   = module.database.name
     "--targetTable"                      = module.glue-table-api-requests[each.key].name
+    "--executionSize"                    = local.test_params[each.key].ex_size
   }
 
   command {

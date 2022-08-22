@@ -42,6 +42,13 @@ locals {
       instance   = "G.2X"
       storage    = "parquet"
     }
+    chunked = {
+      source_dir = "chunked"
+      workers    = "10"
+      instance   = "G.2X"
+      storage    = "parquet"
+      ex_size    = "8000000000"
+    }
   }
 
   tags = {
