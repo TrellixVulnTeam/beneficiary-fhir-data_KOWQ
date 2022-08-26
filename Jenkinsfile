@@ -130,7 +130,7 @@ def sendNotifications(String buildStatus = '', String stageName = '', String git
 
 // begin pipeline
 try {
-	// See ops/jenkins/cbc-build-push.sh for this image's definition.
+	// See ops/jenkins/bfd-cbc-build for this image's definition.
 	podTemplate(
 		containers: [
 			containerTemplate(
