@@ -17,30 +17,35 @@ locals {
       workers    = "20"
       instance   = "G.1X"
       storage    = "json"
+      ex_size    = ""
     }
     rename = {
       source_dir = "rename"
       workers    = "20"
       instance   = "G.1X"
       storage    = "json"
+      ex_size    = ""
     }
     parquet = {
       source_dir = "parquet"
       workers    = "20"
       instance   = "G.1X"
       storage    = "parquet"
+      ex_size    = ""
     }
     g2x = {
       source_dir = "parquet" # Same script as the prior test
       workers    = "10"
       instance   = "G.2X"
       storage    = "parquet"
+      ex_size    = ""
     }
     schema = {
       source_dir = "schema"
       workers    = "10"
       instance   = "G.2X"
       storage    = "parquet"
+      ex_size    = ""
     }
     chunked = {
       source_dir = "chunked"
