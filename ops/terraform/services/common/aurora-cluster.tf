@@ -54,6 +54,8 @@ resource "aws_rds_cluster" "aurora_cluster" {
   preferred_maintenance_window        = "fri:07:00-fri:08:00"
   skip_final_snapshot                 = true
   storage_encrypted                   = true
+  network_type                        = "IPV4"
+
   # TODO: consider implementing conditional inclusion of the 'cpm backup' tag
   tags = merge(local.shared_tags, { "cpm backup" = "Weekly Monthly", "Layer" = "data" })
 
